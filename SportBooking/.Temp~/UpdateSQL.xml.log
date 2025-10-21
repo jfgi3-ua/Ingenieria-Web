@@ -1,0 +1,56 @@
+[14 oct 2025 19:51:01] DEBUG Executing SQL script
+[14 oct 2025 19:51:01] INFO ================================================================================
+[14 oct 2025 19:51:01] INFO onError= 'stop'
+[14 oct 2025 19:51:01] INFO autoCommit= 'false'
+[14 oct 2025 19:51:01] INFO username= 'postgres'
+[14 oct 2025 19:51:01] INFO outputPath= 'C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\UpdateSQL.xml'
+[14 oct 2025 19:51:01] INFO outputLogPath= 'C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\UpdateSQL.xml.log'
+[14 oct 2025 19:51:01] INFO encoding= ''
+[14 oct 2025 19:51:01] INFO driverClass= 'org.postgresql.Driver'
+[14 oct 2025 19:51:01] INFO sqlScript= 'C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\UpdateSQL.sql'
+[14 oct 2025 19:51:01] INFO eventSocketPort= '56879'
+[14 oct 2025 19:51:01] INFO statementSeparator= ';'
+[14 oct 2025 19:51:01] INFO derby.system.home= 'C:\Users\Jferg\Desktop\WebRatio\.metadata\.plugins\com.webratio.commons.db\derby'
+[14 oct 2025 19:51:01] INFO password= 'Jess89'
+[14 oct 2025 19:51:01] INFO url= 'jdbc:postgresql://localhost:5432/SportBooking'
+[14 oct 2025 19:51:01] INFO ================================================================================
+[14 oct 2025 19:51:01] INFO Connecting to the Database...
+[14 oct 2025 19:51:01] INFO Database connection estabilished
+[14 oct 2025 19:51:01] INFO transaction isolation: 2
+[14 oct 2025 19:51:01] DEBUG ================================================================================
+[14 oct 2025 19:51:01] DEBUG Executing SQL script file: C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\UpdateSQL.sql
+[14 oct 2025 19:51:01] DEBUG Executing statement:  create table "public"."group" ( "id"  int4  not null, "groupname"  varchar(255), primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."module" ( "id"  int4  not null, "moduleid"  varchar(255), "modulename"  varchar(255), primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."user" ( "id"  int4  not null, "username"  varchar(255), "password"  varchar(255), "email"  varchar(255), primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."reserva" ( "id"  int4  not null, "estado"  varchar(255), "importe"  int4, primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."pista" ( "id"  int4  not null, "nombre"  varchar(255), "estado"  varchar(255), "capacidad"  int4, "precio_hora"  varchar(255), primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."categoria" ( "id"  int4  not null, "nombre"  varchar(255), primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."horario" ( "id"  int4  not null, "fecha"  date, "dia_semana"  int4, "inicio"  timestamp, "fin"  timestamp, primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."monedero" ( "id"  int4  not null, "saldo"  float8, primary key ("id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."group"  add column  "module_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."group"   add constraint fk_group_module foreign key ("module_id") references "public"."module" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."group_module" ( "group_id"  int4 not null, "module_id"  int4 not null, primary key ("group_id", "module_id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."group_module"   add constraint fk_group_module_group foreign key ("group_id") references "public"."group" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."group_module"   add constraint fk_group_module_module foreign key ("module_id") references "public"."module" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."user"  add column  "group_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."user"   add constraint fk_user_group foreign key ("group_id") references "public"."group" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."user_group" ( "user_id"  int4 not null, "group_id"  int4 not null, primary key ("user_id", "group_id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."user_group"   add constraint fk_user_group_user foreign key ("user_id") references "public"."user" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."user_group"   add constraint fk_user_group_group foreign key ("group_id") references "public"."group" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."reserva"  add column  "user_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."reserva"   add constraint fk_reserva_user foreign key ("user_id") references "public"."user" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."reserva"  add column  "pista_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."reserva"   add constraint fk_reserva_pista foreign key ("pista_id") references "public"."pista" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."pista"  add column  "categoria_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."pista"   add constraint fk_pista_categoria foreign key ("categoria_id") references "public"."categoria" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."reserva"  add column  "horario_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."reserva"   add constraint fk_reserva_horario foreign key ("horario_id") references "public"."horario" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    create table "public"."horario_pista" ( "horario_id"  int4 not null, "pista_id"  int4 not null, primary key ("horario_id", "pista_id") )
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."horario_pista"   add constraint fk_horario_pista_horario foreign key ("horario_id") references "public"."horario" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."horario_pista"   add constraint fk_horario_pista_pista foreign key ("pista_id") references "public"."pista" ("id")
+[14 oct 2025 19:51:01] DEBUG Executing statement:    alter table "public"."user"  add column  "monedero_id"  int4
+[14 oct 2025 19:51:01] DEBUG Executing statement:  alter table "public"."user"   add constraint fk_user_monedero foreign key ("monedero_id") references "public"."monedero" ("id")
+[14 oct 2025 19:51:01] DEBUG ================================================================================
+[14 oct 2025 19:51:01] DEBUG SQL SCRIPT SUCCESSFULLY EXECUTED
+[14 oct 2025 19:51:01] INFO Database connection closed
+[14 oct 2025 19:51:01] DEBUG Total time: 158 milliseconds
