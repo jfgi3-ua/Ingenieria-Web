@@ -1,0 +1,36 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="90" gr:y="230" id="sv1#area1#page3" name="Detalle">
+  <ContentUnits>
+    <DataUnit id="sv1#area1#page3#dau2" name="Detalle pista" gr:x="0" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att15 ent4#att16 ent4#att17 ent4#att18" linkOrder="sv1#area1#page3#dau2#ln15">
+      <Selector id="sv1#area1#page3#dau2#su4" defaultPolicy="fill" booleanOperator="and">
+        <KeyCondition id="sv1#area1#page3#dau2#su4#kcond4" name="KeyCondition3" predicate="in" implied="false"/>
+      </Selector>
+      <Link id="sv1#area1#page3#dau2#ln15" name="Volver" to="sv1#area1#page2#inu1" automaticCoupling="true" type="normal" validate="true" gr:bendpoints="-82,-96,-32,104"/>
+    </DataUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv1#area1#page3#dau2">
+          <layout:Attribute attribute="ent4#att14"/>
+          <layout:Attribute attribute="ent4#att15"/>
+          <layout:Attribute attribute="ent4#att16"/>
+          <layout:Attribute attribute="ent4#att17"/>
+          <layout:Attribute attribute="ent4#att18"/>
+          <layout:Link link="sv1#area1#page3#dau2#ln15"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+  <layout:LayoutParameter name="panel-type" value="primary" type="frame"/>
+</Page>

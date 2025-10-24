@@ -46,7 +46,8 @@
       <db:JoinColumn attribute="moduleOID" name="module_id"/>
     </RelationshipRole2>
   </Relationship>
-  <db:Database id="db1" name="SportBooking" type="PostgreSQL 9" url="jdbc:postgresql://localhost:5432/SportBooking" username="postgres" cryptedPassword="true" password="SmVzczg5" schema="public"/>
+  <db:Database id="db1" name="SportBooking" type="PostgreSQL 9" url="jdbc:postgresql://localhost:5432/SportBooking" username="postgres" cryptedPassword="true" password="SmVzczg5" schema="public">
+  </db:Database>
   <Entity id="ent1" name="Categoria" db:database="db1" duration="persistent" db:table="categoria" gr:x="160" gr:y="640">
     <Attribute id="ent1#att1" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent1#att2" name="nombre" db:column="nombre" type="string" key="false"/>

@@ -31,8 +31,8 @@
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
     <Column sqlTypeId="91" indexed="unknown" autoIncrement="false" type="date" size="13" decimalDigits="0" name="fecha" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="5" indexed="unknown" autoIncrement="false" type="int2" size="5" decimalDigits="0" name="dia_semana" primaryKey="false" notNull="false"/>
-    <Column sqlTypeId="92" indexed="unknown" autoIncrement="false" type="time" size="15" decimalDigits="6" name="inicio" primaryKey="false" notNull="true"/>
-    <Column sqlTypeId="92" indexed="unknown" autoIncrement="false" type="time" size="15" decimalDigits="6" name="fin" primaryKey="false" notNull="true"/>
+    <Column sqlTypeId="92" indexed="unknown" autoIncrement="false" type="time" size="15" decimalDigits="6" name="inicio" primaryKey="false" notNull="false"/>
+    <Column sqlTypeId="92" indexed="unknown" autoIncrement="false" type="time" size="15" decimalDigits="6" name="fin" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="91" indexed="unknown" autoIncrement="false" type="date" size="13" decimalDigits="0" name="vigente_desde" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="91" indexed="unknown" autoIncrement="false" type="date" size="13" decimalDigits="0" name="vigente_hasta" primaryKey="false" notNull="false"/>
   </Table>
@@ -49,12 +49,12 @@
   </Table>
   <Table schema="public" ignoreIndexes="false" name="pista" type="TABLE" refreshed="true">
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
-    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="120" decimalDigits="0" name="nombre" primaryKey="false" notNull="true"/>
+    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="120" decimalDigits="0" name="nombre" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="text" size="2147483647" decimalDigits="0" name="descripcion" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="capacidad" primaryKey="false" notNull="false"/>
-    <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="precio_hora" primaryKey="false" notNull="true"/>
-    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="true"/>
-    <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="categoria_id" primaryKey="false" notNull="true"/>
+    <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="precio_hora" primaryKey="false" notNull="false"/>
+    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="false"/>
+    <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="categoria_id" primaryKey="false" notNull="false"/>
     <ForeignKey localColumnName="categoria_id" foreignColumnName="id" name="pista_categoria_id_fkey" foreignTableName="categoria" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="pista_horario" type="TABLE" refreshed="true">
@@ -71,7 +71,7 @@
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="user_id" primaryKey="false" notNull="true"/>
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="pista_id" primaryKey="false" notNull="true"/>
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="horario_id" primaryKey="false" notNull="true"/>
-    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="true"/>
+    <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="importe" primaryKey="false" notNull="false"/>
     <ForeignKey localColumnName="horario_id" foreignColumnName="id" name="reserva_horario_id_fkey" foreignTableName="horario" foreignSchemaName="public"/>
     <ForeignKey localColumnName="pista_id" foreignColumnName="id" name="reserva_pista_id_fkey" foreignTableName="pista" foreignSchemaName="public"/>

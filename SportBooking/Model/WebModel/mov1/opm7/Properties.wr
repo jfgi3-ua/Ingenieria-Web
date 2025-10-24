@@ -1,0 +1,47 @@
+<OperationModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" id="mov1#opm7" name="Crear o actualizar usuario" gr:x="585" gr:y="55">
+  <OperationUnits>
+    <InputCollectorUnit id="mov1#opm7#icu4" gr:x="170" gr:y="225">
+      <OKLink id="mov1#opm7#icu4#oln6" name="OKFlow9" to="mov1#opm7#inn1">
+        <LinkParameter id="mov1#opm7#icu4#oln6#par5" name="id_param_Input" source="mov1#opm7#icu4#icp4" target="mov1#opm7#inn1.isnotnull"/>
+      </OKLink>
+      <Link id="mov1#opm7#icu4#ln1" name="Flow27" to="mov1#opm7#mfu1" type="transport" validate="true" gr:bendpoints="143,-85,-307,0">
+        <LinkParameter id="mov1#opm7#icu4#ln1#par6" name="category_param_category" source="mov1#opm7#icu4#icp8" target="mov1#opm7#mfu1.User#att4"/>
+        <LinkParameter id="mov1#opm7#icu4#ln1#par7" name="email_param_email" source="mov1#opm7#icu4#icp7" target="mov1#opm7#mfu1.email"/>
+        <LinkParameter id="mov1#opm7#icu4#ln1#par8" name="group_param_Group.id(defaultGroup)" source="mov1#opm7#icu4#icp9" target="mov1#opm7#mfu1.User2DefaultGroup.groupOID"/>
+        <LinkParameter id="mov1#opm7#icu4#ln1#par9" name="id_param_KeyCondition9 [id]" source="mov1#opm7#icu4#icp4" target="mov1#opm7#mfu1#su2#kcond2.userOID"/>
+        <LinkParameter id="mov1#opm7#icu4#ln1#par10" name="passwd_param_password" source="mov1#opm7#icu4#icp6" target="mov1#opm7#mfu1.password"/>
+        <LinkParameter id="mov1#opm7#icu4#ln1#par11" name="name_param_userName" source="mov1#opm7#icu4#icp5" target="mov1#opm7#mfu1.userName"/>
+      </Link>
+      <Link id="mov1#opm7#icu4#ln2" name="Flow28" to="mov1#opm7#cru1" type="transport" validate="true" gr:bendpoints="144,105,-301,0">
+        <LinkParameter id="mov1#opm7#icu4#ln2#par12" name="category_param_category" source="mov1#opm7#icu4#icp8" target="mov1#opm7#cru1.User#att4"/>
+        <LinkParameter id="mov1#opm7#icu4#ln2#par13" name="email_param_email" source="mov1#opm7#icu4#icp7" target="mov1#opm7#cru1.email"/>
+        <LinkParameter id="mov1#opm7#icu4#ln2#par14" name="group_param_Group.id(defaultGroup)" source="mov1#opm7#icu4#icp9" target="mov1#opm7#cru1.User2DefaultGroup.groupOID"/>
+        <LinkParameter id="mov1#opm7#icu4#ln2#par15" name="passwd_param_password" source="mov1#opm7#icu4#icp6" target="mov1#opm7#cru1.password"/>
+        <LinkParameter id="mov1#opm7#icu4#ln2#par16" name="name_param_userName" source="mov1#opm7#icu4#icp5" target="mov1#opm7#cru1.userName"/>
+      </Link>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp4" name="id_param"/>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp5" name="name_param"/>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp6" name="passwd_param"/>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp7" name="email_param"/>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp8" name="category_param"/>
+      <InputCollectorParameter id="mov1#opm7#icu4#icp9" name="group_param"/>
+    </InputCollectorUnit>
+    <ModifyUnit id="mov1#opm7#mfu1" name="Actualizar usuario" gr:x="660" gr:y="160" entity="User">
+      <Selector id="mov1#opm7#mfu1#su2" defaultPolicy="fill" booleanOperator="and">
+        <KeyCondition id="mov1#opm7#mfu1#su2#kcond2" name="KeyCondition9" predicate="in" implied="false"/>
+      </Selector>
+      <OKLink id="mov1#opm7#mfu1#oln7" name="OKFlow11" to="mov1#opm7#okcu3" automaticCoupling="true"/>
+      <KOLink id="mov1#opm7#mfu1#kln3" name="KOFlow8" to="mov1#opm7#kocu3" automaticCoupling="true"/>
+    </ModifyUnit>
+    <CreateUnit id="mov1#opm7#cru1" name="Crear usuario" gr:x="675" gr:y="360" entity="User">
+      <OKLink id="mov1#opm7#cru1#oln8" name="OKFlow12" to="mov1#opm7#okcu3" automaticCoupling="true"/>
+      <KOLink id="mov1#opm7#cru1#kln4" name="KOFlow7" to="mov1#opm7#kocu3" automaticCoupling="true"/>
+    </CreateUnit>
+    <KOCollectorUnit id="mov1#opm7#kocu3" name="KO Port4" gr:x="855" gr:y="360"/>
+    <OKCollectorUnit id="mov1#opm7#okcu3" name="OK Port4" gr:x="855" gr:y="170"/>
+    <IsNotNullUnit id="mov1#opm7#inn1" name="Existe usuario?" gr:x="480" gr:y="265" emptyStringAsNull="true">
+      <OKLink id="mov1#opm7#inn1#oln9" name="OKFlow10" to="mov1#opm7#mfu1" automaticCoupling="true"/>
+      <KOLink id="mov1#opm7#inn1#kln5" name="KOFlow6" to="mov1#opm7#cru1" automaticCoupling="true"/>
+    </IsNotNullUnit>
+  </OperationUnits>
+</OperationModule>
