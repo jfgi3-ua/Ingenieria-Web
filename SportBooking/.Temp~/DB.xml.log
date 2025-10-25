@@ -1,142 +1,118 @@
-[24 oct 2025 22:04:19] Building database metadata model
-[24 oct 2025 22:04:19] Properties: {partialRefresh=false, processColumnsUsingSelect=, includePrimaryKeys=true, eventSocketClient=com.webratio.commons.net.EventSocketClient@2fe6a820, includeTables=true, username=postgres, outputLogPath=C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\DB.xml.log, readIndexes=null, driverClass=org.postgresql.Driver, includeSynonyms=true, metaDataProviderClass=com.webratio.commons.db.metadata.PostgreSQLMetaDataProvider, outputPath=C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\DB.xml, schemaRegex=null, readProcedures=null, includeViews=true, derby.system.home=C:\Users\Jferg\Desktop\WebRatio\.metadata\.plugins\com.webratio.commons.db\derby, url=jdbc:postgresql://localhost:5432/SportBooking, tableRegex=null, readSQLDefinitions=true, includeForeignKeys=true, retrieveAllNames=false, tablesToRefresh=, eventSocketPort=50995}
-[24 oct 2025 22:04:19] URL: jdbc:postgresql://localhost:5432/SportBooking
-[24 oct 2025 22:04:19] Product name: PostgreSQL
-[24 oct 2025 22:04:19] Product version: 9.6.15
-[24 oct 2025 22:04:19] Driver name: PostgreSQL Native Driver
-[24 oct 2025 22:04:19] Driver version: PostgreSQL 9.3 JDBC3g (build 1103)
-[24 oct 2025 22:04:19] Driver major version: 9
-[24 oct 2025 22:04:19] Driver minor version: 3
-[24 oct 2025 22:04:19] Identifier quote string: 3
-[24 oct 2025 22:04:19] Retrieving schemas
-[24 oct 2025 22:04:19]   Found schema: information_schema
-[24 oct 2025 22:04:19]   Found schema: pg_catalog
-[24 oct 2025 22:04:19]   Found schema: public
-[24 oct 2025 22:04:19] Retrieving sequences
-[24 oct 2025 22:04:19]   Found 'public.categoria_id_seq' sequence
-[24 oct 2025 22:04:19]   Found 'public.horario_id_seq' sequence
-[24 oct 2025 22:04:19]   Found 'public.monedero_id_seq' sequence
-[24 oct 2025 22:04:19]   Found 'public.pista_horario_id_seq' sequence
-[24 oct 2025 22:04:19]   Found 'public.pista_id_seq' sequence
-[24 oct 2025 22:04:19]   Found 'public.reserva_id_seq' sequence
-[24 oct 2025 22:04:19] Retrieving [TABLE, VIEW, SYNONYM] for schema 'information_schema'
-[24 oct 2025 22:04:19] Retrieving [TABLE, VIEW, SYNONYM] for schema 'pg_catalog'
-[24 oct 2025 22:04:19] Retrieving [TABLE, VIEW, SYNONYM] for schema 'public'
-[24 oct 2025 22:04:19]   Found 'public.categoria' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.group_module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.monedero' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.pista' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.pista_horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.reserva' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.user' [type = TABLE]
-[24 oct 2025 22:04:19]   Found 'public.user_group' [type = TABLE]
-[24 oct 2025 22:04:19] Retrieving columns for 'public.categoria' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: nombre [type = varchar][SQL/XOPEN type = 12][size = 100][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: descripcion [type = text][SQL/XOPEN type = 12][size = 2147483647][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.categoria' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: groupname [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: module_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.group_module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: module_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.group_module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: group_id
-[24 oct 2025 22:04:19]   Found primary key column: module_id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: fecha [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: dia_semana [type = int2][SQL/XOPEN type = 5][size = 5][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: inicio [type = time][SQL/XOPEN type = 92][size = 15][dec. digits = 6]
-[24 oct 2025 22:04:19]   Found column: fin [type = time][SQL/XOPEN type = 92][size = 15][dec. digits = 6]
-[24 oct 2025 22:04:19]   Found column: vigente_desde [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: vigente_hasta [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: moduleid [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: modulename [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.monedero' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: user_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: saldo [type = numeric][SQL/XOPEN type = 2][size = 12][dec. digits = 2]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.monedero' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.pista' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: nombre [type = varchar][SQL/XOPEN type = 12][size = 120][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: descripcion [type = text][SQL/XOPEN type = 12][size = 2147483647][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: capacidad [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: precio_hora [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
-[24 oct 2025 22:04:19]   Found column: estado [type = varchar][SQL/XOPEN type = 12][size = 20][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: categoria_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.pista' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.pista_horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: pista_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: horario_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: bloqueada [type = bool][SQL/XOPEN type = -7][size = 1][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: precio_override [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.pista_horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.reserva' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: user_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: pista_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: horario_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: estado [type = varchar][SQL/XOPEN type = 12][size = 20][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: importe [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.reserva' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.user' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: username [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: password [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: email [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.user' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: id
-[24 oct 2025 22:04:19] Retrieving columns for 'public.user_group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found column: user_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
-[24 oct 2025 22:04:19] Retrieving primary keys for 'public.user_group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found primary key column: user_id
-[24 oct 2025 22:04:19]   Found primary key column: group_id
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.categoria' [type = TABLE]
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column module_id references module(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.group_module' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column group_id references group(id)
-[24 oct 2025 22:04:19]   Found foreign key: column module_id references module(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.horario' [type = TABLE]
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.module' [type = TABLE]
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.monedero' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column user_id references user(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.pista' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column categoria_id references categoria(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.pista_horario' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column horario_id references horario(id)
-[24 oct 2025 22:04:19]   Found foreign key: column pista_id references pista(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.reserva' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column horario_id references horario(id)
-[24 oct 2025 22:04:19]   Found foreign key: column pista_id references pista(id)
-[24 oct 2025 22:04:19]   Found foreign key: column user_id references user(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.user' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column group_id references group(id)
-[24 oct 2025 22:04:19] Retrieving foreign keys for 'public.user_group' [type = TABLE]
-[24 oct 2025 22:04:19]   Found foreign key: column group_id references group(id)
-[24 oct 2025 22:04:19]   Found foreign key: column user_id references user(id)
-[24 oct 2025 22:04:19] Database metadata retrieved (144 ms)
-[24 oct 2025 22:04:19] Database connection closed
+[25 oct 2025 11:07:55] Building database metadata model
+[25 oct 2025 11:07:55] Properties: {partialRefresh=false, processColumnsUsingSelect=, includePrimaryKeys=true, eventSocketClient=com.webratio.commons.net.EventSocketClient@5027e571, includeTables=true, username=postgres, outputLogPath=C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\DB.xml.log, readIndexes=null, driverClass=org.postgresql.Driver, includeSynonyms=true, metaDataProviderClass=com.webratio.commons.db.metadata.PostgreSQLMetaDataProvider, outputPath=C:\Users\Jferg\Desktop\WebRatio\SportBooking\.Temp~\DB.xml, schemaRegex=null, readProcedures=null, includeViews=true, derby.system.home=C:\Users\Jferg\Desktop\WebRatio\.metadata\.plugins\com.webratio.commons.db\derby, url=jdbc:postgresql://localhost:5432/SportBooking, tableRegex=null, readSQLDefinitions=true, includeForeignKeys=false, retrieveAllNames=false, tablesToRefresh=, eventSocketPort=50275}
+[25 oct 2025 11:07:55] URL: jdbc:postgresql://localhost:5432/SportBooking
+[25 oct 2025 11:07:55] Product name: PostgreSQL
+[25 oct 2025 11:07:55] Product version: 9.6.15
+[25 oct 2025 11:07:55] Driver name: PostgreSQL Native Driver
+[25 oct 2025 11:07:55] Driver version: PostgreSQL 9.3 JDBC3g (build 1103)
+[25 oct 2025 11:07:55] Driver major version: 9
+[25 oct 2025 11:07:55] Driver minor version: 3
+[25 oct 2025 11:07:55] Identifier quote string: 3
+[25 oct 2025 11:07:55] Retrieving schemas
+[25 oct 2025 11:07:55]   Found schema: information_schema
+[25 oct 2025 11:07:55]   Found schema: pg_catalog
+[25 oct 2025 11:07:55]   Found schema: public
+[25 oct 2025 11:07:55] Retrieving sequences
+[25 oct 2025 11:07:55]   Found 'public.categoria_id_seq' sequence
+[25 oct 2025 11:07:55]   Found 'public.horario_id_seq' sequence
+[25 oct 2025 11:07:55]   Found 'public.monedero_id_seq' sequence
+[25 oct 2025 11:07:55]   Found 'public.pista_horario_id_seq' sequence
+[25 oct 2025 11:07:55]   Found 'public.pista_id_seq' sequence
+[25 oct 2025 11:07:55]   Found 'public.reserva_id_seq' sequence
+[25 oct 2025 11:07:55] Retrieving [TABLE, VIEW, SYNONYM] for schema 'information_schema'
+[25 oct 2025 11:07:55] Retrieving [TABLE, VIEW, SYNONYM] for schema 'pg_catalog'
+[25 oct 2025 11:07:55] Retrieving [TABLE, VIEW, SYNONYM] for schema 'public'
+[25 oct 2025 11:07:55]   Found 'public.categoria' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.group' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.group_module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.monedero' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.pista' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.pista_horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.reserva' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.user' [type = TABLE]
+[25 oct 2025 11:07:55]   Found 'public.user_group' [type = TABLE]
+[25 oct 2025 11:07:55] Retrieving columns for 'public.categoria' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: nombre [type = varchar][SQL/XOPEN type = 12][size = 100][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: descripcion [type = text][SQL/XOPEN type = 12][size = 2147483647][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.categoria' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.group' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: groupname [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: module_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.group' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.group_module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: module_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.group_module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: group_id
+[25 oct 2025 11:07:55]   Found primary key column: module_id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: fecha [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: dia_semana [type = int2][SQL/XOPEN type = 5][size = 5][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: inicio [type = time][SQL/XOPEN type = 92][size = 15][dec. digits = 6]
+[25 oct 2025 11:07:55]   Found column: fin [type = time][SQL/XOPEN type = 92][size = 15][dec. digits = 6]
+[25 oct 2025 11:07:55]   Found column: vigente_desde [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: vigente_hasta [type = date][SQL/XOPEN type = 91][size = 13][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: moduleid [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: modulename [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.module' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.monedero' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: user_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: saldo [type = numeric][SQL/XOPEN type = 2][size = 12][dec. digits = 2]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.monedero' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.pista' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: nombre [type = varchar][SQL/XOPEN type = 12][size = 120][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: descripcion [type = text][SQL/XOPEN type = 12][size = 2147483647][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: capacidad [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: precio_hora [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
+[25 oct 2025 11:07:55]   Found column: estado [type = varchar][SQL/XOPEN type = 12][size = 20][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: categoria_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.pista' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.pista_horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: pista_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: horario_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: bloqueada [type = bool][SQL/XOPEN type = -7][size = 1][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: precio_override [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.pista_horario' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.reserva' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = bigserial][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: user_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: pista_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: horario_id [type = int8][SQL/XOPEN type = -5][size = 19][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: estado [type = varchar][SQL/XOPEN type = 12][size = 20][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: importe [type = numeric][SQL/XOPEN type = 2][size = 10][dec. digits = 2]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.reserva' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.user' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: username [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: password [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: email [type = varchar][SQL/XOPEN type = 12][size = 255][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.user' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: id
+[25 oct 2025 11:07:55] Retrieving columns for 'public.user_group' [type = TABLE]
+[25 oct 2025 11:07:55]   Found column: user_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55]   Found column: group_id [type = int4][SQL/XOPEN type = 4][size = 10][dec. digits = 0]
+[25 oct 2025 11:07:55] Retrieving primary keys for 'public.user_group' [type = TABLE]
+[25 oct 2025 11:07:55]   Found primary key column: user_id
+[25 oct 2025 11:07:55]   Found primary key column: group_id
+[25 oct 2025 11:07:55] Database metadata retrieved (65 ms)
+[25 oct 2025 11:07:55] Database connection closed

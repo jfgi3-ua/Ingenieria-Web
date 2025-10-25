@@ -1,4 +1,4 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page10" name="Welcome" gr:x="365" gr:y="55">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page10" name="Welcome" gr:x="550" gr:y="55">
   <ContentUnits>
     <MultiMessageUnit id="sv1#area1#page10#mssu7" name="Entrada" linkOrder="sv1#area1#page10#mssu7#ln22 sv1#area1#page10#mssu7#ln21 sv1#area1#page10#mssu7#ln24" gr:x="0" gr:y="0">
       <Message xml:space="preserve">Bienvenido a SportBooking, reg&#237;strate para darte de alta o haz login para entrar al sistema</Message>
