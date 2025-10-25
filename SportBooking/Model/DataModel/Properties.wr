@@ -1,15 +1,15 @@
 <DataModel xmlns:db="http://www.webratio.com/2006/WebML/Database" xmlns:gr="http://www.webratio.com/2006/WebML/Graph">
-  <Entity id="User" name="User" duration="persistent" gr:x="155" gr:y="135" gr:hideAttributes="false" attributeOrder="userOID userName password email" db:database="db1" db:table="user">
+  <Entity id="User" name="User" duration="persistent" gr:x="285" gr:y="40" gr:hideAttributes="false" attributeOrder="userOID userName password email" db:database="db1" db:table="user">
     <Attribute name="id" id="userOID" type="integer" key="true" db:column="id"/>
     <Attribute name="userName" id="userName" type="string" db:column="username"/>
     <Attribute name="password" id="password" type="password" db:column="password"/>
-    <Attribute name="email" id="email" type="string" db:column="email"/>
+    <Attribute name="email" id="email" type="text" db:column="email"/>
   </Entity>
-  <Entity id="Group" name="Group" duration="persistent" gr:x="385" gr:y="155" gr:hideAttributes="false" attributeOrder="groupOID groupName" db:database="db1" db:table="group">
+  <Entity id="Group" name="Group" duration="persistent" gr:x="515" gr:y="60" gr:hideAttributes="false" attributeOrder="groupOID groupName" db:database="db1" db:table="group">
     <Attribute name="id" id="groupOID" type="integer" key="true" db:column="id"/>
     <Attribute name="groupName" id="groupName" type="string" db:column="groupname"/>
   </Entity>
-  <Entity id="Module" name="Module" duration="persistent" gr:x="610" gr:y="145" gr:hideAttributes="false" attributeOrder="moduleOID moduleID moduleName" db:database="db1" db:table="module">
+  <Entity id="Module" name="Module" duration="persistent" gr:x="740" gr:y="50" gr:hideAttributes="false" attributeOrder="moduleOID moduleID moduleName" db:database="db1" db:table="module">
     <Attribute name="id" id="moduleOID" type="integer" key="true" db:column="id"/>
     <Attribute name="moduleID" id="moduleID" type="string" db:column="moduleid"/>
     <Attribute name="moduleName" id="moduleName" type="string" db:column="modulename"/>
@@ -46,14 +46,13 @@
       <db:JoinColumn attribute="moduleOID" name="module_id"/>
     </RelationshipRole2>
   </Relationship>
-  <db:Database id="db1" name="SportBooking" type="PostgreSQL 9" url="jdbc:postgresql://localhost:5432/SportBooking" username="postgres" cryptedPassword="true" password="SmVzczg5" schema="public">
-  </db:Database>
-  <Entity id="ent1" name="Categoria" db:database="db1" duration="persistent" db:table="categoria" gr:x="160" gr:y="640">
+  <db:Database id="db1" name="SportBooking" type="PostgreSQL 9" url="jdbc:postgresql://localhost:5432/SportBooking" username="postgres" cryptedPassword="true" password="SmVzczg5" schema="public"/>
+  <Entity id="ent1" name="Categoria" db:database="db1" duration="persistent" db:table="categoria" gr:x="60" gr:y="375">
     <Attribute id="ent1#att1" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent1#att2" name="nombre" db:column="nombre" type="string" key="false"/>
     <Attribute id="ent1#att3" name="descripcion" db:column="descripcion" type="string" key="false"/>
   </Entity>
-  <Entity id="ent2" name="Horario" db:database="db1" duration="persistent" db:table="horario" gr:x="385" gr:y="260">
+  <Entity id="ent2" name="Horario" db:database="db1" duration="persistent" db:table="horario" gr:x="515" gr:y="165" attributeOrder="ent2#att4 ent2#att5 ent2#att6 ent2#att7 ent2#att8 ent2#att9 ent2#att10">
     <Attribute id="ent2#att4" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent2#att5" name="fecha" db:column="fecha" type="date" key="false"/>
     <Attribute id="ent2#att6" name="diaSemana" db:column="dia_semana" type="integer" key="false"/>
@@ -62,11 +61,11 @@
     <Attribute id="ent2#att9" name="vigenteDesde" db:column="vigente_desde" type="date" key="false"/>
     <Attribute id="ent2#att10" name="vigenteHasta" db:column="vigente_hasta" type="date" key="false"/>
   </Entity>
-  <Entity id="ent3" name="Monedero" db:database="db1" duration="persistent" db:table="monedero" gr:x="170" gr:y="10">
+  <Entity id="ent3" name="Monedero" db:database="db1" duration="persistent" db:table="monedero" gr:x="65" gr:y="60">
     <Attribute id="ent3#att11" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent3#att12" name="saldo" db:column="saldo" type="decimal" key="false"/>
   </Entity>
-  <Entity id="ent4" name="Pista" db:database="db1" duration="persistent" db:table="pista" gr:x="155" gr:y="440">
+  <Entity id="ent4" name="Pista" db:database="db1" duration="persistent" db:table="pista" gr:x="285" gr:y="345">
     <Attribute id="ent4#att13" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent4#att14" name="nombre" db:column="nombre" type="string" key="false"/>
     <Attribute id="ent4#att15" name="descripcion" db:column="descripcion" type="string" key="false"/>
@@ -74,12 +73,12 @@
     <Attribute id="ent4#att17" name="precioHora" db:column="precio_hora" type="decimal" key="false"/>
     <Attribute id="ent4#att18" name="estado" db:column="estado" type="string" key="false"/>
   </Entity>
-  <Entity id="ent5" name="PistaHorario" db:database="db1" duration="persistent" db:table="pista_horario" gr:x="370" gr:y="470">
+  <Entity id="ent5" name="PistaHorario" db:database="db1" duration="persistent" db:table="pista_horario" gr:x="500" gr:y="375">
     <Attribute id="ent5#att19" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent5#att20" name="bloqueada" db:column="bloqueada" type="boolean" key="false"/>
     <Attribute id="ent5#att21" name="precioOverride" db:column="precio_override" type="decimal" key="false"/>
   </Entity>
-  <Entity id="ent6" name="Reserva" db:database="db1" duration="persistent" db:table="reserva" gr:x="165" gr:y="300">
+  <Entity id="ent6" name="Reserva" db:database="db1" duration="persistent" db:table="reserva" gr:x="295" gr:y="205">
     <Attribute id="ent6#att22" name="id" db:column="id" type="decimal" key="true"/>
     <Attribute id="ent6#att23" name="estado" db:column="estado" type="string" key="false"/>
     <Attribute id="ent6#att24" name="importe" db:column="importe" type="decimal" key="false"/>

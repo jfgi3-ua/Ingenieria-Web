@@ -19,10 +19,13 @@
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="255" decimalDigits="0" name="groupname" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="module_id" primaryKey="false" notNull="false"/>
+    <ForeignKey localColumnName="module_id" foreignColumnName="id" name="fk_group_module" foreignTableName="module" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="group_module" type="TABLE" refreshed="true">
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="group_id" primaryKey="true" notNull="true"/>
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="module_id" primaryKey="true" notNull="true"/>
+    <ForeignKey localColumnName="group_id" foreignColumnName="id" name="fk_group_module_group" foreignTableName="group" foreignSchemaName="public"/>
+    <ForeignKey localColumnName="module_id" foreignColumnName="id" name="fk_group_module_module" foreignTableName="module" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="horario" type="TABLE" refreshed="true">
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
@@ -42,6 +45,7 @@
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="user_id" primaryKey="false" notNull="true"/>
     <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="12" decimalDigits="2" name="saldo" primaryKey="false" notNull="true"/>
+    <ForeignKey localColumnName="user_id" foreignColumnName="id" name="monedero_user_id_fkey" foreignTableName="user" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="pista" type="TABLE" refreshed="true">
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
@@ -51,6 +55,7 @@
     <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="precio_hora" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="categoria_id" primaryKey="false" notNull="false"/>
+    <ForeignKey localColumnName="categoria_id" foreignColumnName="id" name="pista_categoria_id_fkey" foreignTableName="categoria" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="pista_horario" type="TABLE" refreshed="true">
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
@@ -58,6 +63,8 @@
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="horario_id" primaryKey="false" notNull="true"/>
     <Column sqlTypeId="-7" indexed="unknown" autoIncrement="false" type="bool" size="1" decimalDigits="0" name="bloqueada" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="precio_override" primaryKey="false" notNull="false"/>
+    <ForeignKey localColumnName="horario_id" foreignColumnName="id" name="pista_horario_horario_id_fkey" foreignTableName="horario" foreignSchemaName="public"/>
+    <ForeignKey localColumnName="pista_id" foreignColumnName="id" name="pista_horario_pista_id_fkey" foreignTableName="pista" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="reserva" type="TABLE" refreshed="true">
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="bigserial" size="19" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
@@ -66,6 +73,9 @@
     <Column sqlTypeId="-5" indexed="unknown" autoIncrement="false" type="int8" size="19" decimalDigits="0" name="horario_id" primaryKey="false" notNull="true"/>
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="20" decimalDigits="0" name="estado" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="2" indexed="unknown" autoIncrement="false" type="numeric" size="10" decimalDigits="2" name="importe" primaryKey="false" notNull="false"/>
+    <ForeignKey localColumnName="horario_id" foreignColumnName="id" name="reserva_horario_id_fkey" foreignTableName="horario" foreignSchemaName="public"/>
+    <ForeignKey localColumnName="pista_id" foreignColumnName="id" name="reserva_pista_id_fkey" foreignTableName="pista" foreignSchemaName="public"/>
+    <ForeignKey localColumnName="user_id" foreignColumnName="id" name="reserva_user_id_fkey" foreignTableName="user" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="user" type="TABLE" refreshed="true">
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="id" primaryKey="true" notNull="true"/>
@@ -73,9 +83,12 @@
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="255" decimalDigits="0" name="password" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="12" indexed="unknown" autoIncrement="false" type="varchar" size="255" decimalDigits="0" name="email" primaryKey="false" notNull="false"/>
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="group_id" primaryKey="false" notNull="false"/>
+    <ForeignKey localColumnName="group_id" foreignColumnName="id" name="fk_user_group" foreignTableName="group" foreignSchemaName="public"/>
   </Table>
   <Table schema="public" ignoreIndexes="false" name="user_group" type="TABLE" refreshed="true">
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="user_id" primaryKey="true" notNull="true"/>
     <Column sqlTypeId="4" indexed="unknown" autoIncrement="false" type="int4" size="10" decimalDigits="0" name="group_id" primaryKey="true" notNull="true"/>
+    <ForeignKey localColumnName="group_id" foreignColumnName="id" name="fk_user_group_group" foreignTableName="group" foreignSchemaName="public"/>
+    <ForeignKey localColumnName="user_id" foreignColumnName="id" name="fk_user_group_user" foreignTableName="user" foreignSchemaName="public"/>
   </Table>
 </DBMetaData>
