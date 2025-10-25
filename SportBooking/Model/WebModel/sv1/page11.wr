@@ -1,0 +1,37 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#page11" name="Inicio de Sesi&#243;n" gr:x="810" gr:y="60" layout:pageLayout="BootstrapStyle/Bootstrap" layout:frameLayout="BootstrapStyle/Panel" layout:cellLayout="BootstrapStyle/Tab">
+  <ContentUnits>
+    <MultiMessageUnit id="sv1#page11#mssu11" name="Error de inicio de sesi&#243;n" gr:x="0" gr:y="100"/>
+    <EntryUnit gr:x="20" gr:y="0" id="sv1#page11#enu10" name="Formulario" entity="User" linkOrder="sv1#page11#enu10#ln39 sv1#page11#enu10#ln40">
+      <Field id="sv1#page11#enu10#fld18" name="Nombre usuario" type="string" modifiable="true" attribute="userName"/>
+      <Field id="sv1#page11#enu10#fld19" name="Contrase&#241;a" type="password" modifiable="true" attribute="password"/>
+      <Link id="sv1#page11#enu10#ln39" name="Ok" to="sv1#miu8" type="normal" validate="true">
+        <LinkParameter id="sv1#page11#enu10#ln39#par57" name="Contrase&#241;a_passwd_param" source="sv1#page11#enu10#fld19" target="sv1#miu8.mov1#opm1#icu6#icp16"/>
+        <LinkParameter id="sv1#page11#enu10#ln39#par58" name="Nombre usuario_userName_param" source="sv1#page11#enu10#fld18" target="sv1#miu8.mov1#opm1#icu6#icp15"/>
+      </Link>
+      <Link id="sv1#page11#enu10#ln40" name="Volver" to="sv1#area1#page3" automaticCoupling="true" type="normal" validate="true"/>
+    </EntryUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="3"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell colspan="6">
+        <layout:Unit unitId="sv1#page11#enu10">
+          <layout:Field field="sv1#page11#enu10#fld18"/>
+          <layout:Field field="sv1#page11#enu10#fld19"/>
+          <layout:Link link="sv1#page11#enu10#ln39"/>
+          <layout:Link link="sv1#page11#enu10#ln40"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell colspan="3"/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+</Page>

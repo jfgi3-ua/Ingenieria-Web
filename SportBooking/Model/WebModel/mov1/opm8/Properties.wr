@@ -2,15 +2,12 @@
   <OperationUnits>
     <InputCollectorUnit id="mov1#opm8#icu5" gr:x="185" gr:y="240">
       <InputCollectorParameter id="mov1#opm8#icu5#icp10" name="email_param"/>
-      <InputCollectorParameter id="mov1#opm8#icu5#icp11" name="grupoDefecto_param"/>
       <InputCollectorParameter id="mov1#opm8#icu5#icp12" name="passwd_param"/>
-      <InputCollectorParameter id="mov1#opm8#icu5#icp13" name="usuario_param"/>
+      <InputCollectorParameter id="mov1#opm8#icu5#icp13" name="userName_param"/>
       <OKLink id="mov1#opm8#icu5#oln10" name="OKFlow4" to="mov1#opm8#cru2">
         <LinkParameter id="mov1#opm8#icu5#oln10#par17" name="email_param_email" source="mov1#opm8#icu5#icp10" target="mov1#opm8#cru2.email"/>
-        <LinkParameter id="mov1#opm8#icu5#oln10#par18" name="grupoDefecto_param_Group.id(defaultGroup)" source="mov1#opm8#icu5#icp11" target="mov1#opm8#cru2.User2DefaultGroup.groupOID"/>
         <LinkParameter id="mov1#opm8#icu5#oln10#par19" name="passwd_param_password" source="mov1#opm8#icu5#icp12" target="mov1#opm8#cru2.password"/>
         <LinkParameter id="mov1#opm8#icu5#oln10#par20" name="usuario_param_userName" source="mov1#opm8#icu5#icp13" target="mov1#opm8#cru2.userName"/>
-        <LinkParameter id="mov1#opm8#icu5#oln10#par21" name="category_param_category" source="mov1#opm8#icu5#icp14" target="mov1#opm8#cru2.User#att4"/>
       </OKLink>
     </InputCollectorUnit>
     <CreateUnit id="mov1#opm8#cru2" name="alta usuario" gr:x="515" gr:y="255" entity="User">

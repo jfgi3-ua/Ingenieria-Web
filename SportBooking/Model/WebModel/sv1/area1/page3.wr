@@ -1,4 +1,4 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page3" name="Listado pistas" layout:cellLayout="BootstrapStyle/PanelFrameWithLink" gr:x="0" gr:y="0">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page3" name="Listado pistas" layout:cellLayout="BootstrapStyle/Tab" gr:x="0" gr:y="0">
   <ContentUnits>
     <IndexUnit id="sv1#area1#page3#inu2" name="Lista pistas" linkOrder="sv1#area1#page3#inu2#ln7" gr:x="150" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att17 ent4#att18">
       <Link id="sv1#area1#page3#inu2#ln7" name="Ver pista" to="sv1#area1#page2#dau2" type="normal" validate="true">
@@ -23,12 +23,18 @@
         <LinkParameter id="sv1#area1#page3#seu1#ln9#par28" name="id_Categoria [output]" source="ent1#att1Array" target="sv1#area1#page3#enu1#sfld1_output"/>
       </Link>
     </SelectorUnit>
-    <ModuleInstanceUnit gr:x="365" gr:y="20" id="sv1#area1#page3#miu3" moduleId="mov1#ctm1" action="false"/>
+    <ModuleInstanceUnit gr:x="355" gr:y="120" id="sv1#area1#page3#miu3" action="false" moduleId="mov1#ctm1" linkOrder="sv1#area1#page3#miu3#ln38 sv1#area1#page3#miu3#ln44">
+      <Link id="sv1#area1#page3#miu3#ln38" to="sv1#page11" automaticCoupling="true" type="normal" validate="true" codeRef="mov1#ctm1#ocu2"/>
+      <Link id="sv1#area1#page3#miu3#ln44" to="sv1#page13" automaticCoupling="true" type="normal" validate="true" codeRef="mov1#ctm1#ocu3"/>
+    </ModuleInstanceUnit>
   </ContentUnits>
   <layout:Grid containerType="grid">
     <layout:Row>
       <layout:Cell colspan="12">
-        <layout:Unit unitId="sv1#area1#page3#miu3"/>
+        <layout:Unit unitId="sv1#area1#page3#miu3">
+          <layout:Link link="sv1#area1#page3#miu3#ln38"/>
+          <layout:Link link="sv1#area1#page3#miu3#ln44"/>
+        </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
       <layout:Cell/>

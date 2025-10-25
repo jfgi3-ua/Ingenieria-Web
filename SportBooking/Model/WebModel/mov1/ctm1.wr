@@ -1,21 +1,21 @@
-<ContentModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="45" gr:y="160" id="mov1#ctm1" name="HeaderPublicModule">
+<ContentModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="35" gr:y="135" id="mov1#ctm1" name="HeaderPublicModule">
   <ContentUnits>
-    <MultiMessageUnit id="mov1#ctm1#mssu3" name="Bienvenido a SportBooking" gr:x="150" gr:y="265" linkOrder="mov1#ctm1#mssu3#ln17 mov1#ctm1#mssu3#ln18">
+    <MultiMessageUnit id="mov1#ctm1#mssu3" name="Bienvenido a SportBooking" gr:x="240" gr:y="180" linkOrder="mov1#ctm1#mssu3#ln33 mov1#ctm1#mssu3#ln34">
       <Message xml:space="preserve">&#161;&#161;Bienvenido a SportBooking!!
 
  La aplicaci&#243;n para reservar todo tipo de pistas deportivas en tu zona. Reg&#237;strate o inicia sesi&#243;n para comenzar a reservar.</Message>
-      <Link id="mov1#ctm1#mssu3#ln17" name="Inicia Sesi&#243;n" to="mov1#ctm1#page4#enu2" automaticCoupling="true" type="normal" validate="true"/>
-      <Link id="mov1#ctm1#mssu3#ln18" name="Registrate" to="mov1#ctm1#page5#enu3" automaticCoupling="true" type="normal" validate="true"/>
+      <Link id="mov1#ctm1#mssu3#ln33" name="Iniciar Sesi&#243;n" to="mov1#ctm1#ocu2" automaticCoupling="true" type="normal" validate="true"/>
+      <Link id="mov1#ctm1#mssu3#ln34" name="Registarse" to="mov1#ctm1#ocu3" automaticCoupling="true" type="normal" validate="true"/>
     </MultiMessageUnit>
-    <ModuleInstanceUnit id="mov1#ctm1#miu1" gr:x="770" gr:y="70" action="true" moduleId="mov1#opm5"/>
-    <ModuleInstanceUnit id="mov1#ctm1#miu2" gr:x="745" gr:y="190" action="true" moduleId="mov1#opm8"/>
+    <OutputCollectorUnit gr:x="560" gr:y="75" id="mov1#ctm1#ocu2" name="ToLogin"/>
+    <OutputCollectorUnit gr:x="560" gr:y="275" id="mov1#ctm1#ocu3" name="ToRegistro"/>
   </ContentUnits>
   <layout:Grid containerType="grid">
     <layout:Row>
       <layout:Cell colspan="12">
         <layout:Unit unitId="mov1#ctm1#mssu3">
-          <layout:Link link="mov1#ctm1#mssu3#ln17"/>
-          <layout:Link link="mov1#ctm1#mssu3#ln18"/>
+          <layout:Link link="mov1#ctm1#mssu3#ln33"/>
+          <layout:Link link="mov1#ctm1#mssu3#ln34"/>
         </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
@@ -30,53 +30,89 @@
       <layout:Cell/>
       <layout:Cell/>
     </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
   </layout:Grid>
-  <Page id="mov1#ctm1#page4" name="Login" gr:x="460" gr:y="30">
-    <ContentUnits>
-      <EntryUnit id="mov1#ctm1#page4#enu2" name="Inicio de Sesi&#243;n" linkOrder="mov1#ctm1#page4#enu2#ln14" gr:x="0" gr:y="0" entity="User" fieldOrder="mov1#ctm1#page4#enu2#fld3 mov1#ctm1#page4#enu2#fld2">
-        <Link id="mov1#ctm1#page4#enu2#ln14" name="OK" to="mov1#ctm1#miu1" type="normal" validate="true">
-          <LinkParameter id="mov1#ctm1#page4#enu2#ln14#par29" name="Contrase&#241;a_passwd_param" source="mov1#ctm1#page4#enu2#fld2" target="mov1#ctm1#miu1.mov1#opm5#icu2#icp1"/>
-          <LinkParameter id="mov1#ctm1#page4#enu2#ln14#par30" name="Correo_userMail_param" source="mov1#ctm1#page4#enu2#fld3" target="mov1#ctm1#miu1.mov1#opm5#icu2#icp2"/>
-        </Link>
-        <Field id="mov1#ctm1#page4#enu2#fld2" name="Contrase&#241;a" type="password" modifiable="true">
-          <VRules>
-            <MandatoryValidationRule id="mov1#ctm1#page4#enu2#fld2#mnd1" name="Mandatory1"/>
-          </VRules>
-        </Field>
-        <Field id="mov1#ctm1#page4#enu2#fld3" name="Nombre de usuario" type="string" modifiable="true"/>
-      </EntryUnit>
-      <MultiMessageUnit id="mov1#ctm1#page4#mssu4" name="Error de acceso" gr:x="5" gr:y="125"/>
-    </ContentUnits>
-  </Page>
-  <Page id="mov1#ctm1#page5" name="Registro" gr:x="460" gr:y="290">
-    <ContentUnits>
-      <EntryUnit id="mov1#ctm1#page5#enu3" name="Formulario de Registro" linkOrder="mov1#ctm1#page5#enu3#ln15" gr:x="0" gr:y="0" fieldOrder="mov1#ctm1#page5#enu3#fld4 mov1#ctm1#page5#enu3#fld5 mov1#ctm1#page5#enu3#fld6 mov1#ctm1#page5#enu3#fld7 mov1#ctm1#page5#enu3#sfld2" entity="User">
-        <Field id="mov1#ctm1#page5#enu3#fld4" name="Nombre de usuario" type="string" modifiable="true">
-          <VRules/>
-        </Field>
-        <Field id="mov1#ctm1#page5#enu3#fld5" name="Contrase&#241;a" type="password" modifiable="true">
-          <VRules/>
-        </Field>
-        <Field id="mov1#ctm1#page5#enu3#fld6" name="Email" type="string" modifiable="true">
-          <VRules/>
-        </Field>
-        <SelectionField id="mov1#ctm1#page5#enu3#sfld2" name="Grupo por defecto" type="string"/>
-        <Link id="mov1#ctm1#page5#enu3#ln15" name="OK" to="mov1#ctm1#miu2" type="normal" validate="true">
-          <LinkParameter id="mov1#ctm1#page5#enu3#ln15#par31" name="email_email_param" source="mov1#ctm1#page5#enu3#fld6" target="mov1#ctm1#miu2.mov1#opm3#icu3#icp3"/>
-          <LinkParameter id="mov1#ctm1#page5#enu3#ln15#par32" name="defaultGroup_grupoDefecto_param" source="mov1#ctm1#page5#enu3#sfld2" target="mov1#ctm1#miu2.mov1#opm3#icu3#icp4"/>
-          <LinkParameter id="mov1#ctm1#page5#enu3#ln15#par33" name="password_passwd_param" source="mov1#ctm1#page5#enu3#fld5" target="mov1#ctm1#miu2.mov1#opm3#icu3#icp5"/>
-          <LinkParameter id="mov1#ctm1#page5#enu3#ln15#par34" name="userName_usuario_param" source="mov1#ctm1#page5#enu3#fld4" target="mov1#ctm1#miu2.mov1#opm3#icu3#icp6"/>
-          <LinkParameter id="mov1#ctm1#page5#enu3#ln15#par35" name="category_category_param" source="mov1#ctm1#page5#enu3#fld7" target="mov1#ctm1#miu2.mov1#opm3#icu3#icp7"/>
-        </Link>
-        <Field id="mov1#ctm1#page5#enu3#fld7" name="Categoria" type="string" modifiable="true"/>
-      </EntryUnit>
-      <SelectorUnit id="mov1#ctm1#page5#seu2" name="Grupos" gr:x="35" gr:y="130" entity="Group">
-        <Link id="mov1#ctm1#page5#seu2#ln16" name="Flow5" to="mov1#ctm1#page5#enu3" type="transport" validate="true">
-          <LinkParameter id="mov1#ctm1#page5#seu2#ln16#par36" name="groupName_defaultGroup [label]" source="groupNameArray" target="mov1#ctm1#page5#enu3#sfld2_label"/>
-          <LinkParameter id="mov1#ctm1#page5#seu2#ln16#par37" name="id_defaultGroup [output]" source="groupOIDArray" target="mov1#ctm1#page5#enu3#sfld2_output"/>
-        </Link>
-      </SelectorUnit>
-      <MultiMessageUnit id="mov1#ctm1#page5#mssu5" name="Error de registro" gr:x="190" gr:y="130"/>
-    </ContentUnits>
-  </Page>
 </ContentModule>

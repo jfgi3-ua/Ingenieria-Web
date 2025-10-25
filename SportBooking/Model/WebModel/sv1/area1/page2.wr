@@ -1,25 +1,31 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page2" name="Detalle" gr:x="15" gr:y="290">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1#page2" name="Detalle" gr:x="15" gr:y="315">
   <ContentUnits>
-    <DataUnit id="sv1#area1#page2#dau2" name="Detalle pista" gr:x="0" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att15 ent4#att16 ent4#att17 ent4#att18">
+    <DataUnit id="sv1#area1#page2#dau2" name="Detalle pista" gr:x="0" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att15 ent4#att16 ent4#att17 ent4#att18" linkOrder="sv1#area1#page2#dau2#ln43">
       <Selector id="sv1#area1#page2#dau2#su3" defaultPolicy="fill" booleanOperator="and">
         <KeyCondition id="sv1#area1#page2#dau2#su3#kcond4" name="KeyCondition3" predicate="in" implied="false"/>
       </Selector>
       <Link id="sv1#area1#page2#dau2#ln5" name="Flow7" to="sv1#area1#page2#inu1" type="transport" validate="true">
         <LinkParameter id="sv1#area1#page2#dau2#ln5#par23" name="id_id_condition" source="data.ent4#att13" target="sv1#area1#page2#inu1#su4#acond1"/>
       </Link>
+      <Link id="sv1#area1#page2#dau2#ln43" name="Volver" to="sv1#area1#page3" automaticCoupling="true" type="normal" validate="true"/>
     </DataUnit>
-    <IndexUnit id="sv1#area1#page2#inu1" name="Horarios" linkOrder="sv1#area1#page2#inu1#ln6" gr:x="150" gr:y="0" entity="ent5" displayAttributes="rel4#role7.ent2#att5 rel4#role7.ent2#att6 rel4#role7.ent2#att7 rel4#role7.ent2#att8 ent5#att21 ent5#att20">
+    <IndexUnit id="sv1#area1#page2#inu1" name="Horarios" gr:x="150" gr:y="0" entity="ent5" displayAttributes="rel4#role7.ent2#att5 rel4#role7.ent2#att6 rel4#role7.ent2#att7 rel4#role7.ent2#att8 ent5#att21 ent5#att20">
       <Selector id="sv1#area1#page2#inu1#su4" defaultPolicy="fill" booleanOperator="and">
         <AttributesCondition id="sv1#area1#page2#inu1#su4#acond1" name="id_condition" predicate="eq" booleanOperator="or" implied="false" attributes="rel5#role9.ent4#att13"/>
       </Selector>
-      <Link id="sv1#area1#page2#inu1#ln6" name="Volver" to="sv1#area1#page3#inu2" type="normal" automaticCoupling="true" validate="true"/>
     </IndexUnit>
-    <ModuleInstanceUnit id="sv1#area1#page2#miu4" gr:x="340" gr:y="15" moduleId="mov1#ctm1" action="false"/>
+    <ModuleInstanceUnit id="sv1#area1#page2#miu4" gr:x="340" gr:y="15" action="false" moduleId="mov1#ctm1" linkOrder="sv1#area1#page2#miu4#ln41 sv1#area1#page2#miu4#ln45">
+      <Link id="sv1#area1#page2#miu4#ln41" to="sv1#page11" automaticCoupling="true" type="normal" validate="true" codeRef="mov1#ctm1#ocu2"/>
+      <Link id="sv1#area1#page2#miu4#ln45" to="sv1#page13" automaticCoupling="true" type="normal" validate="true" codeRef="mov1#ctm1#ocu3"/>
+    </ModuleInstanceUnit>
   </ContentUnits>
   <layout:Grid containerType="grid">
     <layout:Row>
       <layout:Cell colspan="12">
-        <layout:Unit unitId="sv1#area1#page2#miu4"/>
+        <layout:Unit unitId="sv1#area1#page2#miu4">
+          <layout:Link link="sv1#area1#page2#miu4#ln41"/>
+          <layout:Link link="sv1#area1#page2#miu4#ln45"/>
+        </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
       <layout:Cell/>
@@ -41,6 +47,7 @@
           <layout:Attribute attribute="ent4#att16"/>
           <layout:Attribute attribute="ent4#att17"/>
           <layout:Attribute attribute="ent4#att18"/>
+          <layout:Link link="sv1#area1#page2#dau2#ln43"/>
         </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
@@ -64,7 +71,6 @@
           <layout:Attribute attribute="rel4#role7.ent2#att8"/>
           <layout:Attribute attribute="ent5#att21"/>
           <layout:Attribute attribute="ent5#att20"/>
-          <layout:Link link="sv1#area1#page2#inu1#ln6"/>
         </layout:Unit>
       </layout:Cell>
       <layout:Cell/>
