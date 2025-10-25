@@ -1,0 +1,141 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv2#area2#page15" name="Listado pistas" layout:cellLayout="BootstrapStyle/Tab" gr:x="0" gr:y="0">
+  <ContentUnits>
+    <IndexUnit id="sv2#area2#page15#inu5" name="Lista pistas" linkOrder="sv2#area2#page15#inu5#ln51" gr:x="150" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att17 ent4#att18">
+      <Link id="sv2#area2#page15#inu5#ln51" name="Ver pista" to="sv2#area2#page14#dau3" type="normal" validate="true">
+        <LinkParameter id="sv2#area2#page15#inu5#ln51#par64" name="id_KeyCondition3 [id]" source="data[].ent4#att13" target="sv2#area2#page14#dau3#su6#kcond5.ent4#att13"/>
+      </Link>
+      <Selector id="sv2#area2#page15#inu5#su8" defaultPolicy="fill" booleanOperator="and">
+        <AttributesCondition id="sv2#area2#page15#inu5#su8#acond5" name="Categoria_condition" predicate="eq" booleanOperator="or" implied="true" attributes="rel7#role13.ent1#att1" ignoreCase="false"/>
+        <AttributesCondition id="sv2#area2#page15#inu5#su8#acond6" name="Nombre_condition" predicate="contains" booleanOperator="or" implied="true" attributes="ent4#att14" ignoreCase="true"/>
+      </Selector>
+    </IndexUnit>
+    <EntryUnit id="sv2#area2#page15#enu12" name="Buscador" linkOrder="sv2#area2#page15#enu12#ln52" gr:x="25" gr:y="25">
+      <Field id="sv2#area2#page15#enu12#fld23" name="Campo de b&#250;squeda" type="string" modifiable="true"/>
+      <SelectionField id="sv2#area2#page15#enu12#sfld3" name="Categoria" type="string"/>
+      <Link id="sv2#area2#page15#enu12#ln52" name="Buscar" to="sv2#area2#page15#inu5" type="normal" validate="true">
+        <LinkParameter id="sv2#area2#page15#enu12#ln52#par65" name="Categoria_Categoria_condition" source="sv2#area2#page15#enu12#sfld3" target="sv2#area2#page15#inu5#su8#acond5"/>
+        <LinkParameter id="sv2#area2#page15#enu12#ln52#par66" name="Campo de b&#250;squeda_Nombre_condition" source="sv2#area2#page15#enu12#fld23" target="sv2#area2#page15#inu5#su8#acond6"/>
+      </Link>
+    </EntryUnit>
+    <SelectorUnit id="sv2#area2#page15#seu3" name="Selector Categoria" gr:x="0" gr:y="140" entity="ent1">
+      <Link id="sv2#area2#page15#seu3#ln53" name="Flow5" to="sv2#area2#page15#enu12" type="transport" validate="true">
+        <LinkParameter id="sv2#area2#page15#seu3#ln53#par67" name="nombre_Categoria [label]" source="ent1#att2Array" target="sv2#area2#page15#enu12#sfld3_label"/>
+        <LinkParameter id="sv2#area2#page15#seu3#ln53#par68" name="id_Categoria [output]" source="ent1#att1Array" target="sv2#area2#page15#enu12#sfld3_output"/>
+      </Link>
+    </SelectorUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv2#area2#page15#enu12">
+          <layout:Field field="sv2#area2#page15#enu12#fld23"/>
+          <layout:Field field="sv2#area2#page15#enu12#sfld3"/>
+          <layout:Link link="sv2#area2#page15#enu12#ln52"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv2#area2#page15#inu5">
+          <layout:Link link="sv2#area2#page15#inu5#ln51"/>
+          <layout:Attribute attribute="ent4#att14"/>
+          <layout:Attribute attribute="ent4#att17"/>
+          <layout:Attribute attribute="ent4#att18"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+  <layout:LayoutParameter name="panel-type" value="primary" type="frame"/>
+</Page>
