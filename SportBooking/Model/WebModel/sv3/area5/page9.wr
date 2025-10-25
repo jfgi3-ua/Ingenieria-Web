@@ -1,0 +1,92 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#area5#page9" name="Usuarios" landmark="true" gr:x="0" gr:y="0">
+  <ContentUnits>
+    <IndexUnit id="sv3#area5#page9#inu12" name="Lista de usuarios" linkOrder="sv3#area5#page9#inu12#ln32 sv3#area5#page9#inu12#ln46" gr:x="5" gr:y="0" entity="User" displayAttributes="userOID userName email User2DefaultGroup.groupName">
+      <Link id="sv3#area5#page9#inu12#ln32" name="Modificar" to="sv3#area5#page9#enu8" type="normal" automaticCoupling="true" validate="true"/>
+      <SortAttribute attribute="userOID" order="ascending"/>
+      <Link id="sv3#area5#page9#inu12#ln46" name="Borrar" to="sv3#miu12" type="normal" validate="true">
+        <LinkParameter id="sv3#area5#page9#inu12#ln46#par105" name="id_id_param" source="data[].userOID" target="sv3#miu12.mov3#opm10#icu10#icp21"/>
+      </Link>
+    </IndexUnit>
+    <EntryUnit id="sv3#area5#page9#enu8" name="Dar de alta usuario" gr:x="0" gr:y="150" entity="User" linkOrder="sv3#area5#page9#enu8#ln42">
+      <Field id="sv3#area5#page9#enu8#fld27" name="id" type="integer" modifiable="false" attribute="userOID" hidden="true"/>
+      <Field id="sv3#area5#page9#enu8#fld28" name="Nombre de usuario" type="string" modifiable="true" attribute="userName"/>
+      <Field id="sv3#area5#page9#enu8#fld29" name="Contrase&#241;a" type="password" modifiable="true" attribute="password"/>
+      <Field id="sv3#area5#page9#enu8#fld30" name="Email" type="string" modifiable="true" attribute="email"/>
+      <SelectionField id="sv3#area5#page9#enu8#sfld7" name="Grupo" type="string" role="User2DefaultGroup"/>
+      <Link id="sv3#area5#page9#enu8#ln42" name="Ok" to="sv3#miu11" type="normal" validate="true">
+        <LinkParameter id="sv3#area5#page9#enu8#ln42#par100" name="Email_email_param" source="sv3#area5#page9#enu8#fld30" target="sv3#miu11.mov3#opm11#icu11#icp25"/>
+        <LinkParameter id="sv3#area5#page9#enu8#ln42#par101" name="Grupo_group_param" source="sv3#area5#page9#enu8#sfld7" target="sv3#miu11.mov3#opm11#icu11#icp27"/>
+        <LinkParameter id="sv3#area5#page9#enu8#ln42#par102" name="id_id_param" source="sv3#area5#page9#enu8#fld27" target="sv3#miu11.mov3#opm11#icu11#icp22"/>
+        <LinkParameter id="sv3#area5#page9#enu8#ln42#par103" name="Nombre de usuario_name_param" source="sv3#area5#page9#enu8#fld28" target="sv3#miu11.mov3#opm11#icu11#icp23"/>
+        <LinkParameter id="sv3#area5#page9#enu8#ln42#par104" name="Contrase&#241;a_passwd_param" source="sv3#area5#page9#enu8#fld29" target="sv3#miu11.mov3#opm11#icu11#icp24"/>
+      </Link>
+    </EntryUnit>
+    <SelectorUnit id="sv3#area5#page9#seu7" name="Selector de grupo" gr:x="0" gr:y="285" entity="Group">
+      <Link id="sv3#area5#page9#seu7#ln35" name="Flow58" to="sv3#area5#page9#enu8" type="transport" validate="true">
+        <LinkParameter id="sv3#area5#page9#seu7#ln35#par81" name="groupName_Grupo [label]" source="groupNameArray" target="sv3#area5#page9#enu8#sfld7_label"/>
+        <LinkParameter id="sv3#area5#page9#seu7#ln35#par82" name="id_Grupo [output]" source="groupOIDArray" target="sv3#area5#page9#enu8#sfld7_output"/>
+      </Link>
+    </SelectorUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv3#area5#page9#inu12">
+          <layout:Attribute attribute="userOID"/>
+          <layout:Attribute attribute="userName"/>
+          <layout:Attribute attribute="email"/>
+          <layout:Attribute attribute="User2DefaultGroup.groupName"/>
+          <layout:Link link="sv3#area5#page9#inu12#ln32"/>
+          <layout:Link link="sv3#area5#page9#inu12#ln46"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv3#area5#page9#enu8">
+          <layout:Field field="sv3#area5#page9#enu8#fld28"/>
+          <layout:Field field="sv3#area5#page9#enu8#fld29"/>
+          <layout:Field field="sv3#area5#page9#enu8#fld30"/>
+          <layout:Field field="sv3#area5#page9#enu8#sfld7"/>
+          <layout:Link link="sv3#area5#page9#enu8#ln42"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+</Page>

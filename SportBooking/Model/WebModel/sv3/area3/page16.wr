@@ -1,4 +1,4 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#area3#page16" name="Detalle" gr:x="15" gr:y="315">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#area3#page16" name="Detalle" gr:x="15" gr:y="380">
   <ContentUnits>
     <DataUnit id="sv3#area3#page16#dau4" name="Detalle pista" linkOrder="sv3#area3#page16#dau4#ln55" gr:x="0" gr:y="0" entity="ent4" displayAttributes="ent4#att14 ent4#att15 ent4#att16 ent4#att17 ent4#att18">
       <Selector id="sv3#area3#page16#dau4#su9" defaultPolicy="fill" booleanOperator="and">
@@ -91,5 +91,4 @@
       <layout:Cell/>
     </layout:Row>
   </layout:Grid>
-  <layout:LayoutParameter name="panel-type" value="primary" type="frame"/>
 </Page>

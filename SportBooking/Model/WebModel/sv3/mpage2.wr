@@ -1,0 +1,31 @@
+<MasterPage xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#mpage2" name="MasterPage 1" layout:style="BootstrapStyle" layout:pageLayout="BootstrapStyle/Bootstrap" gr:x="55" gr:y="15">
+  <ContentUnits>
+    <GetUnit id="sv3#mpage2#gtu2" name="Get1" gr:x="0" gr:y="10" contextParameters="UserCtxParam">
+      <Link id="sv3#mpage2#gtu2#ln12" name="Flow3" to="sv3#mpage2#dau5" type="transport" validate="true">
+        <LinkParameter id="sv3#mpage2#gtu2#ln12#par2" name="UserCtxParam.id_KeyCondition3 [id]" source="sv3#mpage2#gtu2.UserCtxParam" target="sv3#mpage2#dau5#su13#kcond7.userOID"/>
+      </Link>
+    </GetUnit>
+    <DataUnit id="sv3#mpage2#dau5" name="Details1" linkOrder="sv3#mpage2#dau5#ln13" gr:x="195" gr:y="0" entity="User" displayAttributes="userName">
+      <Selector id="sv3#mpage2#dau5#su13" defaultPolicy="fill" booleanOperator="and">
+        <KeyCondition id="sv3#mpage2#dau5#su13#kcond7" name="KeyCondition3" predicate="in" implied="false"/>
+      </Selector>
+      <Link id="sv3#mpage2#dau5#ln13" name="Cerrar sesi&#243;n" to="sv3#miu2" type="normal" automaticCoupling="true" validate="true"/>
+    </DataUnit>
+  </ContentUnits>
+  <layout:CustomLocation name="User">
+    <layout:Grid containerType="cell">
+      <layout:Row>
+        <layout:Cell>
+          <layout:Attribute unitId="sv3#mpage2#dau5" attribute="userName" mode="value"/>
+          <layout:Link unitId="sv3#mpage2#dau5" link="sv3#mpage2#dau5#ln13"/>
+        </layout:Cell>
+      </layout:Row>
+    </layout:Grid>
+  </layout:CustomLocation>
+  <layout:LayoutParameter name="show-title" value="false" type="frame"/>
+  <layout:LayoutParameter name="panel-type" value="success" type="frame"/>
+  <layout:LayoutParameter name="collapsible" value="true" type="frame"/>
+  <layout:LayoutParameter name="label-width" value="8" type="attribute"/>
+  <layout:LayoutParameter name="application-name" value="SportBooking" type="page"/>
+  <layout:LayoutParameter name="theme" value="compact" type="page"/>
+</MasterPage>

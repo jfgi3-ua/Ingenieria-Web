@@ -1,7 +1,7 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#page11" name="Inicio de Sesi&#243;n" gr:x="810" gr:y="60" layout:pageLayout="BootstrapStyle/Bootstrap" layout:frameLayout="BootstrapStyle/Panel" layout:cellLayout="BootstrapStyle/Tab">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#page11" name="Inicio de Sesi&#243;n" gr:x="830" gr:y="60" layout:pageLayout="BootstrapStyle/Bootstrap" layout:frameLayout="BootstrapStyle/Panel" layout:cellLayout="BootstrapStyle/Tab">
   <ContentUnits>
-    <MultiMessageUnit id="sv1#page11#mssu11" name="Error de inicio de sesi&#243;n" gr:x="0" gr:y="100"/>
-    <EntryUnit gr:x="20" gr:y="0" id="sv1#page11#enu10" name="Formulario" entity="User" linkOrder="sv1#page11#enu10#ln39 sv1#page11#enu10#ln40">
+    <MultiMessageUnit id="sv1#page11#mssu11" name="Error de inicio de sesi&#243;n" gr:x="110" gr:y="10"/>
+    <EntryUnit gr:x="0" gr:y="0" id="sv1#page11#enu10" name="Formulario" entity="User" linkOrder="sv1#page11#enu10#ln39 sv1#page11#enu10#ln40">
       <Field id="sv1#page11#enu10#fld18" name="Nombre usuario" type="string" modifiable="true" attribute="userName"/>
       <Field id="sv1#page11#enu10#fld19" name="Contrase&#241;a" type="password" modifiable="true" attribute="password"/>
       <Link id="sv1#page11#enu10#ln39" name="Ok" to="sv1#miu8" type="normal" validate="true">
@@ -34,4 +34,5 @@
       <layout:Cell/>
     </layout:Row>
   </layout:Grid>
+  <layout:LayoutParameter name="panel-type" value="info" type="frame"/>
 </Page>

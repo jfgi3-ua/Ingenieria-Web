@@ -1,4 +1,4 @@
-<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="820" gr:y="365" id="sv1#page13" name="Registro">
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="815" gr:y="365" id="sv1#page13" name="Registro" layout:cellLayout="BootstrapStyle/Tab">
   <ContentUnits>
     <EntryUnit gr:x="0" gr:y="0" id="sv1#page13#enu11" name="Formulario" entity="User" linkOrder="sv1#page13#enu11#ln47 sv1#page13#enu11#ln48">
       <Field id="sv1#page13#enu11#fld20" name="Nombre usuario" type="string" modifiable="true" attribute="userName"/>
@@ -53,4 +53,5 @@
       <layout:Cell/>
     </layout:Row>
   </layout:Grid>
+  <layout:LayoutParameter name="panel-type" value="warning" type="frame"/>
 </Page>

@@ -1,3 +1,4 @@
 <Area xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv1#area1" name="SportBooking" defaultPage="sv1#area1#page3" landmark="true" layout:pageLayout="BootstrapStyle/Bootstrap" layout:cellLayout="BootstrapStyle/Tab" gr:x="110" gr:y="45">
   <OperationUnits/>
+  <layout:LayoutParameter name="panel-type" value="primary" type="frame"/>
 </Area>

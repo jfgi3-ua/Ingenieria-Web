@@ -100,5 +100,5 @@
       <layout:Cell/>
     </layout:Row>
   </layout:Grid>
-  <layout:LayoutParameter name="panel-type" value="primary" type="frame"/>
+  <layout:LayoutParameter name="panel-type" value="success" type="frame"/>
 </Page>

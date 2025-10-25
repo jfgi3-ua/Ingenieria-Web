@@ -1,0 +1,84 @@
+<Page xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#area4#page7" name="Grupos" landmark="true" gr:x="240" gr:y="0">
+  <ContentUnits>
+    <IndexUnit id="sv3#area4#page7#inu10" name="Lista de grupos" linkOrder="sv3#area4#page7#inu10#ln22 sv3#area4#page7#inu10#ln26" gr:x="15" gr:y="0" entity="Group" displayAttributes="groupOID groupName">
+      <Link id="sv3#area4#page7#inu10#ln22" name="Modificar" to="sv3#area4#page7#enu5" type="normal" automaticCoupling="true" validate="true"/>
+      <SortAttribute attribute="groupOID" order="ascending"/>
+      <Link id="sv3#area4#page7#inu10#ln26" name="Borrar" to="sv3#miu7" type="normal" validate="true">
+        <LinkParameter id="sv3#area4#page7#inu10#ln26#par51" name="id_id_param" source="data[].groupOID" target="sv3#miu7.mov2#opm5#icu8#icp17"/>
+      </Link>
+    </IndexUnit>
+    <EntryUnit id="sv3#area4#page7#enu5" name="Dar de alta grupo" gr:x="10" gr:y="145" entity="Group" linkOrder="sv3#area4#page7#enu5#ln27">
+      <Field id="sv3#area4#page7#enu5#fld10" name="id" type="integer" modifiable="false" attribute="groupOID" hidden="true"/>
+      <Field id="sv3#area4#page7#enu5#fld11" name="Nombre del grupo" type="string" modifiable="true" attribute="groupName"/>
+      <SelectionField id="sv3#area4#page7#enu5#sfld5" name="M&#243;dulo asociado" type="string" role="Group2DefaultModule"/>
+      <Link id="sv3#area4#page7#enu5#ln27" name="Ok" to="sv3#miu10" type="normal" validate="true">
+        <LinkParameter id="sv3#area4#page7#enu5#ln27#par52" name="Nombre del grupo_groupName_param" source="sv3#area4#page7#enu5#fld11" target="sv3#miu10.mov2#opm2#icu2#icp2"/>
+        <LinkParameter id="sv3#area4#page7#enu5#ln27#par53" name="id_id_param" source="sv3#area4#page7#enu5#fld10" target="sv3#miu10.mov2#opm2#icu2#icp1"/>
+        <LinkParameter id="sv3#area4#page7#enu5#ln27#par54" name="M&#243;dulo asociado_moduleID_param" source="sv3#area4#page7#enu5#sfld5" target="sv3#miu10.mov2#opm2#icu2#icp11"/>
+      </Link>
+    </EntryUnit>
+    <SelectorUnit id="sv3#area4#page7#seu5" name="Selector de m&#243;dulo" gr:x="0" gr:y="290" entity="Module">
+      <Link id="sv3#area4#page7#seu5#ln23" name="Flow40" to="sv3#area4#page7#enu5" type="transport" validate="true">
+        <LinkParameter id="sv3#area4#page7#seu5#ln23#par45" name="moduleName_defaultModule [label]" source="moduleNameArray" target="sv3#area4#page7#enu5#sfld5_label"/>
+        <LinkParameter id="sv3#area4#page7#seu5#ln23#par46" name="id_defaultModule [output]" source="moduleOIDArray" target="sv3#area4#page7#enu5#sfld5_output"/>
+      </Link>
+    </SelectorUnit>
+  </ContentUnits>
+  <layout:Grid containerType="grid">
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv3#area4#page7#inu10">
+          <layout:Attribute attribute="groupOID"/>
+          <layout:Attribute attribute="groupName"/>
+          <layout:Link link="sv3#area4#page7#inu10#ln22"/>
+          <layout:Link link="sv3#area4#page7#inu10#ln26"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12">
+        <layout:Unit unitId="sv3#area4#page7#enu5">
+          <layout:Field field="sv3#area4#page7#enu5#fld11"/>
+          <layout:Field field="sv3#area4#page7#enu5#sfld5"/>
+          <layout:Link link="sv3#area4#page7#enu5#ln27"/>
+        </layout:Unit>
+      </layout:Cell>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+    <layout:Row>
+      <layout:Cell colspan="12"/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+      <layout:Cell/>
+    </layout:Row>
+  </layout:Grid>
+</Page>

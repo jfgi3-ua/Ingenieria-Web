@@ -1,0 +1,24 @@
+<OperationModule xmlns:gr="http://www.webratio.com/2006/WebML/Graph" id="mov3#opm12" name="Registro usuario" gr:x="40" gr:y="40">
+  <OperationUnits>
+    <InputCollectorUnit id="mov3#opm12#icu12" gr:x="185" gr:y="240">
+      <InputCollectorParameter id="mov3#opm12#icu12#icp28" name="email_param"/>
+      <InputCollectorParameter id="mov3#opm12#icu12#icp29" name="passwd_param"/>
+      <InputCollectorParameter id="mov3#opm12#icu12#icp30" name="userName_param"/>
+      <OKLink id="mov3#opm12#icu12#oln31" name="OKFlow4" to="mov3#opm12#cru6">
+        <LinkParameter id="mov3#opm12#icu12#oln31#par96" name="email_param_email" source="mov3#opm12#icu12#icp28" target="mov3#opm12#cru6.email"/>
+        <LinkParameter id="mov3#opm12#icu12#oln31#par97" name="passwd_param_password" source="mov3#opm12#icu12#icp29" target="mov3#opm12#cru6.password"/>
+        <LinkParameter id="mov3#opm12#icu12#oln31#par98" name="usuario_param_userName" source="mov3#opm12#icu12#icp30" target="mov3#opm12#cru6.userName"/>
+      </OKLink>
+    </InputCollectorUnit>
+    <CreateUnit id="mov3#opm12#cru6" name="alta usuario" gr:x="515" gr:y="255" entity="User">
+      <OKLink id="mov3#opm12#cru6#oln32" name="OKFlow5" to="mov3#opm12#okcu11" automaticCoupling="true"/>
+      <KOLink id="mov3#opm12#cru6#kln21" name="KOFlow2" to="mov3#opm12#kocu11">
+        <LinkParameter id="mov3#opm12#cru6#kln21#par99" name="Error al Registrar Usuario_error_param" target="mov3#opm12#kocu11#ocp1" sourceValue="Error al Registrar Usuario"/>
+      </KOLink>
+    </CreateUnit>
+    <OKCollectorUnit id="mov3#opm12#okcu11" name="OK Port2" gr:x="680" gr:y="205"/>
+    <KOCollectorUnit id="mov3#opm12#kocu11" name="KO Port2" gr:x="680" gr:y="320">
+      <OutputCollectorParameter id="mov3#opm12#kocu11#ocp1" name="error_param"/>
+    </KOCollectorUnit>
+  </OperationUnits>
+</OperationModule>
