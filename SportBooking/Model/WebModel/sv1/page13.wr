@@ -5,9 +5,9 @@
       <Field id="sv1#page13#enu11#fld21" name="Correo electr&#243;nico" type="string" modifiable="true" attribute="email"/>
       <Field id="sv1#page13#enu11#fld22" name="Contrase&#241;a" type="password" modifiable="true" attribute="password" hidden="false"/>
       <Link id="sv1#page13#enu11#ln47" name="Ok" to="sv1#miu9" type="normal" validate="true">
-        <LinkParameter id="sv1#page13#enu11#ln47#par59" name="Correo electr&#243;nico_email_param" source="sv1#page13#enu11#fld21" target="sv1#miu9.mov1#opm8#icu5#icp10"/>
-        <LinkParameter id="sv1#page13#enu11#ln47#par60" name="Contrase&#241;a_passwd_param" source="sv1#page13#enu11#fld22" target="sv1#miu9.mov1#opm8#icu5#icp12"/>
-        <LinkParameter id="sv1#page13#enu11#ln47#par61" name="Nombre usuario_userName_param" source="sv1#page13#enu11#fld20" target="sv1#miu9.mov1#opm8#icu5#icp13"/>
+        <LinkParameter id="sv1#page13#enu11#ln47#par10" name="Correo electr&#243;nico_email_param" source="sv1#page13#enu11#fld21" target="sv1#miu9.mov3#opm12#icu12#icp28"/>
+        <LinkParameter id="sv1#page13#enu11#ln47#par11" name="Contrase&#241;a_passwd_param" source="sv1#page13#enu11#fld22" target="sv1#miu9.mov3#opm12#icu12#icp29"/>
+        <LinkParameter id="sv1#page13#enu11#ln47#par12" name="Nombre usuario_userName_param" source="sv1#page13#enu11#fld20" target="sv1#miu9.mov3#opm12#icu12#icp30"/>
       </Link>
       <Link id="sv1#page13#enu11#ln48" name="Volver" to="sv1#area1#page3" automaticCoupling="true" type="normal" validate="true"/>
     </EntryUnit>
