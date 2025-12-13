@@ -1,0 +1,51 @@
+# Para validar el compose: docker compose config
+
+services:
+  db:
+    image: postgres:16
+    container_name: fitgym_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fitgym
+      POSTGRES_USER: fitgym_user
+      POSTGRES_PASSWORD: fitgym_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persistencia en el host (se inyecta desde tu script dev-up.ps1)
+      - ${FITGYM_DATA_DIR}/pgdata:/var/lib/postgresql/data
+      # Scripts de inicialización (solo se ejecutan en el primer arranque con data dir vacío)
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # para usar adminer: docker compose --profile adminer up -d
+  adminer:
+    image: adminer
+    container_name: fitgym_adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["adminer"]
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: fitgym_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@ua.com
+      PGADMIN_DEFAULT_PASSWORD: admin1234
+      # Opcional: evita “server mode” y facilita uso local
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
