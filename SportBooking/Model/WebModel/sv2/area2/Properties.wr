@@ -1,5 +1,0 @@
-<Area xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv2#area2" name="SportBooking" landmark="true" layout:pageLayout="BootstrapStyle/Bootstrap" layout:cellLayout="BootstrapStyle/Tab" gr:x="60" gr:y="190" defaultPage="sv2#area2#page15" layout:style="BootstrapStyle">
-  <OperationUnits/>
-  <layout:LayoutParameter name="application-name" value="SportBooking" type="page"/>
-  <layout:LayoutParameter name="theme" value="compact" type="page"/>
-</Area>

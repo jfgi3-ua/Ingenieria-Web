@@ -1,3 +1,0 @@
-<Area xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" id="sv3#area3" name="SportBooking" defaultPage="sv3#area3#page17" landmark="true" layout:pageLayout="BootstrapStyle/Bootstrap" layout:cellLayout="BootstrapStyle/Tab" gr:x="55" gr:y="180" layout:style="BootstrapStyle">
-  <OperationUnits/>
-</Area>

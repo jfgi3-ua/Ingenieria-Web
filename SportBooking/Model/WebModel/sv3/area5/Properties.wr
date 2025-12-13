@@ -1,4 +1,0 @@
-<Area xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="1220" gr:y="295" id="sv3#area5" name="Usuario y Monedero" landmark="true" landmarks="sv3#area5#page9" layout:style="BootstrapStyle">
-  <OperationUnits/>
-  <layout:LayoutParameter name="panel-type" value="danger" type="frame"/>
-</Area>

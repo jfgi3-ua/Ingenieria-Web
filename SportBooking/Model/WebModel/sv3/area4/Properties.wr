@@ -1,4 +1,0 @@
-<Area xmlns:gr="http://www.webratio.com/2006/WebML/Graph" xmlns:layout="http://www.webratio.com/2006/WebML/Layout" gr:x="495" gr:y="295" id="sv3#area4" name="Modulos y Grupos" landmark="true" landmarks="sv3#area4#page6 sv3#area4#page7" defaultPage="sv3#area4#page7" layout:style="BootstrapStyle">
-  <OperationUnits/>
-  <layout:LayoutParameter name="panel-type" value="danger" type="frame"/>
-</Area>
