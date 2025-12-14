@@ -1,0 +1,26 @@
+# server:
+#   port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/fitgym
+    username: fitgym_user
+    password: fitgym_pass
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+#     properties:
+#       hibernate:
+#         format_sql: true
+
+# management:
+#   endpoints:
+#     web:
+#       exposure:
+#         include: health,info
+
+logging:
+  level:
+    org.springframework.boot.context.config: TRACE
+    org.springframework.jdbc.datasource: DEBUG
