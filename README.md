@@ -300,6 +300,183 @@ Esperado:
 
 ---
 
+## Estructura del backend (convención del proyecto) y justificación
+
+A partir de este punto, el backend seguirá una **arquitectura por capas** orientada a **API REST** (consumida por Vue) y a un modelo de dominio persistente en PostgreSQL. Esta estructura busca maximizar mantenibilidad, testabilidad y trabajo en equipo, evitando acoplamientos innecesarios entre la API y la base de datos.
+
+---
+
+### 1) Estructura propuesta de paquetes (convención)
+
+**Raíz del backend:**
+````
+backend/src/main/java/com/fitgym/backend/
+````
+
+**Estructura general:**
+````
+com.fitgym.backend
+  api/
+    TarifaController.java
+    SocioController.java
+    ReservaController.java
+    ...
+
+    dto/
+      TarifaResponse.java
+      TarifaCreateRequest.java
+      TarifaUpdateRequest.java
+      ...
+    error/
+      ApiError.java
+      GlobalExceptionHandler.java
+
+  service/
+    TarifaService.java
+    SocioService.java
+    ReservaService.java
+    ...
+
+  repo/
+    TarifaRepository.java
+    SocioRepository.java
+    ReservaRepository.java
+    ...
+
+  domain/
+    Tarifa.java
+    Socio.java
+    Reserva.java
+    ...
+````
+
+> Nota: la idea es que cada entidad importante (Tarifa, Socio, Reserva, Actividad, etc.) tenga sus clases distribuidas en estas capas siguiendo el mismo patrón.
+
+---
+
+### 2) Responsabilidad de cada capa (qué va y qué no va)
+
+#### 2.1 `domain/` — Modelo persistente (JPA)
+- **Qué contiene:** Entidades JPA (`@Entity`) y su mapeo a tablas.
+- **Responsabilidad:** representar cómo se guarda el dominio en la BD (columnas, constraints, relaciones).
+- **No debe contener:** lógica de HTTP, DTOs, ni detalles del frontend.
+
+**Por qué:** separa el modelo de datos (persistencia) del contrato de la API.
+
+---
+
+#### 2.2 `repo/` — Acceso a datos (repositorios)
+- **Qué contiene:** interfaces `Repository` (por ejemplo `extends JpaRepository`), métodos de consulta y especificaciones.
+- **Responsabilidad:** obtener/persistir datos. No decide reglas de negocio.
+- **No debe contener:** validaciones de negocio (eso va en `service/`) ni respuestas HTTP.
+
+**Por qué:** evita mezclar SQL/queries con reglas del dominio o lógica de endpoints.
+
+---
+
+#### 2.3 `service/` — Casos de uso y reglas de negocio
+- **Qué contiene:** clases `Service` con métodos que representan operaciones del negocio:
+  - `listarTarifas()`, `crearSocio()`, `reservarActividad()`, etc.
+- **Responsabilidad:** reglas, orquestación, transacciones (`@Transactional`), validaciones de negocio.
+- **No debe contener:** detalles HTTP (rutas, status codes) ni serialización.
+
+**Por qué:** centraliza la lógica del sistema en un punto testable y reutilizable (un mismo caso de uso puede ser llamado desde distintos endpoints).
+
+---
+
+#### 2.4 `api/` — Capa HTTP (controllers)
+- **Qué contiene:** controladores REST (`@RestController`) y configuración web asociada.
+- **Responsabilidad:** traducir HTTP ↔ aplicación:
+  - leer path/query/body
+  - invocar `service`
+  - devolver respuesta con código HTTP correcto
+- **No debe contener:** queries directas a BD ni reglas complejas.
+
+**Por qué:** evita “controllers gordos” y mantiene el contrato HTTP limpio y consistente.
+
+---
+
+#### 2.5 `api/dto/` — Contrato de la API (DTOs)
+- **Qué contiene:** clases para request/response:
+  - `TarifaResponse`, `TarifaCreateRequest`, etc.
+- **Responsabilidad:** definir explícitamente qué campos se exponen y cómo.
+- **Por qué es recomendable incluso si al principio parece redundante:**
+  - evita acoplar el frontend a la entidad JPA
+  - evita problemas de serialización (relaciones lazy, ciclos)
+  - reduce exposición accidental de campos
+  - facilita evolucionar la BD sin romper la API
+
+> En resumen: **la entidad JPA es “modelo de BD”** y el DTO es **“modelo de API”**.
+
+---
+
+### 3) Beneficios y por qué esta es la mejor estructura para el proyecto
+
+#### 3.1 Menos acoplamiento BD ↔ API
+Cambios en el esquema (nombres de columnas, relaciones, normalización) no deben romper el frontend.
+- Con DTOs, el contrato público puede mantenerse estable aunque el dominio evolucione.
+
+#### 3.2 Mejor testabilidad
+- `service/`: tests unitarios rápidos (sin levantar servidor).
+- `repo/`: tests de persistencia (con H2 o Postgres con Testcontainers).
+- `api/`: tests de controlador (MockMvc), verificando status codes y formato JSON.
+
+Esto permite detectar errores temprano y mantener estabilidad a medida que crece el sistema.
+
+#### 3.3 Trabajo en equipo sin pisarse
+Cada miembro puede trabajar de forma más independiente:
+- uno en API/DTOs
+- otro en reglas de negocio
+- otro en queries
+Con menos conflictos en Git y menos efectos colaterales.
+
+#### 3.4 Escalabilidad del proyecto
+FitGym crecerá (registro, reservas, pagos, perfiles, actividades, etc.). Tener esta convención desde el inicio evita refactors costosos.
+
+---
+
+### 4) Convenciones adicionales recomendadas (para coherencia)
+
+#### 4.1 Rutas REST (convención)
+- Recursos en plural:
+  - `/api/tarifas`
+  - `/api/socios`
+  - `/api/reservas`
+- Operaciones estándar:
+  - `GET /api/tarifas` (listar)
+  - `GET /api/tarifas/{id}` (detalle)
+  - `POST /api/tarifas` (crear)
+  - `PUT /api/tarifas/{id}` (editar)
+  - `DELETE /api/tarifas/{id}` (borrar)
+
+#### 4.2 Errores consistentes
+Centralizaremos errores HTTP con un `GlobalExceptionHandler` en `api/error/` para devolver un formato uniforme (útil para Vue).
+
+#### 4.3 CORS (frontend Vue)
+Cuando el frontend esté en `http://localhost:5173`, habrá que habilitar CORS (preferible configuración global).
+
+---
+
+### 5) Ejemplo aplicado a `Tarifa` (mapa de archivos)
+
+````
+domain/
+  Tarifa.java
+
+repo/
+  TarifaRepository.java
+
+service/
+  TarifaService.java
+
+api/
+  TarifaController.java
+  dto/
+    TarifaResponse.java
+````
+
+---
+
 ## Troubleshooting (Frontend)
 
 ### 1) La ruta existe pero no se muestra nada
@@ -371,35 +548,35 @@ Esta sección define el patrón que seguiremos en el frontend para que el proyec
 
 ````
 frontend/src/
-assets/              # Recursos estáticos (imágenes, iconos, etc.)
-components/          # Componentes reutilizables (UI y piezas comunes)
-common/              # Botones, inputs, modales genéricos, etc.
-layout/              # Navbar, footer, wrappers de layout
-views/               # Vistas (páginas) asociadas a rutas (Router)
-  TarifasView.vue
-  LoginView.vue
-  RegistroView.vue
-  PerfilView.vue
-  ...
-router/
-index.ts            # Definición de rutas y guards
-stores/             # Pinia stores (auth, user, etc.)
-  auth.store.ts
-  user.store.ts
-  ...
-services/           # Acceso a API (HTTP) y lógica de comunicación
-  http.ts           # Cliente HTTP base (fetch/axios)
-  tarifas.service.ts
-  socios.service.ts
-  reservas.service.ts
-  ...
-types/               # Tipos TypeScript compartidos (DTOs frontend)
-  tarifa.ts
-  socio.ts
-  reserva.ts
-utils/               # Helpers sin estado (formatters, validators, etc.)
-App.vue
-main.ts
+  assets/              # Recursos estáticos (imágenes, iconos, etc.)
+  components/          # Componentes reutilizables (UI y piezas comunes)
+  common/              # Botones, inputs, modales genéricos, etc.
+  layout/              # Navbar, footer, wrappers de layout
+  views/               # Vistas (páginas) asociadas a rutas (Router)
+    TarifasView.vue
+    LoginView.vue
+    RegistroView.vue
+    PerfilView.vue
+    ...
+  router/
+  index.ts            # Definición de rutas y guards
+  stores/             # Pinia stores (auth, user, etc.)
+    auth.store.ts
+    user.store.ts
+    ...
+  services/           # Acceso a API (HTTP) y lógica de comunicación
+    http.ts           # Cliente HTTP base (fetch/axios)
+    tarifas.service.ts
+    socios.service.ts
+    reservas.service.ts
+    ...
+  types/               # Tipos TypeScript compartidos (DTOs frontend)
+    tarifa.ts
+    socio.ts
+    reserva.ts
+  utils/               # Helpers sin estado (formatters, validators, etc.)
+  App.vue
+  main.ts
 ````
 
 ### Por qué esta estructura es la recomendada
