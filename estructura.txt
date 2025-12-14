@@ -1,0 +1,112 @@
+Listado de rutas de carpetas
+C:.
+|   .gitignore
+|   docker-compose.yml
+|   estructura.txt
+|   README.md
+|   
++---.vscode
+|       settings.json
+|       
++---backend
+|   |   .gitattributes
+|   |   .gitignore
+|   |   HELP.md
+|   |   log.txt
+|   |   mvnw
+|   |   mvnw.cmd
+|   |   pom.xml
+|   |   
+|   +---.mvn
+|   |   \---wrapper
+|   |           maven-wrapper.properties
+|   |           
+|   +---src
+|   |   +---main
+|   |   |   +---java
+|   |   |   |   \---com
+|   |   |   |       \---fitgym
+|   |   |   |           \---backend
+|   |   |   |               |   BackendApplication.java
+|   |   |   |               |   
+|   |   |   |               +---api
+|   |   |   |               |       HealthController.java
+|   |   |   |               |       TarifaController.java
+|   |   |   |               |       
+|   |   |   |               +---domain
+|   |   |   |               |       Tarifa.java
+|   |   |   |               |       
+|   |   |   |               \---repo
+|   |   |   |                       TarifaRepository.java
+|   |   |   |                       
+|   |   |   \---resources
+|   |   |       |   application.yaml
+|   |   |       |   
+|   |   |       +---static
+|   |   |       \---templates
+|   |   \---test
+|   |       +---java
+|   |       |   \---com
+|   |       |       \---fitgym
+|   |       |           \---backend
+|   |       |                   BackendApplicationTests.java
+|   |       |                   
+|   |       \---resources
+|   |               application.yml
+|   |               
+|   \---target
+|       +---classes
+|       |   |   application.yaml
+|       |   |   
+|       |   \---com
+|       |       \---fitgym
+|       |           \---backend
+|       |               |   BackendApplication.class
+|       |               |   
+|       |               +---api
+|       |               |       HealthController.class
+|       |               |       TarifaController.class
+|       |               |       
+|       |               +---domain
+|       |               |       Tarifa.class
+|       |               |       
+|       |               \---repo
+|       |                       TarifaRepository.class
+|       |                       
+|       +---generated-sources
+|       |   \---annotations
+|       +---generated-test-sources
+|       |   \---test-annotations
+|       +---maven-status
+|       |   \---maven-compiler-plugin
+|       |       +---compile
+|       |       |   \---default-compile
+|       |       |           createdFiles.lst
+|       |       |           inputFiles.lst
+|       |       |           
+|       |       \---testCompile
+|       |           \---default-testCompile
+|       |                   createdFiles.lst
+|       |                   inputFiles.lst
+|       |                   
+|       +---surefire-reports
+|       |       com.fitgym.backend.BackendApplicationTests.txt
+|       |       TEST-com.fitgym.backend.BackendApplicationTests.xml
+|       |       
+|       \---test-classes
+|           |   application.yml
+|           |   
+|           \---com
+|               \---fitgym
+|                   \---backend
+|                           BackendApplicationTests.class
+|                           
++---docker
+|   \---initdb
+|           01_schema.sql
+|           02_seed.sql
+|           
++---frontend
+\---scripts
+        dev-up.ps1
+        
