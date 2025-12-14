@@ -1,1 +1,104 @@
-.metadata
+############################################
+# General
+############################################
+*.log
+logs/
+.DS_Store
+Thumbs.db
+
+############################################
+# Windows
+############################################
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+
+############################################
+# IDEs / Editors
+############################################
+# IntelliJ / JetBrains
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+.history/
+
+############################################
+# Java / Maven / Spring Boot
+############################################
+# Maven build output
+**/target/
+# Maven wrapper (keep the wrapper scripts, ignore the jar if you don't use it)
+# If you do use mvnw, you can remove the next line to commit the wrapper jar.
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Spring Boot
+**/*.class
+**/*.jar
+**/*.war
+**/*.ear
+**/*.orig
+**/hs_err_pid*.log
+
+############################################
+# Node / Vue / Vite
+############################################
+# Dependencies
+**/node_modules/
+
+# Build output
+**/dist/
+**/build/
+**/.vite/
+
+# Caches / tooling
+**/.cache/
+**/.eslintcache
+**/.stylelintcache
+**/.npm/
+**/.pnpm-store/
+**/.yarn/
+**/.pnp.*
+**/.parcel-cache/
+**/.turbo/
+**/.vercel/
+**/.nuxt/
+**/.next/
+
+############################################
+# Environment / secrets
+############################################
+.env
+.env.*
+!.env.example
+
+############################################
+# Docker / local data
+############################################
+# Avoid committing local bind-mounted data directories
+FitGymData/
+**/FitGymData/
+
+# If someone accidentally creates pgdata inside the repo
+**/pgdata/
+**/postgres-data/
+**/db-data/
+
+############################################
+# pgAdmin (if ever persisted locally)
+############################################
+pgadmin/
+**/pgadmin/
+
+############################################
+# Optional: OS-specific temp files
+############################################
+*.tmp
+*.temp
+*.swp
+*~
