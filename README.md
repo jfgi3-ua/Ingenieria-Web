@@ -1,21 +1,25 @@
 # FitGym
 
-## Entorno local con Docker (PostgreSQL + pgAdmin / Adminer)
+## Entorno local (PostgreSQL + pgAdmin/Adminer) y Backend (Spring Boot)
 
-Este repositorio incluye un entorno de base de datos listo para desarrollo local usando **Docker Compose**:
+Este repositorio incluye un entorno completo para desarrollo local:
 
-- **PostgreSQL 16** como motor de base de datos.
+- **PostgreSQL 16** como motor de base de datos (en Docker).
 - **pgAdmin 4** como UI principal para inspección/gestión de la BD.
 - **Adminer** como alternativa opcional (solo bajo profile).
 - **Init scripts** para crear el esquema y cargar datos iniciales.
+- **Backend** en **Java + Spring Boot** (API REST) con conexión a la BD en Docker.
+
+> Objetivo: que cualquier miembro del equipo pueda clonar el repo y tener el backend funcionando en local de forma reproducible, sin depender de instalaciones manuales de PostgreSQL.
 
 ---
 
-### Requisitos
+## Requisitos
 
+### Para base de datos (Docker)
 - Windows 11 (el script de arranque es PowerShell).
 - Docker Desktop instalado y en ejecución.
-- Git (para clonar el repo).
+- Git.
 - PowerShell.
 
 Verificación rápida:
@@ -24,15 +28,27 @@ docker --version
 docker compose version
 ````
 
+### Para backend (Spring Boot)
+
+* **JDK 21** instalado y `JAVA_HOME` configurado (recomendado).
+* **Maven 3.9+**
+
+Verificación rápida:
+
+````powershell
+java --version
+mvn --version
+````
+
 ---
 
-### Estructura relevante del repositorio
+## Estructura relevante del repositorio
 
 * `docker-compose.yml`
   Define los servicios `db`, `pgadmin` y `adminer` (este último por profile).
 
 * `scripts/dev-up.ps1`
-  Script de arranque (Windows). Prepara la ruta de persistencia y levanta los contenedores.
+  Script de arranque (Windows). Prepara la ruta de persistencia y levanta contenedores.
 
 * `docker/initdb/01_schema.sql`
   Crea el esquema (tablas, relaciones, enums, índices).
@@ -40,51 +56,70 @@ docker compose version
 * `docker/initdb/02_seed.sql`
   Inserta datos iniciales (incluye tarifas **Básico / Premium / Élite** y datos de ejemplo).
 
+* `backend/`
+  Proyecto Spring Boot (API REST).
+
 ---
 
 ## Qué levanta Docker Compose
 
-#### 1) `db` (PostgreSQL)
+### 1) `db` (PostgreSQL)
 
 * Imagen: `postgres:16`
-* Puerto local: `5432`
-* Persistencia en host (bind mount):
-  `C:\Users\<usuario>\Desktop\FitGymData\pgdata` → `/var/lib/postgresql/data`
-* Scripts initdb:
-  `./docker/initdb` → `/docker-entrypoint-initdb.d` (solo se ejecutan si `pgdata` está vacío)
-* Healthcheck:
-  usa `pg_isready` para marcar la base de datos como `healthy`.
+* Puerto en contenedor: `5432`
 
-#### 2) `pgadmin` (UI por defecto)
+#### Puerto local (IMPORTANTE)
+
+En el host **NO usamos 5432**, sino **5433**, para evitar conflictos con PostgreSQL instalado localmente en Windows.
+
+* Host: `localhost:5433` → Contenedor: `5432`
+
+> Motivo: en Windows es habitual tener un servicio PostgreSQL local escuchando en 5432 (por ejemplo `postgresql-x64-9.6` el que instalamos para la práctica de WebRatio). Si Docker intenta publicar 5432, o bien falla el bind, o peor: el backend puede acabar conectando al Postgres local “equivocado”.
+
+#### Persistencia (bind mount)
+
+`C:\Users\<usuario>\Desktop\FitGymData\pgdata` → `/var/lib/postgresql/data`
+
+#### Scripts initdb
+
+`./docker/initdb` → `/docker-entrypoint-initdb.d`
+**Solo se ejecutan si `pgdata` está vacío** (primer arranque con data dir vacío).
+
+#### Healthcheck
+
+Usa `pg_isready` para marcar la base de datos como `healthy`.
+
+---
+
+### 2) `pgadmin` (UI por defecto)
 
 * Imagen: `dpage/pgadmin4`
 * Puerto local: `5050`
 * Arranca cuando `db` está `healthy`.
 
-#### 3) `adminer` (UI alternativa)
+---
+
+### 3) `adminer` (UI alternativa)
 
 * Imagen: `adminer`
 * Puerto local: `8081`
 * **No arranca por defecto**: solo con `--profile adminer`
-* **O desde la raíz del proyecto** usando Powershell:
-````powershell
--ExecutionPolicy Bypass -File .\scripts\dev-up.ps1 -Ui adminer
-````
 
 ---
 
-### Arranque (recomendado) — pgAdmin por defecto
+## Arranque (recomendado) — pgAdmin por defecto
 
 Ejecuta desde la **raíz del repositorio**:
 
-``powershell
+````powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\dev-up.ps1
-``
+````
 
 Qué hace el script `dev-up.ps1`:
 
 1. Calcula la ruta real del Escritorio del usuario.
 2. Crea:
+
    * `C:\Users\<usuario>\Desktop\FitGymData`
    * `C:\Users\<usuario>\Desktop\FitGymData\pgdata`
 3. Exporta la variable de entorno `FITGYM_DATA_DIR` (solo en la sesión del script).
@@ -92,20 +127,19 @@ Qué hace el script `dev-up.ps1`:
 
 ---
 
-### Validar el docker-compose
+## Validar el docker-compose
 
 Para validar sintaxis/configuración:
 
-``powershell
+````powershell
 docker compose config
-``
+````
 
 ---
 
-### Acceso a pgAdmin
+## Acceso a pgAdmin
 
-1. Abre:
-   `http://localhost:5050`
+1. Abre: `http://localhost:5050`
 
 2. Credenciales (definidas en `docker-compose.yml`):
 
@@ -114,35 +148,39 @@ docker compose config
 
 3. Conectar pgAdmin a la base de datos (Add New Server):
 
-   * **Host name/address**: `db`
-   * **Port**: `5432`
-   * **Maintenance database**: `fitgym`
-   * **Username**: `fitgym_user`
-   * **Password**: `fitgym_pass`
+   **Si usas pgAdmin en contenedor (el de docker-compose):**
 
-> Importante: dentro de la red de Docker, el servidor Postgres se referencia por el nombre del servicio: `db` (no `localhost`).
+   * Host name/address: `db`
+   * Port: `5432`
+   * Maintenance database: `fitgym`
+   * Username: `fitgym_user`
+   * Password: `fitgym_pass`
+
+   **Si usas pgAdmin instalado en local (Windows):**
+
+   * Host name/address: `localhost`
+   * Port: `5433`
+   * Maintenance database: `fitgym`
+   * Username: `fitgym_user`
+   * Password: `fitgym_pass`
+
+> Importante: dentro de la red de Docker se usa `db:5432`. En el host Windows se usa `localhost:5433`.
 
 ---
 
-### Adminer (opcional)
+## Adminer (opcional)
 
-Para levantar Adminer además de los servicios por defecto:
+Para levantar Adminer:
 
 ````powershell
 docker compose --profile adminer up -d
-````
-
-O también:
-
-````powershell
--ExecutionPolicy Bypass -File .\scripts\dev-up.ps1 -Ui adminer
 ````
 
 Acceso:
 
 * `http://localhost:8081`
 
-Datos de conexión (en Adminer):
+Datos de conexión:
 
 * System: `PostgreSQL`
 * Server: `db`
@@ -152,68 +190,111 @@ Datos de conexión (en Adminer):
 
 ---
 
-### Comprobaciones de funcionamiento
+## Comprobaciones rápidas (DB)
 
-#### 1) Ver contenedores activos
+### 1) Ver contenedores activos
 
 ````powershell
 docker ps
 ````
 
-#### 2) Logs de PostgreSQL
+### 2) Logs de PostgreSQL
 
 ````powershell
 docker logs fitgym_postgres --tail 100
 ````
 
-#### 3) Healthcheck (debe ser `healthy`)
+### 3) Healthcheck (debe ser `healthy`)
 
 ````powershell
 docker inspect fitgym_postgres --format "{{json .State.Health}}"
 ````
 
-#### 4) Prueba SQL rápida
+### 4) Prueba SQL rápida
 
 ````powershell
 docker exec -it fitgym_postgres psql -U fitgym_user -d fitgym -c "SELECT now();"
 ````
 
+### 5) Verificar datos seeded (Tarifas)
+
+````powershell
+docker exec -it fitgym_postgres psql -U fitgym_user -d fitgym -c "SELECT id, nombre FROM tarifa ORDER BY id;"
+````
+
 ---
 
-### Inicialización del esquema y datos (initdb)
+## Inicialización del esquema y datos (initdb)
 
-#### Cómo funciona
-
-Los scripts en `docker/initdb/` se ejecutan automáticamente **solo la primera vez**, cuando el directorio persistente `pgdata` está vacío (es decir, cuando Postgres aún no ha inicializado el clúster).
+Los scripts en `docker/initdb/` se ejecutan automáticamente **solo la primera vez**, cuando el directorio persistente `pgdata` está vacío.
 
 * `01_schema.sql`: crea tablas, relaciones, enums e índices.
 * `02_seed.sql`: carga datos iniciales (tarifas y datos demo).
 
-#### Importante
-
-Si el directorio `pgdata` ya tiene datos, **no se volverán a ejecutar** automáticamente estos scripts.
+> Si `pgdata` ya tiene datos, **no se volverán a ejecutar** automáticamente estos scripts.
 
 ---
 
-### Operaciones habituales
+## Backend (Spring Boot)
 
-#### Parar el entorno (sin borrar datos)
+### Por qué esta configuración
+
+* Spring Boot + Maven estandarizan compilación, ejecución y dependencias para todo el equipo.
+* PostgreSQL en Docker evita diferencias entre máquinas (versiones/config).
+* Se usa **puerto 5433** en el host para evitar conflictos con PostgreSQL instalado localmente.
+
+### Configuración de conexión
+
+El backend está configurado para conectar a la BD de Docker usando:
+
+* Host: `localhost`
+* Puerto: `5433`
+* DB: `fitgym`
+* Usuario: `fitgym_user`
+* Password: `fitgym_pass`
+
+(Ver `backend/src/main/resources/application.yaml`.)
+
+### Arranque del backend
+
+Desde la raíz del repo:
+
+````powershell
+cd .\backend
+mvn spring-boot:run
+````
+
+### Verificación del backend (E2E básico)
+
+Actuator se usa como prueba de vida:
+
+````powershell
+curl.exe http://localhost:8080/actuator/health
+````
+
+Esperado: HTTP 200 y JSON con `"status":"UP"`.
+
+> Nota: en PowerShell usa `curl.exe` para evitar el alias `Invoke-WebRequest` y su warning.
+
+---
+
+## Operaciones habituales
+
+### Parar el entorno (sin borrar datos)
 
 ````powershell
 docker compose down
 ````
 
-#### Eliminar una tabla concreta (ejemplo)
+### Eliminar una tabla concreta (ejemplo)
 
-Desde pgAdmin (Query Tool) o `psql` desde entorno CLI de Docker:
+Desde pgAdmin (Query Tool) o `psql`:
 
 ````sql
 DROP TABLE IF EXISTS socio CASCADE;
 ````
 
-#### Reset “lógico” (vaciar esquema, sin tocar persistencia)
-
-Ejecuta:
+### Reset “lógico” (vaciar esquema, sin tocar persistencia)
 
 ````sql
 DROP SCHEMA public CASCADE;
@@ -222,9 +303,9 @@ GRANT ALL ON SCHEMA public TO fitgym_user;
 GRANT ALL ON SCHEMA public TO public;
 ````
 
-Nota: esto **no** relanza automáticamente `initdb`.
+> Nota: esto **no** relanza automáticamente `initdb`.
 
-#### Reset “completo” (re-ejecutar initdb)
+### Reset “completo” (re-ejecutar initdb)
 
 1. Parar contenedores:
 
@@ -236,27 +317,83 @@ docker compose down
 
 * `C:\Users\<usuario>\Desktop\FitGymData\pgdata`
 
-3. Volver a levantar desde Powershell en la raíz del proyecto:
+3. Volver a levantar:
 
 ````powershell
--ExecutionPolicy Bypass -File .\scripts\dev-up.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\dev-up.ps1
 ````
 
 ---
 
-### Troubleshooting
+## Troubleshooting
 
 ### pgAdmin no arranca por email inválido
 
 pgAdmin valida `PGADMIN_DEFAULT_EMAIL`. Evita dominios “reservados” (por ejemplo, algunos `.local`). En este repo se usa `admin@ua.com`.
 
-#### Puertos ocupados
+### Puerto 5432 ocupado (PostgreSQL local)
 
-Si `5432` o `5050` están ocupados, cambia el mapeo en `docker-compose.yml`:
+Si tienes PostgreSQL instalado en Windows, puede estar escuchando en 5432. Este repo usa **5433** para Docker por defecto.
 
-* Ejemplo: `15432:5432` o `15050:80`.
+Diagnóstico:
 
-#### Rutas relativas (initdb) no encontradas
+````powershell
+netstat -ano | findstr :5432
+Get-Process -Id <PID>
+Get-Service | Where-Object { $_.Name -match "postgres" -or $_.DisplayName -match "PostgreSQL" }
+````
+
+Ver puerto real del contenedor:
+
+````powershell
+docker port fitgym_postgres 5432
+````
+
+### Rutas relativas (initdb) no encontradas
 
 Ejecuta el script desde la **raíz del repo** para que `./docker/initdb` resuelva correctamente.
 
+### Error típico en backend: “password authentication failed for user ‘fitgym_user’”
+
+Causas habituales:
+
+* El backend conecta a la instancia equivocada (Postgres local en 5432).
+* El contenedor fue inicializado con otras credenciales y se mantiene por el volumen.
+
+Acciones:
+
+1. Asegura que la URL usa el puerto correcto `5433`.
+2. Valida credenciales desde el contenedor:
+
+````powershell
+docker exec -e PGPASSWORD=fitgym_pass -it fitgym_postgres psql -h 127.0.0.1 -U fitgym_user -d fitgym -c "SELECT 1;"
+````
+
+---
+
+## Comandos resumen (copy/paste)
+
+Levantar BD:
+
+````powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\dev-up.ps1
+````
+
+Arrancar backend:
+
+````powershell
+cd .\backend
+mvn spring-boot:run
+````
+
+Health:
+
+````powershell
+curl.exe http://localhost:8080/actuator/health
+````
+
+Ver tarifas:
+
+````powershell
+docker exec -it fitgym_postgres psql -U fitgym_user -d fitgym -c "SELECT id, nombre FROM tarifa ORDER BY id;"
+````
