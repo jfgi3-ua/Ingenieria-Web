@@ -143,6 +143,69 @@ Qué hace el script `dev-up.ps1`:
 
 ---
 
+## Validar el docker-compose
+
+Para validar sintaxis/configuración:
+
+````powershell
+docker compose config
+````
+
+---
+
+## Acceso a pgAdmin
+
+1. Abre: `http://localhost:5050`
+
+2. Credenciales (definidas en `docker-compose.yml`):
+
+   * Email: `admin@ua.com`
+   * Password: `admin1234`
+
+3. Conectar pgAdmin a la base de datos (Add New Server):
+
+   **Si usas pgAdmin en contenedor (el de docker-compose):**
+
+   * Host name/address: `db`
+   * Port: `5432`
+   * Maintenance database: `fitgym`
+   * Username: `fitgym_user`
+   * Password: `fitgym_pass`
+
+   **Si usas pgAdmin instalado en local (Windows):**
+
+   * Host name/address: `localhost`
+   * Port: `5433`
+   * Maintenance database: `fitgym`
+   * Username: `fitgym_user`
+   * Password: `fitgym_pass`
+
+> Importante: dentro de la red de Docker se usa `db:5432`. En el host Windows se usa `localhost:5433`.
+
+---
+
+## Adminer (opcional)
+
+Para levantar Adminer:
+
+````powershell
+docker compose --profile adminer up -d
+````
+
+Acceso:
+
+* `http://localhost:8081`
+
+Datos de conexión:
+
+* System: `PostgreSQL`
+* Server: `db`
+* Username: `fitgym_user`
+* Password: `fitgym_pass`
+* Database: `fitgym`
+
+---
+
 ## Comprobaciones rápidas (DB)
 
 ### 1) Ver contenedores activos
