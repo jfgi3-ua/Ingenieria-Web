@@ -6,6 +6,7 @@ import { RouterLink, RouterView } from "vue-router"
   <header style="padding: 16px; border-bottom: 1px solid #ddd">
     <nav style="display: flex; gap: 12px">
       <RouterLink to="/tarifas">Tarifas</RouterLink>
+      <RouterLink to="/registro">Registro</RouterLink>
     </nav>
   </header>
 
