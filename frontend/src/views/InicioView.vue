@@ -3,7 +3,13 @@
 	import squadGirlPhoto from "@/assets/squadGirlPhoto.png"
 	import yogaImg from "@/assets/yogaImg.png"
 	import gymImg from "@/assets/gymImg.png"
+	import { ref } from "vue";
 
+	const planes = ref(null);
+
+	const scrollAPlanes = () => {
+		planes.value.scrollIntoView({behavior: "smooth"});
+	}
 </script>
 <template>
 	<section class="general-section">
@@ -14,7 +20,7 @@
 			</div>
 			<div class="buttons-container">
 				<button class="reserva-btn">Reserva una clase</button>
-				<button class="ver-planes-btn">Ver planes</button>
+				<button @click="scrollAPlanes" class="ver-planes-btn">Ver planes</button>
 			</div>
 		</div>
 		<div class="img-container">
@@ -24,7 +30,7 @@
 	<section class="service-section">
 		<div>
 			<h3>Nuestros servicios</h3>
-			<p class="service-section-txt">Todo lo que necesitas para alcanzar tus objetiuvos de fitness en un solo lugar</p>
+			<p class="section-txt">Todo lo que necesitas para alcanzar tus objetiuvos de fitness en un solo lugar</p>
 			<div class="imgs-services">
 				<div class="service-card">
 					<img :src="squadGirlPhoto" alt="Tarjeta con imagen de servicio y descripcion">
@@ -54,6 +60,49 @@
 						<h4>Entrenamiento personal</h4>
 						<p>Planes personalizados con entrenadores certificados para resultados óptimos</p>
 					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section ref="planes" class="prices-section">
+		<div class="prices-container">
+			<h3>Planes y precios</h3>
+			<p class="section-txt">Elige el plan que mejor se adapte a tus necesidades y objetivos</p>
+			<div class="card-prices-container">
+				<div class="card-price">
+					<h5>Básico</h5>
+					<p>Perfecto para comenzar tu viaje fitness</p>
+					<p class="price">€29/mes</p>
+					<p>✔️ Acesso  al gimnasio</p>
+					<p>✔️ Zona de pesas y cardio</p>
+					<p>✔️ Vestuarios y duchas</p>
+					<p>✔️ WiFi gratis</p>
+					<button>Seleccionar plan</button>
+				</div>
+				<div class="card-price popular">
+					<div class="popular-sticker">
+						<p>Popular</p>
+					</div>
+					<h5>Premium</h5>
+					<p>La opción más popular para resultados serios</p>
+					<p class="price">€49/mes</p>
+					<p>✔️ Todo lo del plan Básico</p>
+					<p>✔️ Clases grupales ilimitadas</p>
+					<p>✔️ Acceso 24/7</p>
+					<p>✔️ Casillero personal</p>
+					<p>✔️ Invita a un amigo gratis</p>
+					<button>Seleccionar plan</button>
+				</div>
+				<div class="card-price">
+					<h5>Élite</h5>
+					<p>Para quienes buscan la excelencia</p>
+					<p class="price">€79/mes</p>
+					<p>Todo lo del plan Premium</p>
+					<p>✔️ 4 sesiones de entrenamiento personal</p>
+					<p>✔️ Plan nutricional personalizado</p>
+					<p>✔️ Análisis corporal mensual</p>
+					<p>✔️ Descuentos en suplementos</p>
+					<button>Seleccionar plan</button>
 				</div>
 			</div>
 		</div>
@@ -144,7 +193,7 @@
 		font-size: x-large;
 	}
 
-	.service-section-txt {
+	.section-txt {
 		margin-bottom: 30px;
 		font-size: medium;
 		display: flex;
@@ -164,7 +213,7 @@
 		width: 20vw;
 		border-top-left-radius: 10px;
 		border-top-right-radius: 10px;
-		margin-bottom: -2px;
+		margin-bottom: -4px;
 	}
 
 	.card-txt {
@@ -173,6 +222,7 @@
 		background-color: white;
 		border-bottom-left-radius: 10px;
 		border-bottom-right-radius: 10px;
+		box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 	}
 
 	.card-txt > h4 {
@@ -186,5 +236,78 @@
 		color: grey;
 		padding-left: 15px;
 		padding-top: 10px;
+	}
+
+	.prices-section {
+		background-color: #f4f5f6;
+		height: 80vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center; /* Centra en columna*/
+	}
+
+	.card-prices-container {
+		display: flex;
+		flex-direction: row;
+		gap: 70px;
+	}
+
+	.card-price {
+		border-radius: 10px;
+		height: 380px;
+		width: 300px;
+		display: flex;
+		flex-direction: column;
+		box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+	}
+
+	.card-price > h5 {
+		padding-top: 20px;
+		padding-left: 25px;
+		font-size: larger;
+		font-weight: 500;
+	}
+
+	.card-price > p {
+		margin-top: 10px;
+		padding-left: 25px;
+	}
+
+	.price {
+		font-size: xx-large;
+	}
+
+	.card-price > button {
+		height: 40px;
+		width: 170px;
+		margin-top: 20px;
+		align-self: center;
+		cursor: pointer;
+		background-color: #0092B8;
+		border-radius: 5px;
+		color: white;
+	}
+
+	.popular {
+		color: white;
+		background-color: #0092B8;
+		position: relative;
+	}
+
+	.popular > button {
+		background-color: white;
+		color: #0092B8;
+		
+	}
+
+	.popular-sticker {
+		color: white;
+		background-color: #1D293D;
+		width: fit-content;
+		padding: 7px;
+		border-bottom-left-radius: 5px;
+		border-top-right-radius: 5px;
+		position: absolute;
+		right: 0;
 	}
 </style>
