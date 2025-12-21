@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import ActivityCard from "@/components/ActivityCard.vue";
 
 </script>
 <template>
@@ -23,10 +24,17 @@
         </div>
     </section>
     <section class="activity-cards-section">
-
+        <div class="activity-cards">
+            <ActivityCard />
+        </div>
+        
     </section>
 </template>
 <style>
+    html{
+        background-color: #f4f5f6;
+    }
+
     .first-section {
         height: 200px;
         background-color: #0092B8;
@@ -40,15 +48,21 @@
         margin-left: 200px;
         margin-top: 60px;
         display: flex;
+        background-color: #0092B8;
         flex-direction: column;
         justify-content: center;
         gap: 10px;
+    }
+
+    .first-section-static-info > p {
+        background-color: #0092B8;
     }
 
     .filters-section {
         background-color: #f4f5f6;
         display: flex;
         flex-direction: column;
+        height: 150px;
     }
 
     .day-container {
@@ -75,6 +89,8 @@
     .day-selection-button {
         height: 40px;
         width: 70px;
+        background-color: #e7e9ed;
+        border-radius: 5px;
     }
 
     .day-selection-button:active {
@@ -89,6 +105,11 @@
 
     .activity-cards-section {
         background-color: #f4f5f6;
-        height: 500px;
+        height: auto;
     }
+
+    .activity-cards {
+        margin-left: 200px;
+    }
+
 </style>
