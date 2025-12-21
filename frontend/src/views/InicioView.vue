@@ -4,6 +4,7 @@
 	import yogaImg from "@/assets/yogaImg.png"
 	import gymImg from "@/assets/gymImg.png"
 	import { ref } from "vue";
+	import navbar from "@/components/navbar.vue"
 
 	const planes = ref(null);
 
@@ -12,6 +13,7 @@
 	}
 </script>
 <template>
+	<navbar></navbar>
 	<section class="general-section">
 		<div class="left-part-section-1">
 			<div class="text-container">
