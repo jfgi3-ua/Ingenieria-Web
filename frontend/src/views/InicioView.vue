@@ -1,14 +1,14 @@
-<script setup lang="js">
+<script setup lang="ts">
 	import imagenEstaticaSection1 from "@/assets/fotoBarraSection1Inicio.png"
 	import squadGirlPhoto from "@/assets/squadGirlPhoto.png"
 	import yogaImg from "@/assets/yogaImg.png"
 	import gymImg from "@/assets/gymImg.png"
 	import { ref } from "vue";
 
-	const planes = ref(null);
+	const planes = ref<HTMLElement | null>(null);
 
 	const scrollAPlanes = () => {
-		planes.value.scrollIntoView({behavior: "smooth"});
+		planes.value?.scrollIntoView({behavior: "smooth"});
 	}
 </script>
 <template>
