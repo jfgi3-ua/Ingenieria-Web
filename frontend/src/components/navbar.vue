@@ -43,7 +43,10 @@
             <a ref="serviciosBtnNav" href="#">Servicios</a>
             <a ref="contactoBtnNav" href="#">Contacto</a>
         </div>
-        <div class="user-buttons-container"></div>
+        <div class="user-buttons-container">
+            <button class="register-navbar-button">Registrarse</button>
+            <button class="login-navbar-button">Iniciar sesión</button>
+        </div>
     </div>
 </template>
 <style>
@@ -98,7 +101,27 @@
     }
 
     .user-buttons-container {
-        border: 1px solid black;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .register-navbar-button {
+        border-radius: 10px;
+        height: 45px;
+        width: 100px;
+        background-color: #0092B8;
+		color: white;
+		cursor: pointer;
+    }
+
+    .login-navbar-button {
+        border-radius: 10px;
+		border: 1px solid #0092B8;
+		background-color: transparent;
+		color: #0092B8;
+        height: 45px;
         width: 100px;
     }
 </style>
