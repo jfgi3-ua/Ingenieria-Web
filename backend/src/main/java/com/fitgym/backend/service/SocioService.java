@@ -8,6 +8,7 @@ import com.fitgym.backend.repo.TarifaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+ import java.util.List;
 
 /**
  * Servicio de gestión de socios del gimnasio.
@@ -91,5 +92,9 @@ public class SocioService {
     socio.setCodigoPostal(codigoPostal);
 
     return socioRepo.save(socio);
+
+  }
+  public List<Socio> listarTodos() {
+    return socioRepo.findAll();
   }
 }

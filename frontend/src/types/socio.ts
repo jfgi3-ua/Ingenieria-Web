@@ -17,3 +17,14 @@ export type SocioResponse = {
   idTarifa: number
   tarifaNombre: string
 }
+
+export type AdminSocio = {
+  id: number
+  nombre: string
+  correoElectronico: string
+  telefono: string | null
+  estado: string
+  tarifaNombre: string
+  pagoDomiciliado: boolean
+  saldoMonedero: number
+}
