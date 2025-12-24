@@ -11,7 +11,7 @@ import { RouterLink, RouterView } from "vue-router"
     </nav>
   </header>
 
-  <!--en el main estaba esto:style="padding: 16px" pero hay que quitarlo para que no afecte a todas las vistas-->
+
   <main >
     <RouterView />
   </main>

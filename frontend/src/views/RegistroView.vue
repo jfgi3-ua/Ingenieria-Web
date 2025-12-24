@@ -23,7 +23,7 @@ const confirmPassword = ref("")
 
 const steps = [
   { id: 1, label: "Datos personales" },
-  { id: 2, label: "Tarifas y pago" },
+  { id: 2, label: "Tarifa y pago" },
   { id: 3, label: "Confirmación" },
 ]
 
