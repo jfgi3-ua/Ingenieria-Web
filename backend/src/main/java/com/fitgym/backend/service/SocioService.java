@@ -69,11 +69,11 @@ public class SocioService {
       String codigoPostal
   ) {
     if (socioRepo.existsByCorreoElectronicoIgnoreCase(correo)) {
-      throw new BusinessException("Ya existe un socio con ese correo electrónico.");
+      throw new DuplicateEmailException("Ya existe un socio con ese correo electrónico.");
     }
 
     Tarifa tarifa = tarifaRepo.findById(idTarifa)
-        .orElseThrow(() -> new BusinessException("La tarifa indicada no existe."));
+        .orElseThrow(() -> new TarifaNotFoundException("La tarifa indicada no existe."));
 
     Socio socio = new Socio();
     socio.setNombre(nombre);
@@ -93,3 +93,6 @@ public class SocioService {
     return socioRepo.save(socio);
   }
 }
+
+
+
