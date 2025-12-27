@@ -2,6 +2,7 @@ package com.fitgym.backend.api.dto;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -32,6 +33,6 @@ public record ActividadResponse(
     LocalTime horaIni,
     LocalTime horaFin,
     BigDecimal precioExtra,
-    Date fecha,
-    BigInteger plazas
+    LocalDate fecha,
+    Integer plazas
 ) {}

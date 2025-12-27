@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -30,10 +31,10 @@ public class Actividad {
     private BigDecimal precioExtra = BigDecimal.ZERO;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
 
     @Column(nullable = false)
-    private BigInteger plazas = BigInteger.ZERO;
+    private Integer plazas = 0;
 
     /*@ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_monitor", nullable = false)
@@ -62,11 +63,11 @@ public class Actividad {
     public BigDecimal getPrecioExtra() { return precioExtra; }
     public void setPrecioExtra(BigDecimal precioExtra) { this.precioExtra = precioExtra; }
 
-    public Date getFecha() { return fecha; }
-    public void setFecha(Date fecha) { this.fecha = fecha; }
+    public LocalDate getFecha() { return fecha; }
+    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
-    public BigInteger getPlazas() { return plazas; }
-    public void setPlazas(BigInteger plazas) { this.plazas = plazas; }
+    public Integer getPlazas() { return plazas; }
+    public void setPlazas(Integer plazas) { this.plazas = plazas; }
 
     /*
     public Monitor getMonitor() { return monitor; }
