@@ -1,10 +1,17 @@
 package com.fitgym.backend.api;
 
+import com.fitgym.backend.api.dto.SocioLoginRequest;
+import com.fitgym.backend.api.dto.SocioLoginResponse;
+import com.fitgym.backend.api.dto.SocioSession;
 import com.fitgym.backend.api.dto.SocioRegistroRequest;
 import com.fitgym.backend.api.dto.SocioResponse;
 import com.fitgym.backend.domain.Socio;
+import com.fitgym.backend.service.InvalidCredentialsException;
 import com.fitgym.backend.service.SocioService;
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +26,7 @@ import java.net.URI;
 public class SocioController {
 
   private final SocioService socioService;
+  private static final String SESSION_SOCIO_KEY = "socioLogin";
 
   /**
   * Constructor del controlador de socios.
@@ -86,5 +94,65 @@ public class SocioController {
     return ResponseEntity
         .created(URI.create("/api/socios/" + socio.getId()))
         .body(body);
+  }
+
+  /**
+   * Inicia sesion con correo y contrasena.
+   *
+   * Si las credenciales son correctas y el socio esta activo, crea una sesion HTTP
+   * y devuelve los datos del socio para la UI.
+   */
+  @PostMapping("/login")
+  public ResponseEntity<SocioLoginResponse> login(
+      @Valid @RequestBody SocioLoginRequest req,
+      HttpServletRequest request
+  ) {
+    Socio socio = socioService.autenticar(req.correoElectronico, req.contrasena);
+
+    SocioLoginResponse body = new SocioLoginResponse(
+        socio.getId(),
+        socio.getNombre(),
+        socio.getCorreoElectronico(),
+        socio.getEstado().name(),
+        socio.getTarifa().getId(),
+        socio.getTarifa().getNombre()
+    );
+
+    HttpSession session = request.getSession(true);
+    session.setAttribute(SESSION_SOCIO_KEY, SocioSession.fromLoginResponse(body));
+
+    return ResponseEntity.ok(body);
+  }
+
+  /**
+   * Devuelve la sesion actual si existe.
+   *
+   * Si no hay sesion activa, retorna 401 (Unauthorized).
+   */
+  @GetMapping("/me")
+  public ResponseEntity<SocioLoginResponse> me(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      throw new InvalidCredentialsException("No hay sesion activa.");
+    }
+
+    Object value = session.getAttribute(SESSION_SOCIO_KEY);
+    if (!(value instanceof SocioSession socioSession)) {
+      throw new InvalidCredentialsException("No hay sesion activa.");
+    }
+
+    return ResponseEntity.ok(socioSession.toLoginResponse());
+  }
+
+  /**
+   * Cierra sesion e invalida la sesion HTTP.
+   */
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

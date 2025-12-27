@@ -29,6 +29,37 @@ public class SocioService {
     this.passwordEncoder = passwordEncoder;
   }
 
+  /**
+   * Autentica a un socio por correo y contraseña.
+   *
+   * Verifica que exista el socio, que la contraseña coincida con el hash BCrypt
+   * y que el estado sea ACTIVO. Si alguna comprobacion falla, lanza la excepcion
+   * correspondiente para que la capa API devuelva 401 o 403.
+   *
+   * @param correo correo electronico del socio (case-insensitive).
+   * @param passwordPlano contraseña en texto plano introducida por el usuario.
+   * @return Socio autenticado.
+   */
+  @Transactional(readOnly = true)
+  public Socio autenticar(String correo, String passwordPlano) {
+    Socio socio = socioRepo.findByCorreoElectronicoIgnoreCase(correo)
+        .orElseThrow(() -> new InvalidCredentialsException("Credenciales invalidas."));
+
+    if (!passwordEncoder.matches(passwordPlano, socio.getContrasenaHash())) {
+      throw new InvalidCredentialsException("Credenciales invalidas.");
+    }
+
+    if (socio.getEstado() != SocioEstado.ACTIVO) {
+      throw new SocioInactivoException("Socio inactivo. Pendiente de aceptacion.");
+    }
+
+    // Fuerza la carga de la tarifa dentro de la transaccion.
+    socio.getTarifa().getId();
+    socio.getTarifa().getNombre();
+
+    return socio;
+  }
+
 /**
  * Registra un nuevo socio en el sistema.
  *

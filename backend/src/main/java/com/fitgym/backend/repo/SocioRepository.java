@@ -24,4 +24,5 @@ import java.util.Optional;
 public interface SocioRepository extends JpaRepository<Socio, Long> {
   boolean existsByCorreoElectronicoIgnoreCase(String correoElectronico);
   Optional<Socio> findByCorreoElectronico(String correoElectronico);
+  Optional<Socio> findByCorreoElectronicoIgnoreCase(String correoElectronico);
 }

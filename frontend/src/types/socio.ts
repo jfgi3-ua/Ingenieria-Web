@@ -9,6 +9,13 @@ export type SocioRegistroRequest = {
   codigoPostal?: string
 }
 
+// Payload enviado al backend para iniciar sesion.
+export type SocioLoginRequest = {
+  correoElectronico: string
+  contrasena: string
+}
+
+// Datos devueltos al iniciar sesion o recuperar sesion.
 export type SocioResponse = {
   id: number
   nombre: string
