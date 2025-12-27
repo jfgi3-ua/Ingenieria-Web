@@ -2,6 +2,8 @@ package com.fitgym.backend.api.error;
 
 import com.fitgym.backend.service.BusinessException;
 import com.fitgym.backend.service.DuplicateEmailException;
+import com.fitgym.backend.service.InvalidCredentialsException;
+import com.fitgym.backend.service.SocioInactivoException;
 import com.fitgym.backend.service.TarifaNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -93,6 +95,50 @@ class GlobalExceptionHandlerTest {
     assertEquals(HttpStatus.NOT_FOUND.value(), error.getStatus());
     assertEquals("No existe", error.getMessage());
     assertEquals("/api/socios/registro", error.getPath());
+    assertNotNull(error.getTimestamp());
+  }
+
+  /**
+   * Verifica que, cuando se lanza una {@link InvalidCredentialsException},
+   * el {@link GlobalExceptionHandler} devuelva 401 (Unauthorized).
+   */
+  @Test
+  void handleInvalidCredentials_returnsUnauthorized_andApiErrorBody() {
+    GlobalExceptionHandler handler = new GlobalExceptionHandler();
+    MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/socios/login");
+
+    ResponseEntity<ApiError> res = handler.handleInvalidCredentials(
+        new InvalidCredentialsException("Credenciales invalidas."), req);
+
+    assertEquals(HttpStatus.UNAUTHORIZED, res.getStatusCode());
+
+    ApiError error = res.getBody();
+    assertNotNull(error);
+    assertEquals(HttpStatus.UNAUTHORIZED.value(), error.getStatus());
+    assertEquals("Credenciales invalidas.", error.getMessage());
+    assertEquals("/api/socios/login", error.getPath());
+    assertNotNull(error.getTimestamp());
+  }
+
+  /**
+   * Verifica que, cuando se lanza una {@link SocioInactivoException},
+   * el {@link GlobalExceptionHandler} devuelva 403 (Forbidden).
+   */
+  @Test
+  void handleSocioInactivo_returnsForbidden_andApiErrorBody() {
+    GlobalExceptionHandler handler = new GlobalExceptionHandler();
+    MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/socios/login");
+
+    ResponseEntity<ApiError> res = handler.handleSocioInactivo(
+        new SocioInactivoException("Socio inactivo."), req);
+
+    assertEquals(HttpStatus.FORBIDDEN, res.getStatusCode());
+
+    ApiError error = res.getBody();
+    assertNotNull(error);
+    assertEquals(HttpStatus.FORBIDDEN.value(), error.getStatus());
+    assertEquals("Socio inactivo.", error.getMessage());
+    assertEquals("/api/socios/login", error.getPath());
     assertNotNull(error.getTimestamp());
   }
 
