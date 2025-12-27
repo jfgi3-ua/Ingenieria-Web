@@ -297,7 +297,7 @@
 	.popular > button {
 		background-color: white;
 		color: #0092B8;
-		
+
 	}
 
 	.popular-sticker {

@@ -103,10 +103,7 @@ public class SocioController {
    * y devuelve los datos del socio para la UI.
    */
   @PostMapping("/login")
-  public ResponseEntity<SocioLoginResponse> login(
-      @Valid @RequestBody SocioLoginRequest req,
-      HttpServletRequest request
-  ) {
+  public ResponseEntity<SocioLoginResponse> login(@Valid @RequestBody SocioLoginRequest req, HttpServletRequest request) {
     Socio socio = socioService.autenticar(req.correoElectronico, req.contrasena);
 
     SocioLoginResponse body = new SocioLoginResponse(

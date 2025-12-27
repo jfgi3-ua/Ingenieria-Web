@@ -20,6 +20,9 @@ export async function apiGet<T>(path: string): Promise<T> {
   const res = await fetch(path, {
     method: "GET",
     headers: { "Accept": "application/json" },
+    // Necesario para enviar/recibir cookies de sesion (HttpSession) en el backend.
+    // Sin esto, el navegador no adjunta la cookie y la sesion no se mantiene.
+    credentials: "include",
   })
 
   if (!res.ok) {
@@ -37,12 +40,26 @@ export async function apiPost<T, B>(path: string, body: B): Promise<T> {
   const res = await fetch(path, {
     method: "POST",
     headers: { Accept: "application/json", "Content-Type": "application/json" },
+    // Necesario para enviar/recibir cookies de sesion (HttpSession) en el backend.
+    // Sin esto, el navegador no adjunta la cookie y la sesion no se mantiene.
+    credentials: "include",
     body: JSON.stringify(body),
   })
 
   if (!res.ok) {
     const detail = await readErrorDetail(res)
     throw new Error(`HTTP ${res.status}: ${detail}`)
+  }
+
+  // Algunos endpoints (como logout) responden 204 No Content.
+  // En ese caso no hay JSON que parsear y res.json() lanzaria un error.
+  if (res.status === 204) {
+    return undefined as T
+  }
+
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) {
+    return undefined as T
   }
 
   return res.json() as Promise<T>
