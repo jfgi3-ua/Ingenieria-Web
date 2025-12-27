@@ -1,11 +1,27 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from "vitest"
+import { mount } from "@vue/test-utils"
+import { createRouter, createWebHistory } from "vue-router"
+import App from "../App.vue"
 
-import { mount } from '@vue/test-utils'
-import App from '../App.vue'
+describe("App", () => {
+  it("renders navigation links", async () => {
+    // App uses RouterLink/RouterView, so provide a minimal router to avoid injection errors.
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: "/tarifas", component: { template: "<div />" } },
+        { path: "/registro", component: { template: "<div />" } },
+        { path: "/inicio", component: { template: "<div />" } },
+      ],
+    })
 
-describe('App', () => {
-  it('mounts renders properly', () => {
-    const wrapper = mount(App)
-    expect(wrapper.text()).toContain('You did it!')
+    const wrapper = mount(App, {
+      global: { plugins: [router] },
+    })
+
+    await router.isReady()
+
+    expect(wrapper.text()).toContain("Tarifas")
+    expect(wrapper.text()).toContain("Registro")
   })
 })

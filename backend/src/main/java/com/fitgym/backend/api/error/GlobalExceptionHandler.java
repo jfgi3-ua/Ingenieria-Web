@@ -1,6 +1,8 @@
 package com.fitgym.backend.api.error;
 
 import com.fitgym.backend.service.BusinessException;
+import com.fitgym.backend.service.DuplicateEmailException;
+import com.fitgym.backend.service.TarifaNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiError> handleBusiness(BusinessException ex, HttpServletRequest req) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja email duplicado en registro de socios.
+     * @param ex excepción de email duplicado capturada
+     * @param req objeto de la solicitud HTTP actual
+     * @return respuesta HTTP con estado 409 y detalles del error
+     */
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiError> handleDuplicateEmail(DuplicateEmailException ex, HttpServletRequest req) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja tarifa no encontrada.
+     * @param ex excepción de tarifa no encontrada capturada
+     * @param req objeto de la solicitud HTTP actual
+     * @return respuesta HTTP con estado 404 y detalles del error
+     */
+    @ExceptionHandler(TarifaNotFoundException.class)
+    public ResponseEntity<ApiError> handleTarifaNotFound(TarifaNotFoundException ex, HttpServletRequest req) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI());
     }
 
     /**
