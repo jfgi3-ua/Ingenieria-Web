@@ -2,14 +2,12 @@ package com.fitgym.backend.api;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitgym.backend.api.dto.ActividadResponse;
 import com.fitgym.backend.service.ActividadService;
-import com.fitgym.backend.service.SocioService;
 
 @RestController
 @RequestMapping("/api/actividades")

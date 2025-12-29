@@ -1,10 +1,8 @@
 package com.fitgym.backend.api.dto;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 /**
  * Clase de respuesta que representa la información de una actividad en el sistema.
