@@ -4,11 +4,16 @@
 	import yogaImg from "@/assets/yogaImg.png"
 	import gymImg from "@/assets/gymImg.png"
 	import { ref } from "vue";
+	import router from "@/router";
 
 	const planes = ref<HTMLElement | null>(null);
 
 	const scrollAPlanes = () => {
 		planes.value?.scrollIntoView({behavior: "smooth"});
+	}
+
+	const redireccionAServicios = () => {
+		router.push('/servicios');
 	}
 </script>
 <template>
@@ -19,7 +24,7 @@
 				<p>Únete a nuestra comunidad fitness y alcanza tus objetivos con entrenadores profesionales, equipamiento de última generación y un ambiente motivador</p>
 			</div>
 			<div class="buttons-container">
-				<button class="reserva-btn">Reserva una clase</button>
+				<button @click="redireccionAServicios" class="reserva-btn">Reserva una clase</button>
 				<button @click="scrollAPlanes" class="ver-planes-btn">Ver planes</button>
 			</div>
 		</div>

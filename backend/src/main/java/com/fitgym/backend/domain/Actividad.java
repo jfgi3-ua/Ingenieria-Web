@@ -31,6 +31,9 @@ public class Actividad {
     @Column(nullable = false)
     private Integer plazas = 0;
 
+    @Column(nullable = false)
+    private Integer disponibles = 0;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_monitor", nullable = false)
     private Monitor monitor;
@@ -65,7 +68,9 @@ public class Actividad {
     public Integer getPlazas() { return plazas; }
     public void setPlazas(Integer plazas) { this.plazas = plazas; }
 
-    
+    public Integer getDisponibles() { return disponibles; }
+    public void setDisponibles(Integer disponibles) { this.disponibles = disponibles; }
+
     public Monitor getMonitor() { return monitor; }
     public void setMonitor(Monitor monitor) { this.monitor = monitor; }
 

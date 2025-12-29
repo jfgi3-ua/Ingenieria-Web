@@ -30,6 +30,7 @@ public class ActividadService {
                 actividad.getPrecioExtra(),
                 actividad.getFecha(),
                 actividad.getPlazas(),
+                actividad.getDisponibles(),
                 actividad.getMonitor().getNombre()
             ))
             .toList();

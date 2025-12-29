@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import ActivityCard from "@/components/ActivityCard.vue";
-    import { listarActividades, type Actividad } from "@/services/actividades";
+    import { listarActividades } from "@/services/actividades";
+    import type { Actividad } from "@/types/actividad";
     import { onMounted, ref, computed } from "vue";
 
     const actividades = ref<Actividad[]>([]);
@@ -11,7 +12,7 @@
     onMounted(async () => {
         try {
             actividades.value = await listarActividades();
-            //console.log(actividades.value[0]);
+            console.log(actividades.value[0]?.disponibles);
         }
         catch (e) {
             error.value = e instanceof Error ? e.message : String(e);

@@ -5,6 +5,7 @@
     import usuario from "@/assets/icons/simbolo-de-usuario-de-contorno-delgado.png"
     import type { Actividad } from "@/services/actividades"
     import { onMounted } from "vue"
+    import BarraDisponibles from "./BarraDisponibles.vue"
 
     defineProps<{actividad: Actividad}>();
 
@@ -52,6 +53,7 @@
             <div class="progress-bar">
 
             </div>
+            <BarraDisponibles :key="actividad.id" :actividad="actividad"/>
             <button v-if="actividad.precioExtra == 0" class="card-button">Reservar tu plaza ></button>
             <button v-else class="card-button">Reservar tu plaza - €{{ actividad.precioExtra }} > </button>
         </div>
@@ -59,7 +61,7 @@
 </template>
 <style>
     .general-card-container {
-        height: 400px;
+        height: 430px;
         width: 300px;
         margin-bottom: 30px;
         display: flex;

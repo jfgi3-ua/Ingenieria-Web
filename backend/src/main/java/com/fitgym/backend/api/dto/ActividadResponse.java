@@ -19,7 +19,8 @@ import java.time.LocalTime;
  * @param horaFin: Hora de finalizacion de la actividad. Este valor es de tipo LocalDate.
  * @param precioExtra: Precio extra si no se incluye en la tarifa. Este valor es de tipo BigDecimal.
  * @param fecha: Dia de la actividad. Este valor es de tipo Date.
- * @param plazas: Plazas disponibles en la activida. Este valor es de tipo BigInteger
+ * @param plazas: Plazas totales en la activida. Este valor es de tipo BigInteger
+ * @param disponibles: Plazas disponibles en la activida. Este valor es de tipo BigInteger
  * @param monitor: Nombre del monitor que da la clase. Este valor es de tipo String.
  * 
  * Esta clase se utiliza para transferir datos entre las capas de la aplicación,
@@ -34,5 +35,6 @@ public record ActividadResponse(
     BigDecimal precioExtra,
     LocalDate fecha,
     Integer plazas,
+    Integer disponibles,
     String monitor
 ) {}
