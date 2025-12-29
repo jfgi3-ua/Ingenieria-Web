@@ -3,25 +3,47 @@
     import calendario from "@/assets/icons/calendario.png"
     import reloj from "@/assets/icons/reloj.png"
     import usuario from "@/assets/icons/simbolo-de-usuario-de-contorno-delgado.png"
+    import type { Actividad } from "@/services/actividades"
+    import { onMounted } from "vue"
+
+    defineProps<{actividad: Actividad}>();
+
+    //Funcion para posar de "2025-12-20" al día correspondiente (Lunes, Martes...)
+    function obtenerDiaSemana(fechaStr: string): string {
+        const fecha = new Date(fechaStr);
+        const dia = fecha.toLocaleDateString("es-ES", {weekday: "long"});
+        
+        return dia.charAt(0).toUpperCase() + dia.slice(1).toLowerCase();
+    }
+
+    function calcularTiempoClase(horaIni: string, horaFin: string): number {
+        const [hIni, mIni] = horaIni.split(":").map(Number);
+        const [hFin, mFin] = horaFin.split(":").map(Number);
+
+        const minutosIni = hIni! * 60 + mIni!;
+        const minutosFin = hFin! * 60 + mFin!;
+
+        return minutosFin - minutosIni;
+    }
 
 </script>
 <template>
     <div class="general-card-container">
         <img :src="yogaImg" alt="Imagen de actividad asociada">
         <div class="card-info">
-            <h4>Yoga indoor</h4>
+            <h4>{{ actividad.nombre }}</h4>
             <p>Sesión de yoga enfocada en el flujo de la respiración para todos los niveles</p>
             <div class="day-info">
                 <img :src="calendario" alt="calendario">
-                <p>Lunes</p>
+                <p>{{ obtenerDiaSemana(actividad.fecha) }}</p>
             </div>
             <div class="time-info">
                 <img :src="reloj" alt="reloj">
-                <p>9:00 (60 minutos)</p>
+                <p>{{ actividad.horaIni.slice(0,5) }} ({{ calcularTiempoClase(actividad.horaIni, actividad.horaFin) }} min)</p>
             </div>
             <div class="instructor-info">
                 <img :src="usuario" alt="usuario">
-                <p>Lucía Soriano</p>
+                <p>Por determinar</p>
             </div>
             <div class="sala-info">
 
@@ -29,7 +51,8 @@
             <div class="progress-bar">
 
             </div>
-            <button class="card-button">Reservar tu plaza ></button>
+            <button v-if="actividad.precioExtra == 0" class="card-button">Reservar tu plaza ></button>
+            <button v-else class="card-button">Reservar tu plaza - €{{ actividad.precioExtra }} > </button>
         </div>
     </div>
 </template>
