@@ -8,6 +8,7 @@ export type Actividad = {
     precioExtra: number
     fecha: string
     plazas: number
+    monitor: string
 }
 
 export function listarActividades() {

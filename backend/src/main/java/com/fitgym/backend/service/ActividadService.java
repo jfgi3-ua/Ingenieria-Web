@@ -29,7 +29,8 @@ public class ActividadService {
                 actividad.getHoraFin(),
                 actividad.getPrecioExtra(),
                 actividad.getFecha(),
-                actividad.getPlazas()
+                actividad.getPlazas(),
+                actividad.getMonitor().getNombre()
             ))
             .toList();
     }

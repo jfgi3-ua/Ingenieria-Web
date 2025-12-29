@@ -43,7 +43,8 @@
             </div>
             <div class="instructor-info">
                 <img :src="usuario" alt="usuario">
-                <p>Por determinar</p>
+                <p v-if="actividad.monitor">{{ actividad.monitor }}</p>
+                <p v-else>Por determinar</p>
             </div>
             <div class="sala-info">
 

@@ -6,12 +6,12 @@
     const actividades = ref<Actividad[]>([]);
     const error = ref<string | null>(null);
     const paginaActual = ref(1);
-    const actividadesPagina = 2;
+    const actividadesPagina = 9;
 
     onMounted(async () => {
         try {
             actividades.value = await listarActividades();
-            console.log(actividades.value[0]?.horaIni);
+            //console.log(actividades.value[0]);
         }
         catch (e) {
             error.value = e instanceof Error ? e.message : String(e);

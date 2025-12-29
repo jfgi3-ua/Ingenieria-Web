@@ -31,10 +31,11 @@ public class Actividad {
     @Column(nullable = false)
     private Integer plazas = 0;
 
-    /*@ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_monitor", nullable = false)
     private Monitor monitor;
-
+    
+    /*
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sala", nullable = false)
     private Sala sala;
@@ -64,10 +65,11 @@ public class Actividad {
     public Integer getPlazas() { return plazas; }
     public void setPlazas(Integer plazas) { this.plazas = plazas; }
 
-    /*
+    
     public Monitor getMonitor() { return monitor; }
     public void setMonitor(Monitor monitor) { this.monitor = monitor; }
 
+    /*
     public Sala getSala() { return sala; }
     public void setSala(Sala sala) { this.sala = sala; }
 
