@@ -47,4 +47,14 @@ describe("router guard", () => {
 
     expect(router.currentRoute.value.path).toBe("/inicio")
   })
+
+  it("permite acceder a /servicios con sesion activa", async () => {
+    const { router, store } = await setupRouter()
+    store.isAuthenticated = true
+
+    await router.push("/servicios")
+    await router.isReady()
+
+    expect(router.currentRoute.value.path).toBe("/servicios")
+  })
 })

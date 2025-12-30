@@ -141,6 +141,40 @@ class SocioControllerAuthTest {
     assertThat(session.isInvalid()).isTrue();
   }
 
+  @Test
+  void login_crea_sesion_y_me_la_recupera() throws Exception {
+    Socio socio = buildSocio("test@fitgym.com", SocioEstado.ACTIVO);
+    when(socioService.autenticar("test@fitgym.com", "Password123")).thenReturn(socio);
+
+    String payload = "{\"correoElectronico\":\"test@fitgym.com\",\"contrasena\":\"Password123\"}";
+
+    var loginResult = mockMvc.perform(post("/api/socios/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(payload))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    MockHttpSession session = (MockHttpSession) loginResult.getRequest().getSession(false);
+    assertThat(session).isNotNull();
+
+    mockMvc.perform(get("/api/socios/me").session(session))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.correoElectronico").value("test@fitgym.com"));
+  }
+
+  @Test
+  void logout_invalida_sesion_y_me_devuelve_401() throws Exception {
+    MockHttpSession session = new MockHttpSession();
+    session.setAttribute(SESSION_SOCIO_KEY, new SocioSession(
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico"));
+
+    mockMvc.perform(post("/api/socios/logout").session(session))
+        .andExpect(status().isNoContent());
+
+    mockMvc.perform(get("/api/socios/me").session(session))
+        .andExpect(status().isUnauthorized());
+  }
+
   private Socio buildSocio(String email, SocioEstado estado) {
     Tarifa tarifa = Mockito.mock(Tarifa.class);
     when(tarifa.getId()).thenReturn(10L);
