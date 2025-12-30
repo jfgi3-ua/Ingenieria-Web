@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS actividad (
   precio_extra     NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK (precio_extra >= 0),
   fecha            DATE NOT NULL,
   plazas           INTEGER NOT NULL CHECK (plazas >= 0),
+  disponibles      INTEGER NOT NULL CHECK (disponibles <= plazas),    
 
   id_monitor       BIGINT NOT NULL,
   id_sala          BIGINT NOT NULL,

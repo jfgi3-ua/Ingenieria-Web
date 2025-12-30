@@ -75,18 +75,18 @@ m AS (SELECT id, nombre FROM monitor),
 s AS (SELECT id, descripcion FROM sala),
 ta AS (SELECT id, nombre FROM tipo_actividad)
 INSERT INTO actividad (
-  nombre, hora_ini, hora_fin, precio_extra, fecha, plazas,
+  nombre, hora_ini, hora_fin, precio_extra, fecha, plazas, disponibles,
   id_monitor, id_sala, id_tipo_actividad
 )
 SELECT
-  v.nombre, v.h_ini, v.h_fin, v.precio, v.fecha, v.plazas,
+  v.nombre, v.h_ini, v.h_fin, v.precio, v.fecha, v.plazas, v.disponibles,
   m.id, s.id, ta.id
 FROM (VALUES
-  ('Spinning - Nivel Medio',     '18:00'::time, '19:00'::time, 0.00, (current_date + 1), 25, 'Laura Sánchez',  'Sala Ciclo Indoor', 'Spinning'),
-  ('Yoga - Flow Suave',          '19:30'::time, '20:30'::time, 0.00, (current_date + 1), 20, 'Sara López',     'Sala Mind & Body',  'Yoga'),
-  ('Cross Training - HIIT',      '20:00'::time, '21:00'::time, 2.50, (current_date + 2), 18, 'Miguel Torres',  'Box Funcional',     'Cross Training'),
-  ('Pilates - Core & Stability', '18:30'::time, '19:30'::time, 0.00, (current_date + 2), 20, 'Sara López',     'Sala Mind & Body',  'Pilates')
-) AS v(nombre, h_ini, h_fin, precio, fecha, plazas, monitor_nombre, sala_desc, tipo_nombre)
+  ('Spinning - Nivel Medio',     '18:00'::time, '19:00'::time, 0.00, (current_date + 1), 25, 25, 'Laura Sánchez',  'Sala Ciclo Indoor', 'Spinning'),
+  ('Yoga - Flow Suave',          '19:30'::time, '20:30'::time, 0.00, (current_date + 1), 20, 20, 'Sara López',     'Sala Mind & Body',  'Yoga'),
+  ('Cross Training - HIIT',      '20:00'::time, '21:00'::time, 2.50, (current_date + 2), 18, 18, 'Miguel Torres',  'Box Funcional',     'Cross Training'),
+  ('Pilates - Core & Stability', '18:30'::time, '19:30'::time, 0.00, (current_date + 2), 20, 20, 'Sara López',     'Sala Mind & Body',  'Pilates')
+) AS v(nombre, h_ini, h_fin, precio, fecha, plazas, disponibles, monitor_nombre, sala_desc, tipo_nombre)
 JOIN m  ON m.nombre = v.monitor_nombre
 JOIN s  ON s.descripcion = v.sala_desc
 JOIN ta ON ta.nombre = v.tipo_nombre
