@@ -108,7 +108,7 @@
         </div>
     </section>
 
-    <div class="pagination">
+    <div v-if="actividadesPaginadas.length > 0" class="pagination">
         <button class="pagination-btn" @click="paginaAnterior" :disabled="paginaActual === 1">
             ← Anterior
         </button>
@@ -116,6 +116,17 @@
         <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
 
         <button class="pagination-btn" @click="paginaSiguiente" :disabled="paginaActual === totalPaginas">
+            Siguiente →
+        </button>
+    </div>
+    <div v-else class="pagination">
+        <button class="pagination-btn" @click="paginaAnterior" disabled>
+            ← Anterior
+        </button>
+
+        <span>Página 0 de 0</span>
+
+        <button class="pagination-btn" @click="paginaSiguiente" disabled>
             Siguiente →
         </button>
     </div>
