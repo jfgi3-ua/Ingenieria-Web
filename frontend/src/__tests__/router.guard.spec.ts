@@ -5,7 +5,7 @@ async function setupRouter() {
   setActivePinia(createPinia())
   const { useAuthStore } = await import("@/stores/auth.store")
   const store = useAuthStore()
-  store.loadSession = vi.fn().mockResolvedValue(null) as any
+  store.loadSession = vi.fn().mockResolvedValue(null) as unknown as typeof store.loadSession
   const { default: router } = await import("@/router/index")
   return { router, store }
 }
@@ -20,11 +20,11 @@ describe("router guard", () => {
     const { router, store } = await setupRouter()
     store.isAuthenticated = false
 
-    await router.push("/inicio")
+    await router.push("/servicios")
     await router.isReady()
 
     expect(router.currentRoute.value.path).toBe("/login")
-    expect(router.currentRoute.value.query.redirect).toBe("/inicio")
+    expect(router.currentRoute.value.query.redirect).toBe("/servicios")
     expect(router.currentRoute.value.query.reason).toBe("auth")
   })
 
