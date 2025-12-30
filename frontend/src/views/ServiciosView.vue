@@ -49,7 +49,7 @@
         const inicio = (paginaActual.value - 1) * actividadesPagina;
         const fin = inicio + actividadesPagina;
 
-        return actividadesFiltradasDia.value.slice(inicio,fin);
+        return actividadesFiltradasDia.value.slice(inicio,fin).sort((a1, a2) => a1.fecha < a2.fecha ? -1 : 1);
     })
 
     function paginaSiguiente() {
@@ -64,10 +64,10 @@
         }
     }
 
-    //Ver dia filtrado -> SOLO PARA ESO
+    //Establecer día filtrado
     function seleccionarDia(dia: string) {
         diaFiltrado.value = dia;
-        console.log(dia);
+        //console.log(dia);
     }
 
     
@@ -96,7 +96,11 @@
 
     <section class="activity-cards-section">
         <div class="activity-cards">
+            <div v-if="actividadesPaginadas.length == 0">
+                <p>No hay actividades programadas para esta fecha...</p>
+            </div>
             <ActivityCard
+                v-else
                 v-for="actividad in actividadesPaginadas"
                 :key="actividad.id"
                 :actividad="actividad"
