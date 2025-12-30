@@ -3,30 +3,53 @@
     import { listarActividades } from "@/services/actividades";
     import type { Actividad } from "@/types/actividad";
     import { onMounted, ref, computed } from "vue";
+    import { watch } from 'vue';
 
     const actividades = ref<Actividad[]>([]);
     const error = ref<string | null>(null);
     const paginaActual = ref(1);
     const actividadesPagina = 9;
-
+    const diaFiltrado = ref<string |null>("Todos");
+    const dias = ['Todos', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
     onMounted(async () => {
         try {
             actividades.value = await listarActividades();
-            console.log(actividades.value[0]?.disponibles);
+            //console.log(actividades.value[0]?.disponibles);
         }
         catch (e) {
             error.value = e instanceof Error ? e.message : String(e);
         }
     })
 
+    //Funcion para posar de "2025-12-20" al día correspondiente (Lunes, Martes...)
+    function obtenerDiaSemana(fechaStr: string): string {
+        const fecha = new Date(fechaStr);
+        const dia = fecha.toLocaleDateString("es-ES", {weekday: "long"});
+        
+        return dia.charAt(0).toUpperCase() + dia.slice(1).toLowerCase();
+    }
+
+    const actividadesFiltradasDia = computed<Actividad[]>(() => {
+        if(diaFiltrado.value === "Todos"){
+            return actividades.value;
+        } 
+        return actividades.value.filter(a => obtenerDiaSemana(a.fecha) === diaFiltrado.value);
+    });
+
     //Calcular cantidad de paginas
-    const totalPaginas = computed(() => Math.ceil(actividades.value.length / actividadesPagina)); 
+    const totalPaginas = computed(() => Math.ceil(actividadesFiltradasDia.value.length / actividadesPagina)); 
     
+    //Poner otra vez desde la pag. 1 cuando cambiamos el filtro
+    watch(diaFiltrado, () => {
+        paginaActual.value = 1;
+    });
+
     const actividadesPaginadas = computed(() => {
         const inicio = (paginaActual.value - 1) * actividadesPagina;
         const fin = inicio + actividadesPagina;
 
-        return actividades.value.slice(inicio,fin);
+        return actividadesFiltradasDia.value.slice(inicio,fin).sort((a1, a2) => a1.fecha < a2.fecha ? -1 : 1);
     })
 
     function paginaSiguiente() {
@@ -40,6 +63,14 @@
             paginaActual.value--;
         }
     }
+
+    //Establecer día filtrado
+    function seleccionarDia(dia: string) {
+        diaFiltrado.value = dia;
+        //console.log(dia);
+    }
+
+    
 </script>
 
 <template>
@@ -53,27 +84,30 @@
     <section class="filters-section">
         <div class="day-container">
             <p>Día de la semana</p>
+
             <div class="day-selection-container">
-                <button class="day-selection-button">Todos</button>
-                <button class="day-selection-button">Lunes</button>
-                <button class="day-selection-button">Martes</button>
-                <button class="day-selection-button">Miércoles</button>
-                <button class="day-selection-button">Jueves</button>
-                <button class="day-selection-button">Viernes</button>
-                <button class="day-selection-button">Sábado</button>
+                <label class="day-option" v-for="dia in dias" :key="dia" :class="{ active: diaFiltrado === dia }">
+                    <input type="radio" name="day" :value="dia" v-model="diaFiltrado" hidden />
+                    <span @click="seleccionarDia(dia)">{{ dia }}</span>
+                </label>
             </div>
         </div>
     </section>
 
     <section class="activity-cards-section">
         <div class="activity-cards">
+            <div v-if="actividadesPaginadas.length == 0">
+                <p>No hay actividades programadas para esta fecha...</p>
+            </div>
             <ActivityCard
+                v-else
                 v-for="actividad in actividadesPaginadas"
                 :key="actividad.id"
                 :actividad="actividad"
             />
         </div>
     </section>
+
     <div class="pagination">
         <button class="pagination-btn" @click="paginaAnterior" :disabled="paginaActual === 1">
             ← Anterior
@@ -144,15 +178,32 @@ html {
     justify-content: space-between
 }
 
-.day-selection-button {
+.day-option {
+    cursor: pointer;
+}
+
+.day-option.active span {
+    background-color: #0092B8;
+    color: white;
+}
+
+.day-option input {
+    display: none;
+}
+
+.day-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 40px;
     width: 70px;
     background-color: #e7e9ed;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
 }
 
-.day-selection-button:active,
-.day-selection-button:focus {
+.day-option input:checked + span {
     background-color: #0092B8;
     color: white;
 }
