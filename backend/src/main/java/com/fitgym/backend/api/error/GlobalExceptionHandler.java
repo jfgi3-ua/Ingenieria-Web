@@ -2,6 +2,8 @@ package com.fitgym.backend.api.error;
 
 import com.fitgym.backend.service.BusinessException;
 import com.fitgym.backend.service.DuplicateEmailException;
+import com.fitgym.backend.service.InvalidCredentialsException;
+import com.fitgym.backend.service.SocioInactivoException;
 import com.fitgym.backend.service.TarifaNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -61,6 +63,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TarifaNotFoundException.class)
     public ResponseEntity<ApiError> handleTarifaNotFound(TarifaNotFoundException ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja credenciales invalidas en login.
+     * @param ex excepcion de credenciales invalidas capturada
+     * @param req objeto de la solicitud HTTP actual
+     * @return respuesta HTTP con estado 401 y detalles del error
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiError> handleInvalidCredentials(InvalidCredentialsException ex, HttpServletRequest req) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja intentos de login de socios inactivos.
+     * @param ex excepcion de socio inactivo capturada
+     * @param req objeto de la solicitud HTTP actual
+     * @return respuesta HTTP con estado 403 y detalles del error
+     */
+    @ExceptionHandler(SocioInactivoException.class)
+    public ResponseEntity<ApiError> handleSocioInactivo(SocioInactivoException ex, HttpServletRequest req) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage(), req.getRequestURI());
     }
 
     /**
