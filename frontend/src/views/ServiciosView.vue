@@ -40,6 +40,15 @@
             paginaActual.value--;
         }
     }
+
+    const buttons = document.querySelectorAll('.day-selection-button');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
 </script>
 
 <template>
@@ -53,17 +62,46 @@
     <section class="filters-section">
         <div class="day-container">
             <p>Día de la semana</p>
+
             <div class="day-selection-container">
-                <button class="day-selection-button">Todos</button>
-                <button class="day-selection-button">Lunes</button>
-                <button class="day-selection-button">Martes</button>
-                <button class="day-selection-button">Miércoles</button>
-                <button class="day-selection-button">Jueves</button>
-                <button class="day-selection-button">Viernes</button>
-                <button class="day-selection-button">Sábado</button>
+                <label class="day-option">
+                    <input type="radio" name="day" checked>
+                    <span>Todos</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Lunes</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Martes</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Miércoles</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Jueves</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Viernes</span>
+                </label>
+
+                <label class="day-option">
+                    <input type="radio" name="day">
+                    <span>Sábado</span>
+                </label>
             </div>
         </div>
     </section>
+
 
     <section class="activity-cards-section">
         <div class="activity-cards">
@@ -144,15 +182,27 @@ html {
     justify-content: space-between
 }
 
-.day-selection-button {
+.day-option {
+    cursor: pointer;
+}
+
+.day-option input {
+    display: none;
+}
+
+.day-option span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 40px;
     width: 70px;
     background-color: #e7e9ed;
     border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
 }
 
-.day-selection-button:active,
-.day-selection-button:focus {
+.day-option input:checked + span {
     background-color: #0092B8;
     color: white;
 }
