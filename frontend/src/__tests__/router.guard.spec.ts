@@ -37,4 +37,14 @@ describe("router guard", () => {
 
     expect(router.currentRoute.value.path).toBe("/inicio")
   })
+
+  it("permite acceder a /inicio sin sesion", async () => {
+    const { router, store } = await setupRouter()
+    store.isAuthenticated = false
+
+    await router.push("/inicio")
+    await router.isReady()
+
+    expect(router.currentRoute.value.path).toBe("/inicio")
+  })
 })

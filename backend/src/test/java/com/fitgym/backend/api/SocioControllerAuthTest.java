@@ -93,8 +93,27 @@ class SocioControllerAuthTest {
   }
 
   @Test
+  void login_request_invalido_devuelve_400() throws Exception {
+    String payload = "{\"correoElectronico\":\"badmail\",\"contrasena\":\"short\"}";
+
+    mockMvc.perform(post("/api/socios/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(payload))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
   void me_sin_sesion_devuelve_401() throws Exception {
     mockMvc.perform(get("/api/socios/me"))
+        .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void me_con_sesion_invalida_devuelve_401() throws Exception {
+    MockHttpSession session = new MockHttpSession();
+    session.setAttribute(SESSION_SOCIO_KEY, "valor-invalido");
+
+    mockMvc.perform(get("/api/socios/me").session(session))
         .andExpect(status().isUnauthorized());
   }
 
@@ -118,6 +137,8 @@ class SocioControllerAuthTest {
 
     mockMvc.perform(post("/api/socios/logout").session(session))
         .andExpect(status().isNoContent());
+
+    assertThat(session.isInvalid()).isTrue();
   }
 
   private Socio buildSocio(String email, SocioEstado estado) {

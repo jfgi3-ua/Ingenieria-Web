@@ -52,6 +52,22 @@ describe("LoginView", () => {
     expect(replaceSpy).toHaveBeenCalledWith("/inicio")
   })
 
+  it("redirige a /inicio si no hay redirect en la query", async () => {
+    const store = useAuthStore()
+    const loginSpy = vi.spyOn(store, "login").mockResolvedValue({ id: 1 } as any)
+
+    const { wrapper, router } = await mountWithRouter()
+    const replaceSpy = vi.spyOn(router, "replace").mockResolvedValue(undefined as any)
+
+    await wrapper.find('input[type="email"]').setValue("test@fitgym.com")
+    await wrapper.find('input[type="password"]').setValue("Password123")
+    await wrapper.find("form").trigger("submit.prevent")
+    await flushPromises()
+
+    expect(loginSpy).toHaveBeenCalled()
+    expect(replaceSpy).toHaveBeenCalledWith("/inicio")
+  })
+
   it("muestra error de credenciales cuando el login falla", async () => {
     const store = useAuthStore()
     vi.spyOn(store, "login").mockRejectedValue(new Error("HTTP 401: Credenciales invalidas."))
