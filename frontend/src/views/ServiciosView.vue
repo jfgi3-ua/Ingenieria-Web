@@ -3,30 +3,53 @@
     import { listarActividades } from "@/services/actividades";
     import type { Actividad } from "@/types/actividad";
     import { onMounted, ref, computed } from "vue";
+    import { watch } from 'vue';
 
     const actividades = ref<Actividad[]>([]);
     const error = ref<string | null>(null);
     const paginaActual = ref(1);
     const actividadesPagina = 9;
-
+    const diaFiltrado = ref<string |null>("Todos");
+    const dias = ['Todos', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
     onMounted(async () => {
         try {
             actividades.value = await listarActividades();
-            console.log(actividades.value[0]?.disponibles);
+            //console.log(actividades.value[0]?.disponibles);
         }
         catch (e) {
             error.value = e instanceof Error ? e.message : String(e);
         }
     })
 
+    //Funcion para posar de "2025-12-20" al día correspondiente (Lunes, Martes...)
+    function obtenerDiaSemana(fechaStr: string): string {
+        const fecha = new Date(fechaStr);
+        const dia = fecha.toLocaleDateString("es-ES", {weekday: "long"});
+        
+        return dia.charAt(0).toUpperCase() + dia.slice(1).toLowerCase();
+    }
+
+    const actividadesFiltradasDia = computed<Actividad[]>(() => {
+        if(diaFiltrado.value === "Todos"){
+            return actividades.value;
+        } 
+        return actividades.value.filter(a => obtenerDiaSemana(a.fecha) === diaFiltrado.value);
+    });
+
     //Calcular cantidad de paginas
-    const totalPaginas = computed(() => Math.ceil(actividades.value.length / actividadesPagina)); 
+    const totalPaginas = computed(() => Math.ceil(actividadesFiltradasDia.value.length / actividadesPagina)); 
     
+    //Poner otra vez desde la pag. 1 cuando cambiamos el filtro
+    watch(diaFiltrado, () => {
+        paginaActual.value = 1;
+    });
+
     const actividadesPaginadas = computed(() => {
         const inicio = (paginaActual.value - 1) * actividadesPagina;
         const fin = inicio + actividadesPagina;
 
-        return actividades.value.slice(inicio,fin);
+        return actividadesFiltradasDia.value.slice(inicio,fin);
     })
 
     function paginaSiguiente() {
@@ -41,14 +64,13 @@
         }
     }
 
-    const buttons = document.querySelectorAll('.day-selection-button');
+    //Ver dia filtrado -> SOLO PARA ESO
+    function seleccionarDia(dia: string) {
+        diaFiltrado.value = dia;
+        console.log(dia);
+    }
 
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            buttons.forEach(b => b.classList.remove('active'));
-            button.classList.add('active');
-        });
-    });
+    
 </script>
 
 <template>
@@ -64,44 +86,13 @@
             <p>Día de la semana</p>
 
             <div class="day-selection-container">
-                <label class="day-option">
-                    <input type="radio" name="day" checked>
-                    <span>Todos</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Lunes</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Martes</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Miércoles</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Jueves</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Viernes</span>
-                </label>
-
-                <label class="day-option">
-                    <input type="radio" name="day">
-                    <span>Sábado</span>
+                <label class="day-option" v-for="dia in dias" :key="dia" :class="{ active: diaFiltrado === dia }">
+                    <input type="radio" name="day" :value="dia" v-model="diaFiltrado" hidden />
+                    <span @click="seleccionarDia(dia)">{{ dia }}</span>
                 </label>
             </div>
         </div>
     </section>
-
 
     <section class="activity-cards-section">
         <div class="activity-cards">
@@ -112,6 +103,7 @@
             />
         </div>
     </section>
+
     <div class="pagination">
         <button class="pagination-btn" @click="paginaAnterior" :disabled="paginaActual === 1">
             ← Anterior
@@ -184,6 +176,11 @@ html {
 
 .day-option {
     cursor: pointer;
+}
+
+.day-option.active span {
+    background-color: #0092B8;
+    color: white;
 }
 
 .day-option input {
