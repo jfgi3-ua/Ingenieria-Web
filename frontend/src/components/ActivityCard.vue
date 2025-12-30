@@ -3,7 +3,7 @@
     import calendario from "@/assets/icons/calendario.png"
     import reloj from "@/assets/icons/reloj.png"
     import usuario from "@/assets/icons/simbolo-de-usuario-de-contorno-delgado.png"
-    import type { Actividad } from "@/services/actividades"
+    import type { Actividad } from "@/types/actividad"
     import { onMounted } from "vue"
     import BarraDisponibles from "./BarraDisponibles.vue"
 
@@ -15,6 +15,14 @@
         const dia = fecha.toLocaleDateString("es-ES", {weekday: "long"});
         
         return dia.charAt(0).toUpperCase() + dia.slice(1).toLowerCase();
+    }
+
+    //Solo para sacar el dia y mes(quitamos el año que no nos importa)
+    function obtenerFechaSinAnyo(fechaStr: string): string {
+        const dia = fechaStr.slice(-2); //sacamos dia
+        const mes = fechaStr.slice(5, 7);
+
+        return `${dia}/${mes}`;
     }
 
     function calcularTiempoClase(horaIni: string, horaFin: string): number {
@@ -36,7 +44,7 @@
             <p>Sesión de yoga enfocada en el flujo de la respiración para todos los niveles</p>
             <div class="day-info">
                 <img :src="calendario" alt="calendario">
-                <p>{{ obtenerDiaSemana(actividad.fecha) }}</p>
+                <p>{{ obtenerDiaSemana(actividad.fecha) }} - {{ obtenerFechaSinAnyo(actividad.fecha) }}</p>
             </div>
             <div class="time-info">
                 <img :src="reloj" alt="reloj">
