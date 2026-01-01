@@ -79,7 +79,8 @@ public class SocioController {
         req.idTarifa,
         req.direccion,
         req.ciudad,
-        req.codigoPostal
+        req.codigoPostal,
+        req.paymentToken
     );
 
     SocioResponse body = new SocioResponse(

@@ -8,6 +8,11 @@ spring:
     hibernate:
       ddl-auto: validate
 
+tpvv:
+  base-url: ${TPVV_BASE_URL:https://tpv-backend-cbbg.onrender.com}
+  api-key: ${TPVV_API_KEY:}
+  callback-url: ${TPVV_CALLBACK_URL:http://localhost:5173/registro?step=2}
+
 # logging:
 #   level:
 #     org.springframework.boot.context.config: TRACE

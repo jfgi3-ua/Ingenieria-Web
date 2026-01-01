@@ -7,6 +7,7 @@ export type SocioRegistroRequest = {
   direccion?: string
   ciudad?: string
   codigoPostal?: string
+  paymentToken: string
 }
 
 // Payload enviado al backend para iniciar sesion.

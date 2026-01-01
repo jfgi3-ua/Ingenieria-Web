@@ -30,6 +30,7 @@ class SocioServiceAuthTest {
   private SocioRepository socioRepo;
   private TarifaRepository tarifaRepo;
   private PasswordEncoder passwordEncoder;
+  private PagoRegistroService pagoRegistroService;
   private SocioService socioService;
 
   @BeforeEach
@@ -37,7 +38,8 @@ class SocioServiceAuthTest {
     socioRepo = Mockito.mock(SocioRepository.class);
     tarifaRepo = Mockito.mock(TarifaRepository.class);
     passwordEncoder = new BCryptPasswordEncoder();
-    socioService = new SocioService(socioRepo, tarifaRepo, passwordEncoder);
+    pagoRegistroService = Mockito.mock(PagoRegistroService.class);
+    socioService = new SocioService(socioRepo, tarifaRepo, passwordEncoder, pagoRegistroService);
   }
 
   @Test

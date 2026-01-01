@@ -3,8 +3,11 @@ package com.fitgym.backend.api.error;
 import com.fitgym.backend.service.BusinessException;
 import com.fitgym.backend.service.DuplicateEmailException;
 import com.fitgym.backend.service.InvalidCredentialsException;
+import com.fitgym.backend.service.PagoRegistroNoCompletadoException;
+import com.fitgym.backend.service.PagoRegistroNotFoundException;
 import com.fitgym.backend.service.SocioInactivoException;
 import com.fitgym.backend.service.TarifaNotFoundException;
+import com.fitgym.backend.service.TpvvCommunicationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +66,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TarifaNotFoundException.class)
     public ResponseEntity<ApiError> handleTarifaNotFound(TarifaNotFoundException ex, HttpServletRequest req) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja pago de registro no encontrado.
+     */
+    @ExceptionHandler(PagoRegistroNotFoundException.class)
+    public ResponseEntity<ApiError> handlePagoNotFound(PagoRegistroNotFoundException ex, HttpServletRequest req) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja pago pendiente o fallido cuando se requiere estado COMPLETED.
+     */
+    @ExceptionHandler(PagoRegistroNoCompletadoException.class)
+    public ResponseEntity<ApiError> handlePagoNoCompletado(PagoRegistroNoCompletadoException ex, HttpServletRequest req) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), req.getRequestURI());
+    }
+
+    /**
+     * Maneja errores de comunicacion con TPVV.
+     */
+    @ExceptionHandler(TpvvCommunicationException.class)
+    public ResponseEntity<ApiError> handleTpvv(TpvvCommunicationException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_GATEWAY, ex.getMessage(), req.getRequestURI());
     }
 
     /**

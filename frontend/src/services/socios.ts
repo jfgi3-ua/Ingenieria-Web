@@ -7,7 +7,6 @@ import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse } from "@/t
  * Backend esperado: POST /api/socios
  */
 export function registrarSocio(payload: SocioRegistroRequest) {
-  console.log("Registrando socio con payload:", payload)
   return apiPost<SocioResponse, SocioRegistroRequest>("/api/socios/registro", payload)
 }
 

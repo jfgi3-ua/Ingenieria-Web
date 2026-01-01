@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue"
+import { useRoute } from "vue-router"
 import { listarTarifas, type Tarifa } from "@/services/tarifas"
+import { initPago, verifyPago } from "@/services/pagos"
 import { registrarSocio } from "@/services/socios"
 import { type SocioRegistroRequest, type SocioResponse } from "@/types/socio"
+
+const route = useRoute()
+const REGISTRO_STORAGE_KEY = "fitgym_registro_draft"
 
 const tarifas = ref<Tarifa[]>([])
 const loadingTarifas = ref(false)
@@ -15,7 +20,10 @@ const ok = ref<SocioResponse | null>(null)
 const step = ref<1 | 2 | 3>(1)
 const stepErrors = ref<string[]>([])
 const termsAccepted = ref(false)
-const pagoConfirmado = ref(false)
+const pagoEstado = ref<"PENDING" | "COMPLETED" | "FAILED" | null>(null)
+const pagoError = ref<string | null>(null)
+const loadingPago = ref(false)
+const loadingVerify = ref(false)
 
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
@@ -40,15 +48,20 @@ const form = ref<SocioRegistroRequest>({
   ciudad: "",
   codigoPostal: "",
   idTarifa: 0,
+  paymentToken: "",
 })
 
 const tarifaSeleccionada = computed(() => tarifas.value.find((t) => t.id === form.value.idTarifa) ?? null)
 const tarifaPopularId = computed(() => tarifas.value.find((t) => t.nombre.toLowerCase().includes("premium"))?.id ?? null)
 
-const canContinueStep2 = computed(() => Boolean(tarifaSeleccionada.value) && pagoConfirmado.value)
+const pagoConfirmado = computed(() => pagoEstado.value === "COMPLETED")
+const canContinueStep2 = computed(
+  () => Boolean(tarifaSeleccionada.value) && pagoConfirmado.value && !loadingVerify.value
+)
 const canSubmit = computed(() => termsAccepted.value && !loadingSubmit.value)
 
 onMounted(async () => {
+  restoreDraft()
   loadingTarifas.value = true
   tarifasError.value = null
   try {
@@ -59,12 +72,15 @@ onMounted(async () => {
   } finally {
     loadingTarifas.value = false
   }
+  await aplicarEstadoDesdeRoute()
 })
 
 watch(
   () => form.value.idTarifa,
   () => {
-    pagoConfirmado.value = false
+    pagoEstado.value = null
+    pagoError.value = null
+    form.value.paymentToken = ""
   }
 )
 
@@ -82,10 +98,41 @@ function featuresForTarifa(tarifa: Tarifa) {
   return features
 }
 
+function applyStepFromRoute() {
+  const stepParam = route.query.step
+  if (stepParam === "2") {
+    step.value = 2
+  }
+}
+
+function readTokenFromRoute(): string | null {
+  const token = route.query.token
+  if (typeof token === "string" && token.trim().length > 0) {
+    return token
+  }
+  return null
+}
+
+async function aplicarEstadoDesdeRoute() {
+  applyStepFromRoute()
+  const token = readTokenFromRoute()
+  if (!token) return
+
+  if (step.value !== 2) step.value = 2
+  await verificarPagoDesdeBackend(token)
+}
+
 function normalizeErrorMessage(msg: string) {
   if (msg.includes("409")) return "Ese correo ya está registrado."
   if (msg.includes("404")) return "La tarifa seleccionada no existe."
   if (msg.includes("400")) return "Revisa los campos del formulario."
+  return msg
+}
+
+function normalizePagoError(msg: string) {
+  if (msg.includes("502")) return "No se pudo conectar con la pasarela de pago."
+  if (msg.includes("404")) return "No se encontro la transaccion de pago."
+  if (msg.includes("409")) return "El pago aun no esta completado."
   return msg
 }
 
@@ -137,13 +184,81 @@ function irAnterior() {
   if (step.value > 1) step.value = (step.value - 1) as 1 | 2
 }
 
-function confirmarPago() {
+function persistDraft() {
+  const snapshot = {
+    form: form.value,
+    confirmPassword: confirmPassword.value,
+    step: step.value,
+  }
+  sessionStorage.setItem(REGISTRO_STORAGE_KEY, JSON.stringify(snapshot))
+}
+
+function restoreDraft() {
+  const raw = sessionStorage.getItem(REGISTRO_STORAGE_KEY)
+  if (!raw) return
+  try {
+    const data = JSON.parse(raw) as {
+      form?: SocioRegistroRequest
+      confirmPassword?: string
+      step?: 1 | 2 | 3
+    }
+    if (data.form) {
+      form.value = { ...form.value, ...data.form }
+    }
+    if (typeof data.confirmPassword === "string") {
+      confirmPassword.value = data.confirmPassword
+    }
+    if (data.step) {
+      step.value = data.step
+    }
+  } catch {
+    sessionStorage.removeItem(REGISTRO_STORAGE_KEY)
+  }
+}
+
+function clearDraft() {
+  sessionStorage.removeItem(REGISTRO_STORAGE_KEY)
+}
+
+async function iniciarPago() {
   if (!tarifaSeleccionada.value) {
     stepErrors.value = ["Selecciona una tarifa antes de continuar con el pago."]
     return
   }
-  pagoConfirmado.value = true
-  stepErrors.value = []
+  loadingPago.value = true
+  pagoError.value = null
+  try {
+    persistDraft()
+    const res = await initPago({ idTarifa: form.value.idTarifa })
+    window.location.assign(res.paymentUrl)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e)
+    pagoError.value = normalizePagoError(message)
+  } finally {
+    loadingPago.value = false
+  }
+}
+
+async function verificarPagoDesdeBackend(token: string) {
+  loadingVerify.value = true
+  pagoError.value = null
+  try {
+    const res = await verifyPago(token)
+    pagoEstado.value = res.status
+    if (res.status === "COMPLETED") {
+      form.value.paymentToken = token
+    } else {
+      form.value.paymentToken = ""
+      if (res.status === "FAILED") {
+        pagoError.value = res.failureReason ?? "El pago no se completo."
+      }
+    }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e)
+    pagoError.value = normalizePagoError(message)
+  } finally {
+    loadingVerify.value = false
+  }
 }
 
 async function onSubmit() {
@@ -155,6 +270,7 @@ async function onSubmit() {
   loadingSubmit.value = true
   try {
     ok.value = await registrarSocio({ ...form.value })
+    clearDraft()
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
     error.value = normalizeErrorMessage(message)
@@ -334,14 +450,24 @@ async function onSubmit() {
               </div>
             </div>
 
-            <button class="btn btn--primary btn--full" type="button" @click="confirmarPago">
-              Continuar al pago seguro
+            <button class="btn btn--primary btn--full" type="button" :disabled="loadingPago || loadingVerify" @click="iniciarPago">
+              {{ loadingPago ? "Redirigiendo..." : "Continuar al pago seguro" }}
             </button>
 
-            <div v-if="pagoConfirmado" class="pay-box__ok">
-              ✓ Pago procesado correctamente. Tu membresía está lista para activarse.
+            <div v-if="loadingVerify" class="pay-box__pending">
+              Verificando pago con TPVV...
             </div>
-            <small class="muted">Conexión segura SSL 256-bit</small>
+            <div v-else-if="pagoConfirmado" class="pay-box__ok">
+              OK Pago verificado correctamente. Tu membresia esta lista para activarse.
+            </div>
+            <div v-else-if="pagoEstado === 'FAILED'" class="pay-box__error">
+              OK Pago fallido. Puedes reintentar el proceso.
+            </div>
+            <div v-else-if="pagoEstado === 'PENDING'" class="pay-box__pending">
+              Pago pendiente de confirmacion. Revisa el estado en unos segundos.
+            </div>
+            <p v-if="pagoError" class="pay-box__error-text">{{ pagoError }}</p>
+            <small class="muted">Conexi??n segura SSL 256-bit</small>
           </div>
 
           <div class="panel__footer">
@@ -391,7 +517,9 @@ async function onSubmit() {
 
             <div class="summary__section summary__section--ok">
               <h3>Estado del pago</h3>
-              <p>✓ Pago realizado. Transacción completada con éxito.</p>
+              <p v-if="pagoConfirmado">OK Pago realizado. Transaccion completada con exito.</p>
+              <p v-else-if="pagoEstado === 'FAILED'">OK Pago fallido. Debes reintentar el proceso.</p>
+              <p v-else>OK Pago pendiente de verificacion.</p>
             </div>
           </div>
 
@@ -765,6 +893,30 @@ async function onSubmit() {
   padding: 8px 10px;
   border-radius: 8px;
   font-size: 13px;
+}
+
+.pay-box__pending {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.pay-box__error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.pay-box__error-text {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 12px;
 }
 
 .muted {
