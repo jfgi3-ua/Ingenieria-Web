@@ -113,7 +113,7 @@
                     </div>
                 </div>
             </div>
-            <button class="reserva-btn" :disabled="actividad?.disponibles == 0">Reservar actividad</button>
+            <button class="reserva-btn-details-activity" :disabled="actividad?.disponibles == 0">Reservar actividad</button>
         </div>
     </div>
 </template>
@@ -132,14 +132,14 @@
         height: 93vh;
         width: auto;
         gap: 100px;
-        background-color: #f4f5f6;
+        background-color: #f4f5f6; 
     }
 
     .container-details-activity {
         background-color: white;
         /*margin-top: -120px;*/
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-radius: 10px;
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     }
 
     .img-details-activity{
@@ -187,7 +187,7 @@
         margin-top: 5px;
     }
 
-    .reserva-btn {
+    .reserva-btn-details-activity {
         height: 60px;
         font-weight: bold;
         cursor: pointer;
@@ -198,6 +198,12 @@
         justify-self: center;
         margin-top: 15px;
         margin-bottom: 15px;
+
+        width: 150px;
+		border-radius: 10px;
+		margin-right: 10px;
+		background-color: #0092B8;
+		color: white;
     }
 
     .reserva-btn[disabled] {

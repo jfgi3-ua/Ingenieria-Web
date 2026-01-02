@@ -13,7 +13,7 @@ const router = createRouter({
     { path: "/registro", name: "registro", component: RegistroView },
     { path: "/login", name: "login", component: LoginView },
     { path: "/inicio", name: "inicio", component: InicioView },
-    { path: "/actividad/:id", name: "detallesActividad", component: DetallesActividad, props: true },
+    { path: "/actividad/:id", name: "detallesActividad", component: DetallesActividad, props: true, meta: { requiresAuth: true } },
     { path: "/servicios", name: "servicios", component: ServiciosView, meta: { requiresAuth: true } }
   ],
 })
