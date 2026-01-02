@@ -19,25 +19,6 @@
         await router.replace("/login");
     }
 
-    //Obtenemos la ruta en que estamos y nos quedamos solo con el primer elemento -> Ruta principal
-    onMounted(() => {
-        var path = window.location.pathname;
-        var mainPath = path.split("/");
-        switch(mainPath[1]){
-            case "inicio":
-                inicioBtnNav.value.classList.add("active-a");
-                break;
-            case "reserva":
-                reservaBtnNav.value.classList.add("active-a");
-                break;
-            case "servicios":
-                serviciosBtnNav.value.classList.add("active-a");
-                break;
-            case "contacto":
-                contactoBtnNav.value.classList.add("active-a");
-                break;
-        }
-    });
 </script>
 <template>
     <div class="general-container-navbar">
@@ -46,10 +27,10 @@
             <p>FitGym</p>
         </div>
         <div class="buttons-container-navbar">
-            <RouterLink ref="inicioBtnNav" to="/inicio">Inicio</RouterLink>
-            <RouterLink ref="reservaBtnNav" to="/servicios">Servicios</RouterLink>
-            <RouterLink ref="serviciosBtnNav" to="#">Mis reservas</RouterLink>
-            <RouterLink ref="contactoBtnNav" to="#">Mi cuenta</RouterLink>
+            <RouterLink class="nav-link" active-class="active-a" to="/inicio">Inicio</RouterLink>
+            <RouterLink class="nav-link" active-class="active-a" to="/servicios">Servicios</RouterLink>
+            <RouterLink class="nav-link" to="#">Mis reservas</RouterLink>
+            <RouterLink class="nav-link" to="#">Mi cuenta</RouterLink>
         </div>
         <div v-if="auth.socio" class="user-buttons-container">
             <span>{{ auth.socio.nombre }}</span>
@@ -98,18 +79,16 @@
 
     }
 
-    .buttons-container-navbar > a.active-a {
-        color: #428fdb;
-    }
-
-    .buttons-container-navbar > a {
-        cursor: pointer;
-        color: grey;
+    .nav-link {
         text-decoration: none;
+        color: grey;
     }
 
-    .buttons-container-navbar > a:hover {
-        color: #0092B8;
+    .nav-link.active-a {
+        color: white;
+        background-color: #0092B8;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     .user-buttons-container {
@@ -122,7 +101,7 @@
     .logout-navbar-button {
         all: unset;
         border-radius: 5px;
-        height: 35px;
+        height: 38px;
         width: 100px;
         background-color: rgb(244, 14, 14);
 		color: white;
