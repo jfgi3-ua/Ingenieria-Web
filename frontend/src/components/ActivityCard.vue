@@ -6,8 +6,11 @@
     import type { Actividad } from "@/types/actividad"
     import { onMounted } from "vue"
     import BarraDisponibles from "./BarraDisponibles.vue"
+    import DetallesActividad from "@/views/DetallesActividad.vue"
+    import { useRouter } from 'vue-router'
 
-    defineProps<{actividad: Actividad}>();
+    const props = defineProps<{ actividad: Actividad }>()
+    const router = useRouter();
 
     //Funcion para posar de "2025-12-20" al día correspondiente (Lunes, Martes...)
     function obtenerDiaSemana(fechaStr: string): string {
@@ -33,6 +36,17 @@
         const minutosFin = hFin! * 60 + mFin!;
 
         return minutosFin - minutosIni;
+    }
+
+    const irADetalles = () => {
+        //Necesario para poder pasar el objeto entero. Hay algo del objeto que no deja pasarlo si no se pasa en texto plano
+        const actividadPlano = JSON.parse(JSON.stringify(props.actividad))
+
+        router.push({
+            name: 'detallesActividad',
+            params: { id: props.actividad.id },
+            state: { actividad: actividadPlano }
+        })
     }
 
 </script>
@@ -62,8 +76,8 @@
 
             </div>
             <BarraDisponibles :key="actividad.id" :actividad="actividad"/>
-            <button v-if="actividad.precioExtra == 0" class="card-button">Reservar tu plaza ></button>
-            <button v-else class="card-button">Reservar tu plaza - €{{ actividad.precioExtra }} > </button>
+            <button @click="irADetalles" v-if="actividad.precioExtra == 0" class="card-button">Reservar tu plaza ></button>
+            <button @click="irADetalles" v-else class="card-button">Reservar tu plaza - €{{ actividad.precioExtra }} > </button>
         </div>
     </div>
 </template>
