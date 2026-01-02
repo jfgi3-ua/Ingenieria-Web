@@ -1,18 +1,28 @@
-<script setup lang="js">
+<script setup lang="ts">
     import logoFitgymTransparente from "@/assets/logoFitgymTransparente.png"
+    import { useAuthStore } from "@/stores/auth.store";
     import { ref, onMounted } from "vue"
+    import { useRouter } from "vue-router";
     
     //Para poder pillar el elemento y meterle la clase dinamicamente
-    const inicioBtnNav = ref(null);
-    const reservaBtnNav = ref(null);
-    const serviciosBtnNav = ref(null);
-    const contactoBtnNav = ref(null);
+    const inicioBtnNav = ref();
+    const reservaBtnNav = ref();
+    const serviciosBtnNav = ref();
+    const contactoBtnNav = ref();
+
+    //Sesion del usuario
+    const auth = useAuthStore();
+    const router = useRouter();
+
+    async function onLogout() {
+        await auth.logout();
+        await router.replace("/login");
+    }
 
     //Obtenemos la ruta en que estamos y nos quedamos solo con el primer elemento -> Ruta principal
     onMounted(() => {
         var path = window.location.pathname;
         var mainPath = path.split("/");
-        console.log(mainPath[1])
         switch(mainPath[1]){
             case "inicio":
                 inicioBtnNav.value.classList.add("active-a");
@@ -27,9 +37,7 @@
                 contactoBtnNav.value.classList.add("active-a");
                 break;
         }
-    })
-
-    
+    });
 </script>
 <template>
     <div class="general-container-navbar">
@@ -38,14 +46,18 @@
             <p>FitGym</p>
         </div>
         <div class="buttons-container-navbar">
-            <a ref="inicioBtnNav" href="#">Inicio</a>
-            <a ref="reservaBtnNav" href="#">Reservar clase</a>
-            <a ref="serviciosBtnNav" href="#">Servicios</a>
-            <a ref="contactoBtnNav" href="#">Contacto</a>
+            <RouterLink ref="inicioBtnNav" to="/inicio">Inicio</RouterLink>
+            <RouterLink ref="reservaBtnNav" to="/servicios">Servicios</RouterLink>
+            <RouterLink ref="serviciosBtnNav" to="#">Mis reservas</RouterLink>
+            <RouterLink ref="contactoBtnNav" to="#">Mi cuenta</RouterLink>
         </div>
-        <div class="user-buttons-container">
-            <button class="register-navbar-button">Registrarse</button>
-            <button class="login-navbar-button">Iniciar sesión</button>
+        <div v-if="auth.socio" class="user-buttons-container">
+            <span>{{ auth.socio.nombre }}</span>
+            <button class="logout-navbar-button" @click="onLogout">Cerrar sesión</button>
+        </div>
+        <div v-else class="user-buttons-container">
+            <RouterLink class="register-navbar-button" to="/registro">Registrarse</RouterLink>
+            <RouterLink class="login-navbar-button" to="/login">Iniciar sesión</RouterLink>
         </div>
     </div>
 </template>
@@ -57,7 +69,7 @@
     }
 
     .general-container-navbar{
-        height: 70px;
+        height: 30px;
         display: flex;
         flex-direction: row;
         position: relative;
@@ -107,21 +119,47 @@
         align-items: center;
     }
 
+    .logout-navbar-button {
+        all: unset;
+        border-radius: 5px;
+        height: 35px;
+        width: 100px;
+        background-color: rgb(244, 14, 14);
+		color: white;
+		cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logout-navbar-button:hover {
+        background-color: rgb(184, 5, 5);
+    }
+
     .register-navbar-button {
-        border-radius: 10px;
-        height: 45px;
+        all: unset;
+        border-radius: 5px;
+        height: 35px;
         width: 100px;
         background-color: #0092B8;
 		color: white;
 		cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .login-navbar-button {
-        border-radius: 10px;
+        all: unset;
+        border-radius: 5px;
 		border: 1px solid #0092B8;
 		background-color: transparent;
 		color: #0092B8;
-        height: 45px;
+        height: 35px;
         width: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
     }
 </style>
