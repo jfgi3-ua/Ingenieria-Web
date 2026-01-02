@@ -13,6 +13,7 @@
     onMounted(async () => {
         actividadState = (history.state as any)?.actividad;
         actividad.value = actividadState;
+        console.log(actividad.value?.disponibles)
     });
 
     const diaSemana = computed(() => {
@@ -113,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            <button class="reserva-btn-details-activity" :disabled="actividad?.disponibles == 0">Reservar actividad</button>
+            <button class="reserva-btn-details-activity" :disabled="actividad?.disponibles === 0">Reservar actividad</button>
         </div>
     </div>
 </template>
@@ -206,7 +207,7 @@
 		color: white;
     }
 
-    .reserva-btn[disabled] {
+    .reserva-btn-details-activity:disabled {
         background-color: grey;
         color: rgb(243, 238, 238);
         cursor: not-allowed;
