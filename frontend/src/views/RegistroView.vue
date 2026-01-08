@@ -129,9 +129,9 @@ async function aplicarEstadoDesdeRoute() {
 
 function normalizeErrorMessage(msg: string) {
   const lower = msg.toLowerCase()
-  if (lower.includes("pago")) return "El pago no esta confirmado. Vuelve al paso de pago y verificalo."
+  if (lower.includes("pago")) return "El pago no está confirmado. Vuelve al paso de pago y verifícalo."
   if (lower.includes("token")) return "No se pudo validar el pago. Inicia el pago de nuevo."
-  if (msg.includes("409")) return "Ese correo ya esta registrado."
+  if (msg.includes("409")) return "Ese correo ya está registrado."
   if (msg.includes("404")) return "La tarifa seleccionada no existe."
   if (msg.includes("400")) return "Revisa los campos del formulario."
   return msg
@@ -139,8 +139,8 @@ function normalizeErrorMessage(msg: string) {
 
 function normalizePagoError(msg: string) {
   if (msg.includes("502")) return "No se pudo conectar con la pasarela de pago."
-  if (msg.includes("404")) return "No se encontro la transaccion de pago."
-  if (msg.includes("409")) return "El pago aun no esta completado."
+  if (msg.includes("404")) return "No se encontró la transacción de pago."
+  if (msg.includes("409")) return "El pago aún no está completado."
   return msg
 }
 
@@ -395,7 +395,7 @@ async function onSubmit() {
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" :class="{ 'card--narrow': step === 3 }">
         <div v-if="stepErrors.length" class="alert alert--warning">
           <strong>Revisa lo siguiente:</strong>
           <ul>
@@ -454,7 +454,7 @@ async function onSubmit() {
                   <input
                     v-model="form.contrasena"
                     :type="showPassword ? 'text' : 'password'"
-                    placeholder="Minimo 8 caracteres"
+                    placeholder="Mínimo 8 caracteres"
                     :aria-invalid="Boolean(fieldErrors.contrasena)"
                   />
                   <button type="button" class="icon-btn" @click="showPassword = !showPassword">
@@ -545,16 +545,25 @@ async function onSubmit() {
           <p v-else-if="tarifasError" class="error-text">{{ tarifasError }}</p>
 
           <div v-else class="tarifas-grid">
-            <label v-for="tarifa in tarifas" :key="tarifa.id" class="tarifa-card" :class="{ active: form.idTarifa === tarifa.id }">
+            <label
+              v-for="tarifa in tarifas"
+              :key="tarifa.id"
+              class="tarifa-card"
+              :class="{ active: form.idTarifa === tarifa.id }"
+            >
               <input v-model.number="form.idTarifa" type="radio" name="tarifa" :value="tarifa.id" />
+              <span class="tarifa-card__check" aria-hidden="true"></span>
               <div class="tarifa-card__header">
                 <span class="tarifa-card__title">{{ tarifa.nombre }}</span>
                 <span v-if="tarifaPopularId === tarifa.id" class="badge">Popular</span>
               </div>
               <p class="tarifa-card__desc">{{ tarifa.descripcion ?? "Plan flexible para tu estilo de vida." }}</p>
-              <p class="tarifa-card__price">€{{ tarifa.cuota }}<span>/mes</span></p>
-              <ul>
-                <li v-for="item in featuresForTarifa(tarifa)" :key="item">✓ {{ item }}</li>
+              <div class="tarifa-card__price">
+                <span class="tarifa-card__amount">€{{ tarifa.cuota }}</span>
+                <span class="tarifa-card__period">/mes</span>
+              </div>
+              <ul class="tarifa-card__features">
+                <li v-for="item in featuresForTarifa(tarifa)" :key="item">{{ item }}</li>
               </ul>
             </label>
           </div>
@@ -562,39 +571,48 @@ async function onSubmit() {
           <div class="pay-box">
             <div class="pay-box__header">
               <span>Pago seguro</span>
-              <small>Pasarela externa segura. Datos protegidos y encriptados.</small>
+              <small>El pago se gestiona mediante una pasarela externa segura. Tus datos están protegidos.</small>
             </div>
 
             <div class="pay-box__summary">
-              <div>
-                <strong>Plan seleccionado:</strong>
-                <span>{{ tarifaSeleccionada?.nombre ?? "—" }}</span>
+              <div class="pay-box__row">
+                <span>Plan seleccionado</span>
+                <strong>{{ tarifaSeleccionada?.nombre ?? "—" }}</strong>
               </div>
-              <div>
-                <strong>Precio mensual:</strong>
-                <span>€{{ tarifaSeleccionada?.cuota ?? "-" }}</span>
+              <div class="pay-box__row">
+                <span>Precio mensual</span>
+                <strong>€{{ tarifaSeleccionada?.cuota ?? "-" }}</strong>
               </div>
-              <div>
-                <strong>Total primer mes:</strong>
-                <span>€{{ tarifaSeleccionada?.cuota ?? "-" }}</span>
+              <div class="pay-box__row">
+                <span>Total primer mes</span>
+                <strong>€{{ tarifaSeleccionada?.cuota ?? "-" }}</strong>
               </div>
             </div>
 
-            <button class="btn btn--primary btn--full" type="button" :disabled="loadingPago || loadingVerify || pagoConfirmado" @click="iniciarPago">
+            <button
+              class="btn btn--primary btn--full"
+              type="button"
+              :disabled="loadingPago || loadingVerify || pagoConfirmado"
+              @click="iniciarPago"
+            >
               {{ loadingPago ? "Redirigiendo..." : "Continuar al pago seguro" }}
             </button>
 
-            <div v-if="loadingVerify" class="pay-box__pending">
-              Verificando pago con TPVV...
+            <div v-if="loadingVerify" class="pay-box__status pay-box__status--pending">
+              <strong>Verificando pago con TPVV...</strong>
+              <span>Estamos comprobando el estado de la transacción.</span>
             </div>
-            <div v-else-if="pagoConfirmado" class="pay-box__ok">
-              OK Pago verificado correctamente. Tu membresia esta lista para activarse.
+            <div v-else-if="pagoConfirmado" class="pay-box__status pay-box__status--ok">
+              <strong>Pago procesado correctamente</strong>
+              <span>Tu membresía está lista para activarse.</span>
             </div>
-            <div v-else-if="pagoEstado === 'FAILED'" class="pay-box__error">
-              OK Pago fallido. Puedes reintentar el proceso.
+            <div v-else-if="pagoEstado === 'FAILED'" class="pay-box__status pay-box__status--error">
+              <strong>Pago fallido</strong>
+              <span>Puedes reintentar el proceso desde este paso.</span>
             </div>
-            <div v-else-if="pagoEstado === 'PENDING'" class="pay-box__pending">
-              Pago pendiente de confirmacion. Revisa el estado en unos segundos.
+            <div v-else-if="pagoEstado === 'PENDING'" class="pay-box__status pay-box__status--pending">
+              <strong>Pago pendiente</strong>
+              <span>Revisa el estado en unos segundos.</span>
             </div>
             <p v-if="pagoError" class="pay-box__error-text">{{ pagoError }}</p>
             <small class="muted">Conexión segura SSL 256-bit</small>
@@ -608,55 +626,103 @@ async function onSubmit() {
           </div>
         </div>
 
-        <div v-else class="panel">
+        <div v-else class="panel panel--confirm">
           <div class="panel__heading">
             <h2>Confirmación</h2>
             <p>Revisa tu información antes de finalizar el registro.</p>
           </div>
 
-          <div class="summary">
-            <div class="summary__section">
+          <div class="confirm-grid">
+            <section class="confirm-card">
               <h3>Datos personales</h3>
-              <div class="summary__row">
+              <div class="confirm-row">
                 <span>Nombre:</span>
                 <strong>{{ form.nombre }}</strong>
               </div>
-              <div class="summary__row">
+              <div class="confirm-row">
                 <span>Email:</span>
                 <strong>{{ form.correoElectronico }}</strong>
               </div>
-              <div class="summary__row" v-if="form.telefono">
+              <div class="confirm-row" v-if="form.telefono">
                 <span>Teléfono:</span>
                 <strong>{{ form.telefono }}</strong>
               </div>
-            </div>
+            </section>
 
-            <div class="summary__section summary__section--accent">
-              <h3>Tarifa seleccionada</h3>
-              <div class="summary__row">
-                <span>{{ tarifaSeleccionada?.nombre ?? "—" }}</span>
-                <strong>€{{ tarifaSeleccionada?.cuota ?? "-" }}/mes</strong>
+            <section class="confirm-card confirm-card--accent">
+              <div class="confirm-card__header">
+                <h3>Tarifa seleccionada</h3>
+                <span class="confirm-price">€{{ tarifaSeleccionada?.cuota ?? "-" }}/mes</span>
               </div>
-              <p class="summary__desc">{{ tarifaSeleccionada?.descripcion ?? "Plan seleccionado" }}</p>
-              <ul>
+              <p class="confirm-plan">{{ tarifaSeleccionada?.nombre ?? "—" }}</p>
+              <p class="confirm-desc">{{ tarifaSeleccionada?.descripcion ?? "Plan seleccionado" }}</p>
+              <p class="confirm-subtitle">Beneficios incluidos:</p>
+              <ul class="confirm-list">
                 <li v-for="item in (tarifaSeleccionada ? featuresForTarifa(tarifaSeleccionada) : [])" :key="item">
-                  ✓ {{ item }}
+                  {{ item }}
                 </li>
               </ul>
-            </div>
+            </section>
 
-            <div class="summary__section summary__section--ok">
+            <section class="confirm-card confirm-card--ok">
               <h3>Estado del pago</h3>
-              <p v-if="pagoConfirmado">OK Pago realizado. Transaccion completada con exito.</p>
-              <p v-else-if="pagoEstado === 'FAILED'">OK Pago fallido. Debes reintentar el proceso.</p>
-              <p v-else>OK Pago pendiente de verificacion.</p>
-            </div>
+              <div v-if="pagoConfirmado" class="confirm-status confirm-status--ok">
+                <span class="confirm-status__icon" aria-hidden="true"></span>
+                <div class="confirm-status__content">
+                  <strong>Pago realizado</strong>
+                  <span>Transacción completada con éxito.</span>
+                </div>
+              </div>
+              <div v-else-if="pagoEstado === 'FAILED'" class="confirm-status confirm-status--error">
+                <span class="confirm-status__icon" aria-hidden="true"></span>
+                <div class="confirm-status__content">
+                  <strong>Pago fallido</strong>
+                  <span>Debes reintentar el proceso.</span>
+                </div>
+              </div>
+              <div v-else class="confirm-status confirm-status--pending">
+                <span class="confirm-status__icon" aria-hidden="true"></span>
+                <div class="confirm-status__content">
+                  <strong>Pago pendiente</strong>
+                  <span>Verificación en curso.</span>
+                </div>
+              </div>
+            </section>
           </div>
 
-          <label class="terms">
-            <input v-model="termsAccepted" type="checkbox" />
-            Acepto los términos y condiciones y la política de privacidad.
-          </label>
+          <div class="terms-card">
+            <label class="terms">
+              <input v-model="termsAccepted" type="checkbox" />
+              <span>
+                Acepto los términos y condiciones y la política de privacidad.
+                <small>Al registrarte, aceptas nuestros términos de servicio. Tus datos están protegidos.</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="confirm-badges">
+            <div class="confirm-badge">
+              <span class="confirm-badge__icon" aria-hidden="true"></span>
+              <div class="confirm-badge__text">
+                <strong>Datos protegidos</strong>
+                <span>Encriptación SSL</span>
+              </div>
+            </div>
+            <div class="confirm-badge">
+              <span class="confirm-badge__icon" aria-hidden="true"></span>
+              <div class="confirm-badge__text">
+                <strong>Pago seguro</strong>
+                <span>Pasarela certificada</span>
+              </div>
+            </div>
+            <div class="confirm-badge">
+              <span class="confirm-badge__icon" aria-hidden="true"></span>
+              <div class="confirm-badge__text">
+                <strong>Acceso inmediato</strong>
+                <span>Activa hoy mismo</span>
+              </div>
+            </div>
+          </div>
 
           <div class="panel__footer">
             <button type="button" class="btn btn--ghost" @click="irAnterior">Anterior</button>
@@ -774,6 +840,11 @@ async function onSubmit() {
   border-radius: 14px;
   box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
   padding: 24px;
+}
+
+.card--narrow {
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .panel__heading h2 {
@@ -979,18 +1050,20 @@ async function onSubmit() {
 .tarifas-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .tarifa-card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 14px;
+  padding: 16px;
   display: grid;
   gap: 10px;
   cursor: pointer;
   position: relative;
   background: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .tarifa-card input {
@@ -999,10 +1072,33 @@ async function onSubmit() {
   pointer-events: none;
 }
 
+.tarifa-card__check {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: transparent;
+  background: #fff;
+}
+
 .tarifa-card.active {
   border-color: var(--brand);
-  box-shadow: 0 0 0 2px rgba(10, 143, 178, 0.15);
-  background: #f0fbff;
+  box-shadow: 0 14px 30px rgba(10, 143, 178, 0.18);
+  background: linear-gradient(180deg, #f0fbff 0%, #ffffff 100%);
+  transform: translateY(-2px);
+}
+
+.tarifa-card.active .tarifa-card__check {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.tarifa-card.active .tarifa-card__check::after {
+  content: "\2713";
 }
 
 .tarifa-card__header {
@@ -1021,6 +1117,7 @@ async function onSubmit() {
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 999px;
+  box-shadow: 0 6px 12px rgba(10, 143, 178, 0.25);
 }
 
 .tarifa-card__desc {
@@ -1029,17 +1126,22 @@ async function onSubmit() {
 }
 
 .tarifa-card__price {
-  font-size: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
   font-weight: 700;
 }
 
-.tarifa-card__price span {
-  font-size: 12px;
-  color: var(--muted);
-  margin-left: 2px;
+.tarifa-card__amount {
+  font-size: 22px;
 }
 
-.tarifa-card ul {
+.tarifa-card__period {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tarifa-card__features {
   margin: 0;
   padding-left: 0;
   list-style: none;
@@ -1049,12 +1151,18 @@ async function onSubmit() {
   gap: 6px;
 }
 
+.tarifa-card__features li::before {
+  content: "\2713";
+  color: var(--brand);
+  margin-right: 6px;
+}
+
 .pay-box {
   margin-top: 20px;
   border-radius: 12px;
   border: 1px solid var(--border);
-  padding: 16px;
-  background: #f8fbff;
+  padding: 18px;
+  background: linear-gradient(180deg, #f8fbff 0%, #f5f9ff 100%);
   display: grid;
   gap: 12px;
 }
@@ -1075,39 +1183,43 @@ async function onSubmit() {
   padding: 12px;
   display: grid;
   gap: 6px;
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.15);
 }
 
-.pay-box__summary div {
+.pay-box__row {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
 }
 
-.pay-box__ok {
+.pay-box__status {
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  display: grid;
+  gap: 4px;
+  border-left: 4px solid transparent;
+}
+
+.pay-box__status--ok {
   background: #ecfdf5;
   border: 1px solid #bbf7d0;
   color: #047857;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 13px;
+  border-left-color: #10b981;
 }
 
-.pay-box__pending {
+.pay-box__status--pending {
   background: #eff6ff;
   border: 1px solid #bfdbfe;
   color: #1d4ed8;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 13px;
+  border-left-color: #60a5fa;
 }
 
-.pay-box__error {
+.pay-box__status--error {
   background: #fef2f2;
   border: 1px solid #fecaca;
   color: #b91c1c;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 13px;
+  border-left-color: #f87171;
 }
 
 .pay-box__error-text {
@@ -1121,58 +1233,247 @@ async function onSubmit() {
   font-size: 12px;
 }
 
-.summary {
+.confirm-grid {
   display: grid;
   gap: 16px;
+  grid-template-columns: 1fr;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-.summary__section {
+.confirm-card {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 14px;
+  padding: 10px 14px 14px;
   background: #fff;
+  display: grid;
+  gap: 8px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
-.summary__section--accent {
+.confirm-card h3 {
+  margin: 0 0 4px;
+}
+
+.confirm-card--accent {
   background: #eefcff;
   border-color: #b6e7f2;
 }
 
-.summary__section--ok {
+.confirm-card--ok {
   background: #ecfdf5;
   border-color: #bbf7d0;
 }
 
-.summary__row {
+.confirm-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.confirm-price {
+  font-weight: 700;
+  color: var(--brand-dark);
+  background: rgba(10, 143, 178, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.confirm-plan {
+  font-weight: 600;
+  margin: 0;
+}
+
+.confirm-desc {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+.confirm-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.confirm-row {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  margin-top: 6px;
 }
 
-.summary__desc {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 8px;
-}
-
-.summary ul {
+.confirm-list {
   list-style: none;
   padding-left: 0;
-  margin: 8px 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 13px;
   display: grid;
   gap: 6px;
 }
 
+.confirm-list li::before {
+  content: "\2713";
+  color: var(--brand);
+  margin-right: 6px;
+}
+
+.confirm-status {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.confirm-status--ok {
+  color: #047857;
+  border: 1px solid #bbf7d0;
+}
+
+.confirm-status--pending {
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.confirm-status--error {
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.confirm-status__icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: currentColor;
+  color: #fff;
+  font-size: 14px;
+  flex: 0 0 28px;
+}
+
+.confirm-status--ok .confirm-status__icon {
+  background: #16a34a;
+}
+
+.confirm-status--pending .confirm-status__icon {
+  background: #60a5fa;
+}
+
+.confirm-status--error .confirm-status__icon {
+  background: #f87171;
+}
+
+.confirm-status__icon::before {
+  content: "\2713";
+}
+
+.confirm-status--pending .confirm-status__icon::before {
+  content: "...";
+}
+
+.confirm-status--error .confirm-status__icon::before {
+  content: "!";
+}
+
+.confirm-status__content {
+  display: grid;
+  gap: 2px;
+}
+
+.terms-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  margin: 14px auto 0;
+  max-width: 640px;
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.12);
+}
+
 .terms {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  margin-top: 14px;
+  margin: 0;
   font-size: 13px;
   color: var(--muted);
+}
+
+.terms span {
+  display: grid;
+  gap: 4px;
+}
+
+.terms small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.confirm-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 12px auto 0;
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 640px;
+  justify-content: center;
+  text-align: center;
+}
+
+.confirm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.confirm-badge__icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--brand);
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  font-size: 11px;
+}
+
+.confirm-badge__icon::before {
+  content: "\2713";
+}
+
+.confirm-badge__text {
+  display: grid;
+  gap: 2px;
+}
+
+.confirm-badge__text strong {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.confirm-badge__text span {
+  font-size: 11px;
+}
+
+.panel--confirm .panel__heading {
+  text-align: left;
+}
+
+.panel--confirm .panel__heading p {
+  max-width: 520px;
+  margin: 0 0 16px;
+}
+
+.panel--confirm .panel__footer {
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .support {
