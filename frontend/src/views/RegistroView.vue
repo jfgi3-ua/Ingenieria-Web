@@ -21,6 +21,7 @@ const checkingEmail = ref(false)
 
 const step = ref<1 | 2 | 3>(1)
 const stepErrors = ref<string[]>([])
+const fieldErrors = ref<Record<string, string>>({})
 const termsAccepted = ref(false)
 const pagoEstado = ref<"PENDING" | "COMPLETED" | "FAILED" | null>(null)
 const pagoError = ref<string | null>(null)
@@ -143,19 +144,35 @@ function normalizePagoError(msg: string) {
   return msg
 }
 
+function setFieldError(field: string, message: string) {
+  fieldErrors.value = { ...fieldErrors.value, [field]: message }
+}
+
+function clearFieldError(field: string) {
+  const { [field]: _removed, ...rest } = fieldErrors.value
+  fieldErrors.value = rest
+}
+
+function clearFieldErrors() {
+  fieldErrors.value = {}
+}
+
 async function validarCorreoBlur() {
   const correo = form.value.correoElectronico.trim()
   if (!correo) return
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return
 
+  clearFieldError("correoElectronico")
   checkingEmail.value = true
   try {
     const exists = await emailExists(correo)
     if (exists) {
       stepErrors.value = ["Correo ya registrado."]
+      setFieldError("correoElectronico", "Correo ya registrado.")
     }
   } catch {
     stepErrors.value = ["No se pudo validar el correo. Intenta de nuevo."]
+    setFieldError("correoElectronico", "No se pudo validar el correo. Intenta de nuevo.")
   } finally {
     checkingEmail.value = false
   }
@@ -163,6 +180,7 @@ async function validarCorreoBlur() {
 
 function validarPaso1(): boolean {
   const errs: string[] = []
+  clearFieldErrors()
   if (!form.value.nombre.trim()) errs.push("El nombre es obligatorio.")
   if (!form.value.correoElectronico.trim()) errs.push("El correo electrónico es obligatorio.")
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.correoElectronico)) {
@@ -178,6 +196,27 @@ function validarPaso1(): boolean {
   if (!(form.value.ciudad ?? "").trim()) errs.push("La ciudad es obligatoria.")
   if (!(form.value.codigoPostal ?? "").trim()) errs.push("El código postal es obligatorio.")
 
+  if (!form.value.nombre.trim()) setFieldError("nombre", "El nombre es obligatorio.")
+  if (!form.value.correoElectronico.trim()) {
+    setFieldError("correoElectronico", "El correo electrónico es obligatorio.")
+  }
+  if (
+    form.value.correoElectronico.trim() &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.correoElectronico)
+  ) {
+    setFieldError("correoElectronico", "El correo electrónico no es válido.")
+  }
+  if (!form.value.contrasena.trim()) setFieldError("contrasena", "La contraseña es obligatoria.")
+  if (form.value.contrasena && form.value.contrasena.length < 8) {
+    setFieldError("contrasena", "La contraseña debe tener al menos 8 caracteres.")
+  }
+  if (!confirmPassword.value.trim()) setFieldError("confirmPassword", "Debes confirmar la contraseña.")
+  if (confirmPassword.value && confirmPassword.value !== form.value.contrasena) {
+    setFieldError("confirmPassword", "Las contraseñas no coinciden.")
+  }
+  if (!(form.value.direccion ?? "").trim()) setFieldError("direccion", "La dirección es obligatoria.")
+  if (!(form.value.ciudad ?? "").trim()) setFieldError("ciudad", "La ciudad es obligatoria.")
+  if (!(form.value.codigoPostal ?? "").trim()) setFieldError("codigoPostal", "El código postal es obligatorio.")
   stepErrors.value = errs
   return errs.length === 0
 }
@@ -190,10 +229,12 @@ async function validarPaso1Async(): Promise<boolean> {
     const exists = await emailExists(form.value.correoElectronico)
     if (exists) {
       stepErrors.value = ["Ese correo ya esta registrado."]
+      setFieldError("correoElectronico", "Ese correo ya esta registrado.")
       return false
     }
   } catch {
-    stepErrors.value = ["No se pudo validar el correo. Intenta de nuevo."]
+    stepErrors.value = ["No se pudo validar el correo. Intentelo de nuevo."]
+    setFieldError("correoElectronico", "No se pudo validar el correo. Intentelo de nuevo.")
     return false
   } finally {
     checkingEmail.value = false
@@ -332,6 +373,7 @@ async function onSubmit() {
       <header class="registro__header">
         <h1>Registro</h1>
         <p>Crea tu cuenta en FitGym y completa el proceso en 3 pasos.</p>
+        <p class="registro__privacy">Usaremos tus datos solo para gestionar tu cuenta y reservas.</p>
       </header>
 
       <div class="stepper">
@@ -375,84 +417,118 @@ async function onSubmit() {
           <div class="panel__heading">
             <h2>Datos personales</h2>
             <p>Crea tu cuenta en FitGym para comenzar tu transformación.</p>
+            <p class="form-legend"><span class="req">*</span> Obligatorio</p>
           </div>
 
-          <div class="form-grid">
-            <label class="field">
-              <span>Nombre completo <span class="req">*</span></span>
-              <input v-model="form.nombre" type="text" placeholder="Ej: Juan Pérez García" />
-            </label>
-
-            <label class="field">
-              <span>Correo electrónico <span class="req">*</span></span>
-              <input
-                v-model="form.correoElectronico"
-                type="email"
-                placeholder="tu.email@ejemplo.com"
-                @blur="validarCorreoBlur"
-              />
-              <small v-if="checkingEmail">Comprobando...</small>
-              <small>Usaremos este correo para enviarte confirmaciones y notificaciones.</small>
-            </label>
-
-            <label class="field">
-              <span>Contraseña <span class="req">*</span></span>
-              <div class="field__input">
+          <fieldset class="form-group">
+            <legend>Datos personales</legend>
+            <div class="form-grid">
+              <label class="field" :class="{ 'field--error': fieldErrors.nombre }">
+                <span>Nombre completo <span class="req">*</span></span>
                 <input
-                  v-model="form.contrasena"
-                  :type="showPassword ? 'text' : 'password'"
-                  placeholder="Mínimo 8 caracteres"
+                  v-model="form.nombre"
+                  type="text"
+                  placeholder="Ej: Juan Pérez Garcia"
+                  :aria-invalid="Boolean(fieldErrors.nombre)"
                 />
-                <button type="button" class="icon-btn" @click="showPassword = !showPassword">
-                  {{ showPassword ? "Ocultar contraseña" : "Ver contraseña" }}
-                </button>
-              </div>
-              <small>Debe contener al menos 8 caracteres.</small>
-            </label>
-
-            <label class="field">
-              <span>Confirmar contraseña <span class="req">*</span></span>
-              <div class="field__input">
-                <input
-                  v-model="confirmPassword"
-                  :type="showConfirmPassword ? 'text' : 'password'"
-                  placeholder="Repite tu contraseña"
-                />
-                <button
-                  type="button"
-                  class="icon-btn"
-                  @click="showConfirmPassword = !showConfirmPassword"
-                >
-                  {{ showConfirmPassword ? "Ocultar confirmación" : "Ver confirmación" }}
-                </button>
-              </div>
-            </label>
-
-            <label class="field">
-              <span>Teléfono</span>
-              <input v-model="form.telefono" type="tel" placeholder="+34 600 00 00 00" />
-              <small>Opcional: para notificaciones y recordatorios por SMS.</small>
-            </label>
-
-            <label class="field">
-              <span>Dirección <span class="req">*</span></span>
-              <input v-model="form.direccion" type="text" placeholder="Calle, número, piso, puerta" />
-            </label>
-
-            <div class="field field--split">
-              <label>
-                <span>Ciudad <span class="req">*</span></span>
-                <input v-model="form.ciudad" type="text" placeholder="Ej: Madrid" />
+                <small v-if="fieldErrors.nombre" class="field__error">{{ fieldErrors.nombre }}</small>
               </label>
-              <label>
-                <span>Código postal <span class="req">*</span></span>
-                <input v-model="form.codigoPostal" type="text" placeholder="28001" />
+
+              <label class="field" :class="{ 'field--error': fieldErrors.correoElectronico }">
+                <span>Correo electrónico <span class="req">*</span></span>
+                <input
+                  v-model="form.correoElectronico"
+                  type="email"
+                  placeholder="tu.email@ejemplo.com"
+                  @blur="validarCorreoBlur"
+                  :aria-invalid="Boolean(fieldErrors.correoElectronico)"
+                />
+                <small v-if="fieldErrors.correoElectronico" class="field__error">{{ fieldErrors.correoElectronico }}</small>
+                <small v-if="checkingEmail">Comprobando...</small>
+                <small>Usaremos este correo para enviarte confirmaciones y notificaciones.</small>
+              </label>
+
+              <label class="field" :class="{ 'field--error': fieldErrors.contrasena }">
+                <span>Contraseña <span class="req">*</span></span>
+                <div class="field__input">
+                  <input
+                    v-model="form.contrasena"
+                    :type="showPassword ? 'text' : 'password'"
+                    placeholder="Minimo 8 caracteres"
+                    :aria-invalid="Boolean(fieldErrors.contrasena)"
+                  />
+                  <button type="button" class="icon-btn" @click="showPassword = !showPassword">
+                    {{ showPassword ? "Ocultar contraseña" : "Ver contraseña" }}
+                  </button>
+                </div>
+                <small v-if="fieldErrors.contrasena" class="field__error">{{ fieldErrors.contrasena }}</small>
+                <small>Debe contener al menos 8 caracteres.</small>
+              </label>
+
+              <label class="field" :class="{ 'field--error': fieldErrors.confirmPassword }">
+                <span>Confirmar contraseña <span class="req">*</span></span>
+                <div class="field__input">
+                  <input
+                    v-model="confirmPassword"
+                    :type="showConfirmPassword ? 'text' : 'password'"
+                    placeholder="Repite tu contraseña"
+                    :aria-invalid="Boolean(fieldErrors.confirmPassword)"
+                  />
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  >
+                    {{ showConfirmPassword ? "Ocultar confirmación" : "Ver confirmación" }}
+                  </button>
+                </div>
+                <small v-if="fieldErrors.confirmPassword" class="field__error">{{ fieldErrors.confirmPassword }}</small>
+              </label>
+
+              <label class="field">
+                <span>Teléfono</span>
+                <input v-model="form.telefono" type="tel" placeholder="+34 600 00 00 00" />
+                <small>Opcional: para notificaciones y recordatorios por SMS.</small>
               </label>
             </div>
-          </div>
+          </fieldset>
+
+          <fieldset class="form-group">
+            <legend>Dirección</legend>
+            <div class="form-grid">
+              <label class="field" :class="{ 'field--error': fieldErrors.direccion }">
+                <span>Dirección <span class="req">*</span></span>
+                <input
+                  v-model="form.direccion"
+                  type="text"
+                  placeholder="Calle, número, piso, puerta"
+                  :aria-invalid="Boolean(fieldErrors.direccion)"
+                />
+                <small v-if="fieldErrors.direccion" class="field__error">{{ fieldErrors.direccion }}</small>
+              </label>
+
+              <div class="field field--split">
+                <label :class="{ 'field--error': fieldErrors.ciudad }">
+                  <span>Ciudad <span class="req">*</span></span>
+                  <input v-model="form.ciudad" type="text" placeholder="Ej: Madrid" :aria-invalid="Boolean(fieldErrors.ciudad)" />
+                  <small v-if="fieldErrors.ciudad" class="field__error">{{ fieldErrors.ciudad }}</small>
+                </label>
+                <label :class="{ 'field--error': fieldErrors.codigoPostal }">
+                  <span>Codigo postal <span class="req">*</span></span>
+                  <input
+                    v-model="form.codigoPostal"
+                    type="text"
+                    placeholder="28001"
+                    :aria-invalid="Boolean(fieldErrors.codigoPostal)"
+                  />
+                  <small v-if="fieldErrors.codigoPostal" class="field__error">{{ fieldErrors.codigoPostal }}</small>
+                </label>
+              </div>
+            </div>
+          </fieldset>
 
           <div class="panel__footer">
-            <RouterLink class="hint" to="/login">¿Ya tienes cuenta? Inicia sesión</RouterLink>
+            <span class="hint">¿Ya tienes cuenta? Inicia sesion</span>
             <button type="submit" class="btn btn--primary" :disabled="checkingEmail">
               {{ checkingEmail ? "Comprobando..." : "Siguiente" }}
             </button>
@@ -634,6 +710,12 @@ async function onSubmit() {
   color: var(--muted);
 }
 
+.registro__privacy {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .stepper {
   display: flex;
   justify-content: center;
@@ -704,6 +786,25 @@ async function onSubmit() {
   color: var(--muted);
 }
 
+.form-legend {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.form-group {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 0 0 16px;
+}
+
+.form-group legend {
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .form-grid {
   display: grid;
   gap: 16px;
@@ -721,6 +822,19 @@ async function onSubmit() {
   border-radius: 8px;
   border: 1px solid var(--border);
   font-size: 14px;
+}
+
+.field--error input,
+.field--error .field__input input {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.field__error {
+  display: block;
+  color: #b91c1c;
+  margin-top: 6px;
+  font-size: 12px;
 }
 
 .field small {
