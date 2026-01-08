@@ -100,6 +100,7 @@ public class SocioService {
     socio.setTelefono(telefono);
 
     socio.setTarifa(tarifa);
+    socio.setClasesGratis(tarifa.getClasesGratisMes());
 
     // Solicitud pendiente de aceptacion.
     socio.setEstado(SocioEstado.INACTIVO);

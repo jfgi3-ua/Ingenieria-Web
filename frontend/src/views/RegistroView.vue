@@ -92,7 +92,8 @@ watch(
 function featuresForTarifa(tarifa: Tarifa) {
   const features: string[] = ["Acceso al gimnasio", "Zona de pesas y cardio"]
   if ((tarifa.clasesGratisMes ?? 0) > 0) {
-    features.push(`Clases gratis/mes: ${tarifa.clasesGratisMes}`)
+    const unlimited = tarifa.clasesGratisMes >= 999 || tarifa.nombre.toLowerCase().includes("elite")
+    features.push(`Clases gratis/mes: ${unlimited ? "ilimitado" : tarifa.clasesGratisMes}`)
   }
   if (tarifa.nombre.toLowerCase().includes("premium")) {
     features.push("Acceso 24/7", "Casillero personal")
