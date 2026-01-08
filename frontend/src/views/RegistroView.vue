@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { listarTarifas, type Tarifa } from "@/services/tarifas"
 import { initPago, verifyPago } from "@/services/pagos"
 import { emailExists, registrarSocio } from "@/services/socios"
 import { type SocioRegistroRequest, type SocioResponse } from "@/types/socio"
 
 const route = useRoute()
+const router = useRouter()
 const REGISTRO_STORAGE_KEY = "fitgym_registro_draft"
 
 const tarifas = ref<Tarifa[]>([])
@@ -315,6 +316,7 @@ async function onSubmit() {
   try {
     ok.value = await registrarSocio({ ...form.value })
     clearDraft()
+    await router.push("/login")
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
     error.value = normalizeErrorMessage(message)
