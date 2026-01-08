@@ -455,7 +455,7 @@ async function onSubmit() {
               </div>
             </div>
 
-            <button class="btn btn--primary btn--full" type="button" :disabled="loadingPago || loadingVerify" @click="iniciarPago">
+            <button class="btn btn--primary btn--full" type="button" :disabled="loadingPago || loadingVerify || pagoConfirmado" @click="iniciarPago">
               {{ loadingPago ? "Redirigiendo..." : "Continuar al pago seguro" }}
             </button>
 
@@ -472,7 +472,7 @@ async function onSubmit() {
               Pago pendiente de confirmacion. Revisa el estado en unos segundos.
             </div>
             <p v-if="pagoError" class="pay-box__error-text">{{ pagoError }}</p>
-            <small class="muted">Conexi??n segura SSL 256-bit</small>
+            <small class="muted">Conexión segura SSL 256-bit</small>
           </div>
 
           <div class="panel__footer">
