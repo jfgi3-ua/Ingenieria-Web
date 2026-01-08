@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:backend/.env[.properties]
   datasource:
     url: jdbc:postgresql://localhost:5433/fitgym
     username: fitgym_user
@@ -11,7 +13,7 @@ spring:
 tpvv:
   base-url: ${TPVV_BASE_URL:https://tpv-backend-cbbg.onrender.com}
   api-key: ${TPVV_API_KEY:}
-  callback-url: ${TPVV_CALLBACK_URL:http://localhost:5173/registro?step=2}
+  callback-url: ${TPVV_CALLBACK_URL:http://localhost:5173/registro}
 
 # logging:
 #   level:

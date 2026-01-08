@@ -34,7 +34,7 @@ public class TpvvClient {
           .retrieve()
           .body(TpvvPaymentInitResponse.class);
     } catch (RestClientResponseException ex) {
-      throw new TpvvCommunicationException("TPVV rechazo la solicitud de init. Codigo: " + ex.getRawStatusCode());
+      throw new TpvvCommunicationException("TPVV rechazo la solicitud de init. Codigo: " + ex.getStatusCode().value());
     } catch (Exception ex) {
       throw new TpvvCommunicationException("No se pudo iniciar el pago en TPVV.");
     }
@@ -49,7 +49,7 @@ public class TpvvClient {
           .retrieve()
           .body(TpvvPaymentVerifyResponse.class);
     } catch (RestClientResponseException ex) {
-      throw new TpvvCommunicationException("TPVV rechazo la verificacion. Codigo: " + ex.getRawStatusCode());
+      throw new TpvvCommunicationException("TPVV rechazo la verificacion. Codigo: " + ex.getStatusCode().value());
     } catch (Exception ex) {
       throw new TpvvCommunicationException("No se pudo verificar el pago en TPVV.");
     }

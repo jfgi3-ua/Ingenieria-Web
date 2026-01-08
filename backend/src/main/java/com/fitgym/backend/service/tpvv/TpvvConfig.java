@@ -29,4 +29,12 @@ public class TpvvConfig {
         .requestFactory(requestFactory)
         .build();
   }
+
+  /**
+   * Builder base para RestClient (evita dependencia de auto-config).
+   */
+  @Bean
+  public RestClient.Builder restClientBuilder() {
+    return RestClient.builder();
+  }
 }

@@ -66,16 +66,18 @@ public class PagoRegistroService {
       throw new TpvvCommunicationException("TPVV devolvio una respuesta incompleta al iniciar el pago.");
     }
 
+    String paymentUrl = normalizePaymentUrl(response.paymentUrl());
+
     PagoRegistro pago = new PagoRegistro();
     pago.setToken(response.token());
     pago.setEstado(PagoRegistroEstado.PENDING);
     pago.setImporte(importe);
     pago.setExternalReference(externalReference);
     pago.setCallbackUrl(props.callbackUrl());
-    pago.setPaymentUrl(response.paymentUrl());
+    pago.setPaymentUrl(paymentUrl);
     pagoRepo.save(pago);
 
-    return new PagoInitResult(response.paymentUrl(), response.token());
+    return new PagoInitResult(paymentUrl, response.token());
   }
 
   @Transactional
@@ -126,5 +128,21 @@ public class PagoRegistroService {
       return PagoRegistroEstado.FAILED;
     }
     return PagoRegistroEstado.PENDING;
+  }
+
+  private String normalizePaymentUrl(String paymentUrl) {
+    String trimmed = paymentUrl.trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return trimmed;
+    }
+
+    String base = props.baseUrl();
+    if (base == null || base.isBlank()) {
+      throw new TpvvCommunicationException("TPVV baseUrl no configurada.");
+    }
+
+    String baseNormalized = base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
+    String path = trimmed.startsWith("/") ? trimmed : "/" + trimmed;
+    return baseNormalized + path;
   }
 }
