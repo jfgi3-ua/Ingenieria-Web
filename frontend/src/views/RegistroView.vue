@@ -528,7 +528,7 @@ async function onSubmit() {
           </fieldset>
 
           <div class="panel__footer">
-            <span class="hint">¿Ya tienes cuenta? Inicia sesion</span>
+            <RouterLink class="hint hint--accent" to="/login">¿Ya tienes cuenta? Inicia sesión</RouterLink>
             <button type="submit" class="btn btn--primary" :disabled="checkingEmail">
               {{ checkingEmail ? "Comprobando..." : "Siguiente" }}
             </button>
@@ -808,11 +808,16 @@ async function onSubmit() {
 .form-grid {
   display: grid;
   gap: 16px;
+  min-width: 0;
 }
 
 .field span {
   font-weight: 600;
   font-size: 13px;
+}
+
+.field {
+  min-width: 0;
 }
 
 .field input {
@@ -822,6 +827,8 @@ async function onSubmit() {
   border-radius: 8px;
   border: 1px solid var(--border);
   font-size: 14px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .field--error input,
@@ -846,8 +853,19 @@ async function onSubmit() {
 
 .field--split {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
+}
+
+.field--split label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.field--split input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .field__input {
@@ -855,11 +873,13 @@ async function onSubmit() {
   align-items: center;
   gap: 8px;
   margin-top: 6px;
+  min-width: 0;
 }
 
 .field__input input {
   flex: 1;
   margin-top: 0;
+  min-width: 0;
 }
 
 .icon-btn {
@@ -869,6 +889,7 @@ async function onSubmit() {
   padding: 6px 10px;
   cursor: pointer;
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .req {
@@ -889,6 +910,12 @@ async function onSubmit() {
   color: var(--muted);
   font-size: 13px;
   cursor: pointer;
+}
+
+.hint--accent {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 .btn {
@@ -1171,6 +1198,10 @@ async function onSubmit() {
   .panel__footer {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .field--split {
+    grid-template-columns: 1fr;
   }
 }
 </style>
