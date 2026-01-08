@@ -5,6 +5,7 @@ import com.fitgym.backend.api.dto.SocioLoginResponse;
 import com.fitgym.backend.api.dto.SocioSession;
 import com.fitgym.backend.api.dto.SocioRegistroRequest;
 import com.fitgym.backend.api.dto.SocioResponse;
+import com.fitgym.backend.api.dto.EmailExistsResponse;
 import com.fitgym.backend.domain.Socio;
 import com.fitgym.backend.service.InvalidCredentialsException;
 import com.fitgym.backend.service.SocioService;
@@ -36,6 +37,15 @@ public class SocioController {
   */
   public SocioController(SocioService socioService) {
     this.socioService = socioService;
+  }
+
+  /**
+   * Endpoint ligero para validar si un correo ya existe.
+   */
+  @GetMapping("/email-exists")
+  public ResponseEntity<EmailExistsResponse> emailExists(@RequestParam String email) {
+    boolean exists = socioService.emailExiste(email);
+    return ResponseEntity.ok(new EmailExistsResponse(exists));
   }
 
 /**

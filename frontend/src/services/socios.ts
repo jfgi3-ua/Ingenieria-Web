@@ -11,6 +11,15 @@ export function registrarSocio(payload: SocioRegistroRequest) {
 }
 
 /**
+ * Valida si un correo ya existe antes de avanzar en el registro.
+ */
+export async function emailExists(email: string) {
+  const encoded = encodeURIComponent(email)
+  const res = await apiGet<{ exists: boolean }>(`/api/socios/email-exists?email=${encoded}`)
+  return res.exists
+}
+
+/**
  * Inicia sesion con correo y contraseña.
  * Backend esperado: POST /api/socios/login
  *

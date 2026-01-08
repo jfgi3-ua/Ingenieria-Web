@@ -59,6 +59,14 @@ public class SocioService {
   }
 
   /**
+   * Comprueba si ya existe un socio con el correo indicado.
+   */
+  @Transactional(readOnly = true)
+  public boolean emailExiste(String correo) {
+    return socioRepo.existsByCorreoElectronicoIgnoreCase(correo);
+  }
+
+  /**
    * Registra un nuevo socio en el sistema.
    *
    * El backend valida que el pago TPVV este COMPLETED antes de persistir el socio.

@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from "vue"
 import { useRoute } from "vue-router"
 import { listarTarifas, type Tarifa } from "@/services/tarifas"
 import { initPago, verifyPago } from "@/services/pagos"
-import { registrarSocio } from "@/services/socios"
+import { emailExists, registrarSocio } from "@/services/socios"
 import { type SocioRegistroRequest, type SocioResponse } from "@/types/socio"
 
 const route = useRoute()
@@ -16,6 +16,7 @@ const tarifasError = ref<string | null>(null)
 const loadingSubmit = ref(false)
 const error = ref<string | null>(null)
 const ok = ref<SocioResponse | null>(null)
+const checkingEmail = ref(false)
 
 const step = ref<1 | 2 | 3>(1)
 const stepErrors = ref<string[]>([])
@@ -141,6 +142,24 @@ function normalizePagoError(msg: string) {
   return msg
 }
 
+async function validarCorreoBlur() {
+  const correo = form.value.correoElectronico.trim()
+  if (!correo) return
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return
+
+  checkingEmail.value = true
+  try {
+    const exists = await emailExists(correo)
+    if (exists) {
+      stepErrors.value = ["Correo ya registrado."]
+    }
+  } catch {
+    stepErrors.value = ["No se pudo validar el correo. Intenta de nuevo."]
+  } finally {
+    checkingEmail.value = false
+  }
+}
+
 function validarPaso1(): boolean {
   const errs: string[] = []
   if (!form.value.nombre.trim()) errs.push("El nombre es obligatorio.")
@@ -162,6 +181,26 @@ function validarPaso1(): boolean {
   return errs.length === 0
 }
 
+async function validarPaso1Async(): Promise<boolean> {
+  if (!validarPaso1()) return false
+
+  checkingEmail.value = true
+  try {
+    const exists = await emailExists(form.value.correoElectronico)
+    if (exists) {
+      stepErrors.value = ["Ese correo ya esta registrado."]
+      return false
+    }
+  } catch {
+    stepErrors.value = ["No se pudo validar el correo. Intenta de nuevo."]
+    return false
+  } finally {
+    checkingEmail.value = false
+  }
+
+  return true
+}
+
 function validarPaso2(): boolean {
   const errs: string[] = []
   if (!tarifaSeleccionada.value) errs.push("Debes seleccionar una tarifa.")
@@ -177,9 +216,9 @@ function validarPaso3(): boolean {
   return errs.length === 0
 }
 
-function irSiguiente() {
+async function irSiguiente() {
   stepErrors.value = []
-  if (step.value === 1 && !validarPaso1()) return
+  if (step.value === 1 && !(await validarPaso1Async())) return
   if (step.value === 2 && !validarPaso2()) return
   if (step.value < 3) step.value = (step.value + 1) as 2 | 3
 }
@@ -344,7 +383,13 @@ async function onSubmit() {
 
             <label class="field">
               <span>Correo electrónico <span class="req">*</span></span>
-              <input v-model="form.correoElectronico" type="email" placeholder="tu.email@ejemplo.com" />
+              <input
+                v-model="form.correoElectronico"
+                type="email"
+                placeholder="tu.email@ejemplo.com"
+                @blur="validarCorreoBlur"
+              />
+              <small v-if="checkingEmail">Comprobando...</small>
               <small>Usaremos este correo para enviarte confirmaciones y notificaciones.</small>
             </label>
 
@@ -406,7 +451,9 @@ async function onSubmit() {
 
           <div class="panel__footer">
             <RouterLink class="hint" to="/login">¿Ya tienes cuenta? Inicia sesión</RouterLink>
-            <button type="submit" class="btn btn--primary">Siguiente</button>
+            <button type="submit" class="btn btn--primary" :disabled="checkingEmail">
+              {{ checkingEmail ? "Comprobando..." : "Siguiente" }}
+            </button>
           </div>
         </form>
 
