@@ -46,30 +46,38 @@ describe("RegistroView", () => {
   it("avanza al paso 2 cuando los datos personales son validos", async () => {
     const wrapper = await mountRegistro()
 
-    await wrapper.find('input[placeholder="Ej: Juan Perez Garcia"]').setValue("Juan Perez")
-    await wrapper.find('input[placeholder="tu.email@ejemplo.com"]').setValue("juan@example.com")
-    await wrapper.find('input[placeholder="Minimo 8 caracteres"]').setValue("password123")
-    await wrapper.find('input[placeholder="Repite tu contrasena"]').setValue("password123")
-    await wrapper.find('input[placeholder="Calle, numero, piso, puerta"]').setValue("Calle 1")
-    await wrapper.find('input[placeholder="Ej: Madrid"]').setValue("Madrid")
-    await wrapper.find('input[placeholder="28001"]').setValue("28001")
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
 
     await wrapper.find("form").trigger("submit")
     await flushPromises()
 
-    expect(wrapper.text()).toContain("Seleccion de tarifa")
+    expect(wrapper.text()).toContain("Pago seguro")
   })
 
   it("bloquea continuar en paso 2 si no se confirma el pago", async () => {
     const wrapper = await mountRegistro()
 
-    await wrapper.find('input[placeholder="Ej: Juan Perez Garcia"]').setValue("Juan Perez")
-    await wrapper.find('input[placeholder="tu.email@ejemplo.com"]').setValue("juan@example.com")
-    await wrapper.find('input[placeholder="Minimo 8 caracteres"]').setValue("password123")
-    await wrapper.find('input[placeholder="Repite tu contrasena"]').setValue("password123")
-    await wrapper.find('input[placeholder="Calle, numero, piso, puerta"]').setValue("Calle 1")
-    await wrapper.find('input[placeholder="Ej: Madrid"]').setValue("Madrid")
-    await wrapper.find('input[placeholder="28001"]').setValue("28001")
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
 
     await wrapper.find("form").trigger("submit")
     await flushPromises()
@@ -84,18 +92,40 @@ describe("RegistroView", () => {
 
     const wrapper = await mountRegistro()
 
-    await wrapper.find('input[placeholder="Ej: Juan Perez Garcia"]').setValue("Juan Perez")
-    await wrapper.find('input[placeholder="tu.email@ejemplo.com"]').setValue("juan@example.com")
-    await wrapper.find('input[placeholder="Minimo 8 caracteres"]').setValue("password123")
-    await wrapper.find('input[placeholder="Repite tu contrasena"]').setValue("password123")
-    await wrapper.find('input[placeholder="Calle, numero, piso, puerta"]').setValue("Calle 1")
-    await wrapper.find('input[placeholder="Ej: Madrid"]').setValue("Madrid")
-    await wrapper.find('input[placeholder="28001"]').setValue("28001")
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
 
     await wrapper.find("form").trigger("submit")
     await flushPromises()
 
-    expect(wrapper.text()).not.toContain("Seleccion de tarifa")
+    expect(wrapper.text()).not.toContain("Pago seguro")
     expect(wrapper.text()).toContain("Ese correo ya esta registrado.")
+  })
+
+  it("muestra comprobando mientras valida el correo", async () => {
+    const { emailExists } = await import("@/services/socios")
+    let resolveCheck: (value: boolean) => void
+    const deferred = new Promise<boolean>((resolve) => {
+      resolveCheck = resolve
+    })
+    ;(emailExists as unknown as ReturnType<typeof vi.fn>).mockReturnValueOnce(deferred)
+
+    const wrapper = await mountRegistro()
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await wrapper.find('input[type="email"]').trigger("blur")
+
+    expect(wrapper.text()).toContain("Comprobando...")
+
+    resolveCheck!(false)
+    await flushPromises()
   })
 })

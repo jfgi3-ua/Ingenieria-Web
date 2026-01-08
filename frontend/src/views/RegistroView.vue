@@ -514,7 +514,7 @@ async function onSubmit() {
                   <small v-if="fieldErrors.ciudad" class="field__error">{{ fieldErrors.ciudad }}</small>
                 </label>
                 <label :class="{ 'field--error': fieldErrors.codigoPostal }">
-                  <span>Codigo postal <span class="req">*</span></span>
+                  <span>Código postal <span class="req">*</span></span>
                   <input
                     v-model="form.codigoPostal"
                     type="text"
