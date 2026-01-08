@@ -66,7 +66,9 @@ onMounted(async () => {
   tarifasError.value = null
   try {
     tarifas.value = await listarTarifas()
-    if (tarifas.value.length > 0) form.value.idTarifa = tarifas.value[0]?.id ?? 0
+    if (tarifas.value.length > 0 && form.value.idTarifa === 0) {
+      form.value.idTarifa = tarifas.value[0]?.id ?? 0
+    }
   } catch (e) {
     tarifasError.value = e instanceof Error ? e.message : String(e)
   } finally {
@@ -123,7 +125,10 @@ async function aplicarEstadoDesdeRoute() {
 }
 
 function normalizeErrorMessage(msg: string) {
-  if (msg.includes("409")) return "Ese correo ya está registrado."
+  const lower = msg.toLowerCase()
+  if (lower.includes("pago")) return "El pago no esta confirmado. Vuelve al paso de pago y verificalo."
+  if (lower.includes("token")) return "No se pudo validar el pago. Inicia el pago de nuevo."
+  if (msg.includes("409")) return "Ese correo ya esta registrado."
   if (msg.includes("404")) return "La tarifa seleccionada no existe."
   if (msg.includes("400")) return "Revisa los campos del formulario."
   return msg
