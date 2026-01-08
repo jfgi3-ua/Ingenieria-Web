@@ -4,6 +4,7 @@ import RegistroView from "@/views/RegistroView.vue"
 import InicioView from "@/views/InicioView.vue"
 import LoginView from "@/views/LoginView.vue"
 import ServiciosView from "@/views/ServiciosView.vue"
+import DetallesActividad from '@/views/DetallesActividad.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,7 +13,8 @@ const router = createRouter({
     { path: "/registro", name: "registro", component: RegistroView },
     { path: "/login", name: "login", component: LoginView },
     { path: "/inicio", name: "inicio", component: InicioView },
-    { path: "/servicios", name: "servicios", component: ServiciosView, meta: { requiresAuth: true } },
+    { path: "/actividad/:id", name: "detallesActividad", component: DetallesActividad, props: true, meta: { requiresAuth: true } },
+    { path: "/servicios", name: "servicios", component: ServiciosView, meta: { requiresAuth: true } }
   ],
 })
 

@@ -5,6 +5,7 @@
 	import gymImg from "@/assets/gymImg.png"
 	import { ref } from "vue";
 	import router from "@/router";
+	import Navbar from '@/components/navbar.vue';
 
 	const planes = ref<HTMLElement | null>(null);
 

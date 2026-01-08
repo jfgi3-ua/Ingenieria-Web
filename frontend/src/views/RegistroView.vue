@@ -400,7 +400,7 @@ async function onSubmit() {
           </div>
 
           <div class="panel__footer">
-            <span class="hint">¿Ya tienes cuenta? Inicia sesión</span>
+            <RouterLink class="hint" to="/login">¿Ya tienes cuenta? Inicia sesión</RouterLink>
             <button type="submit" class="btn btn--primary">Siguiente</button>
           </div>
         </form>
@@ -717,8 +717,10 @@ async function onSubmit() {
 }
 
 .hint {
+  all: unset;
   color: var(--muted);
   font-size: 13px;
+  cursor: pointer;
 }
 
 .btn {
