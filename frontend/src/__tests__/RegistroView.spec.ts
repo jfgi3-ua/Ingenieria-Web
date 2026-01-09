@@ -1,75 +1,131 @@
-﻿import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi, beforeEach } from "vitest"
 import { flushPromises, mount } from "@vue/test-utils"
+import { createRouter, createMemoryHistory } from "vue-router"
 import RegistroView from "@/views/RegistroView.vue"
 
 // Mock API layer to keep tests focused on the wizard flow and validation logic.
 vi.mock("@/services/tarifas", () => ({
   listarTarifas: vi.fn().mockResolvedValue([
-    { id: 1, nombre: "Basico", cuota: 29.99, descripcion: "Plan básico", clasesGratisMes: 2 },
+    { id: 1, nombre: "Basico", cuota: 29.99, descripcion: "Plan basico", clasesGratisMes: 2 },
     { id: 2, nombre: "Premium", cuota: 49.99, descripcion: "Plan premium", clasesGratisMes: 6 },
   ]),
 }))
 
-vi.mock("@/services/socios", () => ({
-  registrarSocio: vi.fn(),
+vi.mock("@/services/pagos", () => ({
+  initPago: vi.fn(),
+  verifyPago: vi.fn(),
 }))
 
-/**
- * Suite de pruebas para la vista de registro de socios ({@link RegistroView}).
- *
- * Estas pruebas se centran en:
- * - El flujo del asistente de registro (cambio entre pasos).
- * - La validación de los datos personales en el primer paso.
- * - Las restricciones de navegación en el segundo paso (confirmación de pago).
- *
- * Se mockean las dependencias de la capa de servicios para evitar llamadas
- * reales a la API y poder aislar el comportamiento de la interfaz.
- */
+vi.mock("@/services/socios", () => ({
+  registrarSocio: vi.fn(),
+  emailExists: vi.fn().mockResolvedValue(false),
+}))
+
+async function mountRegistro() {
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [{ path: "/registro", component: RegistroView }],
+  })
+  await router.push("/registro")
+  await router.isReady()
+
+  const wrapper = mount(RegistroView, {
+    global: {
+      plugins: [router],
+    },
+  })
+  await flushPromises()
+  return wrapper
+}
+
 describe("RegistroView", () => {
-  /**
-   * Verifica que, cuando el usuario introduce datos personales válidos
-   * en todos los campos obligatorios del formulario del paso 1 y envía
-   * el formulario, el asistente avanza correctamente al paso 2
-   * (selección de tarifa).
-   */
-  it("avanza al paso 2 cuando los datos personales son válidos", async () => {
-    const wrapper = mount(RegistroView)
-    await flushPromises()
-
-    await wrapper.find('input[placeholder="Ej: Juan Pérez García"]').setValue("Juan Perez")
-    await wrapper.find('input[placeholder="tu.email@ejemplo.com"]').setValue("juan@example.com")
-    await wrapper.find('input[placeholder="Mínimo 8 caracteres"]').setValue("password123")
-    await wrapper.find('input[placeholder="Repite tu contraseña"]').setValue("password123")
-    await wrapper.find('input[placeholder="Calle, número, piso, puerta"]').setValue("Calle 1")
-    await wrapper.find('input[placeholder="Ej: Madrid"]').setValue("Madrid")
-    await wrapper.find('input[placeholder="28001"]').setValue("28001")
-
-    await wrapper.find("form").trigger("submit")
-
-    expect(wrapper.text()).toContain("Selección de tarifa")
+  beforeEach(() => {
+    sessionStorage.clear()
   })
 
-  /**
-   * Verifica que, en el paso 2 del asistente, el botón principal de
-   * acción ("Continuar") permanece deshabilitado mientras el usuario
-   * no haya confirmado el pago, impidiendo avanzar sin completar
-   * correctamente este requisito.
-   */
-  it("bloquea continuar en paso 2 si no se confirma el pago", async () => {
-    const wrapper = mount(RegistroView)
-    await flushPromises()
+  it("avanza al paso 2 cuando los datos personales son validos", async () => {
+    const wrapper = await mountRegistro()
 
-    await wrapper.find('input[placeholder="Ej: Juan Pérez García"]').setValue("Juan Perez")
-    await wrapper.find('input[placeholder="tu.email@ejemplo.com"]').setValue("juan@example.com")
-    await wrapper.find('input[placeholder="Mínimo 8 caracteres"]').setValue("password123")
-    await wrapper.find('input[placeholder="Repite tu contraseña"]').setValue("password123")
-    await wrapper.find('input[placeholder="Calle, número, piso, puerta"]').setValue("Calle 1")
-    await wrapper.find('input[placeholder="Ej: Madrid"]').setValue("Madrid")
-    await wrapper.find('input[placeholder="28001"]').setValue("28001")
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
 
     await wrapper.find("form").trigger("submit")
+    await flushPromises()
+
+    expect(wrapper.text()).toContain("Pago seguro")
+  })
+
+  it("bloquea continuar en paso 2 si no se confirma el pago", async () => {
+    const wrapper = await mountRegistro()
+
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
+
+    await wrapper.find("form").trigger("submit")
+    await flushPromises()
 
     const continuar = wrapper.findAll("button").find((btn) => btn.text() === "Continuar")
     expect(continuar?.attributes("disabled")).toBeDefined()
+  })
+
+  it("bloquea avanzar si el correo ya existe", async () => {
+    const { emailExists } = await import("@/services/socios")
+    ;(emailExists as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(true)
+
+    const wrapper = await mountRegistro()
+
+    const textInputs = wrapper.findAll('input[type="text"]')
+    const passwordInputs = wrapper.findAll('input[type="password"]')
+
+    await textInputs[0].setValue("Juan Perez")
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await passwordInputs[0].setValue("password123")
+    await passwordInputs[1].setValue("password123")
+    await wrapper.find('input[type="tel"]').setValue("+34 600 00 00 00")
+    await textInputs[1].setValue("Calle 1")
+    await textInputs[2].setValue("Madrid")
+    await textInputs[3].setValue("28001")
+
+    await wrapper.find("form").trigger("submit")
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain("Pago seguro")
+    expect(wrapper.text()).toContain("Ese correo ya esta registrado.")
+  })
+
+  it("muestra comprobando mientras valida el correo", async () => {
+    const { emailExists } = await import("@/services/socios")
+    let resolveCheck: (value: boolean) => void
+    const deferred = new Promise<boolean>((resolve) => {
+      resolveCheck = resolve
+    })
+    ;(emailExists as unknown as ReturnType<typeof vi.fn>).mockReturnValueOnce(deferred)
+
+    const wrapper = await mountRegistro()
+    await wrapper.find('input[type="email"]').setValue("juan@example.com")
+    await wrapper.find('input[type="email"]').trigger("blur")
+
+    expect(wrapper.text()).toContain("Comprobando...")
+
+    resolveCheck!(false)
+    await flushPromises()
   })
 })

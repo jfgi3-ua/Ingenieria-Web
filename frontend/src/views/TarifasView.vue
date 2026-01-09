@@ -12,6 +12,14 @@ onMounted(async () => {
     error.value = e instanceof Error ? e.message : String(e)
   }
 })
+
+
+function clasesGratisLabel(tarifa: Tarifa) {
+  if (tarifa.clasesGratisMes >= 999 || tarifa.nombre.toLowerCase().includes("elite")) {
+    return "ilimitado"
+  }
+  return String(tarifa.clasesGratisMes)
+}
 </script>
 
 <template>
@@ -21,7 +29,7 @@ onMounted(async () => {
 
     <ul v-else>
       <li v-for="t in tarifas" :key="t.id">
-        <strong>{{ t.nombre }}</strong> — {{ t.cuota }}€ (gratis/mes: {{ t.clasesGratisMes }})
+        <strong>{{ t.nombre }}</strong> - {{ t.cuota }} EUR (gratis/mes: {{ clasesGratisLabel(t) }})
       </li>
     </ul>
   </main>

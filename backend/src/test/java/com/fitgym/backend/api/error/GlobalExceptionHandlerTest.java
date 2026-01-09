@@ -3,8 +3,11 @@ package com.fitgym.backend.api.error;
 import com.fitgym.backend.service.BusinessException;
 import com.fitgym.backend.service.DuplicateEmailException;
 import com.fitgym.backend.service.InvalidCredentialsException;
+import com.fitgym.backend.service.PagoRegistroNoCompletadoException;
+import com.fitgym.backend.service.PagoRegistroNotFoundException;
 import com.fitgym.backend.service.SocioInactivoException;
 import com.fitgym.backend.service.TarifaNotFoundException;
+import com.fitgym.backend.service.TpvvCommunicationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -95,6 +98,60 @@ class GlobalExceptionHandlerTest {
     assertEquals(HttpStatus.NOT_FOUND.value(), error.getStatus());
     assertEquals("No existe", error.getMessage());
     assertEquals("/api/socios/registro", error.getPath());
+    assertNotNull(error.getTimestamp());
+  }
+
+  @Test
+  void handlePagoNotFound_returnsNotFound_andApiErrorBody() {
+    GlobalExceptionHandler handler = new GlobalExceptionHandler();
+    MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/pagos/verify/tok");
+
+    ResponseEntity<ApiError> res = handler.handlePagoNotFound(
+        new PagoRegistroNotFoundException("No existe"), req);
+
+    assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+
+    ApiError error = res.getBody();
+    assertNotNull(error);
+    assertEquals(HttpStatus.NOT_FOUND.value(), error.getStatus());
+    assertEquals("No existe", error.getMessage());
+    assertEquals("/api/pagos/verify/tok", error.getPath());
+    assertNotNull(error.getTimestamp());
+  }
+
+  @Test
+  void handlePagoNoCompletado_returnsConflict_andApiErrorBody() {
+    GlobalExceptionHandler handler = new GlobalExceptionHandler();
+    MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/socios/registro");
+
+    ResponseEntity<ApiError> res = handler.handlePagoNoCompletado(
+        new PagoRegistroNoCompletadoException("Pago pendiente"), req);
+
+    assertEquals(HttpStatus.CONFLICT, res.getStatusCode());
+
+    ApiError error = res.getBody();
+    assertNotNull(error);
+    assertEquals(HttpStatus.CONFLICT.value(), error.getStatus());
+    assertEquals("Pago pendiente", error.getMessage());
+    assertEquals("/api/socios/registro", error.getPath());
+    assertNotNull(error.getTimestamp());
+  }
+
+  @Test
+  void handleTpvv_returnsBadGateway_andApiErrorBody() {
+    GlobalExceptionHandler handler = new GlobalExceptionHandler();
+    MockHttpServletRequest req = new MockHttpServletRequest("POST", "/api/pagos/init");
+
+    ResponseEntity<ApiError> res = handler.handleTpvv(
+        new TpvvCommunicationException("TPVV error"), req);
+
+    assertEquals(HttpStatus.BAD_GATEWAY, res.getStatusCode());
+
+    ApiError error = res.getBody();
+    assertNotNull(error);
+    assertEquals(HttpStatus.BAD_GATEWAY.value(), error.getStatus());
+    assertEquals("TPVV error", error.getMessage());
+    assertEquals("/api/pagos/init", error.getPath());
     assertNotNull(error.getTimestamp());
   }
 

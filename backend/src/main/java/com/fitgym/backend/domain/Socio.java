@@ -88,6 +88,9 @@ public class Socio {
   @Column(name = "codigo_postal", length = 10)
   private String codigoPostal;
 
+  @Column(name = "clases_gratis", nullable = false)
+  private Integer clasesGratis;
+
   // Getters y Setters
   public Long getId() { return id; }
 
@@ -123,4 +126,7 @@ public class Socio {
 
   public String getCodigoPostal() { return codigoPostal; }
   public void setCodigoPostal(String codigoPostal) { this.codigoPostal = codigoPostal; }
+
+  public Integer getClasesGratis() { return clasesGratis; }
+  public void setClasesGratis(Integer clasesGratis) { this.clasesGratis = clasesGratis; }
 }

@@ -25,7 +25,7 @@ describe("App", () => {
 
     await router.isReady()
 
-    expect(wrapper.text()).toContain("Registro")
-    expect(wrapper.text()).toContain("Login")
+    expect(wrapper.text()).toContain("Registrarse")
+    expect(wrapper.text()).toContain("Iniciar ses")
   })
 })

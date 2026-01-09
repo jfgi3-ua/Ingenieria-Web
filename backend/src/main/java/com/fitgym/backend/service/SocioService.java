@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Servicio de gestión de socios del gimnasio.
+ * Servicio de gestion de socios del gimnasio.
  *
- * Proporciona operaciones para el registro y administración de socios,
- * incluyendo validaciones de datos, gestión de tarifas y codificación segura de contraseñas.
+ * Proporciona operaciones para el registro y administracion de socios,
+ * incluyendo validaciones de datos, gestion de tarifas y codificacion segura de contrasenas.
  */
 @Service
 public class SocioService {
@@ -21,24 +21,22 @@ public class SocioService {
   private final SocioRepository socioRepo;
   private final TarifaRepository tarifaRepo;
   private final PasswordEncoder passwordEncoder;
+  private final PagoRegistroService pagoRegistroService;
 
-
-  public SocioService(SocioRepository socioRepo, TarifaRepository tarifaRepo, PasswordEncoder passwordEncoder) {
+  public SocioService(
+      SocioRepository socioRepo,
+      TarifaRepository tarifaRepo,
+      PasswordEncoder passwordEncoder,
+      PagoRegistroService pagoRegistroService
+  ) {
     this.socioRepo = socioRepo;
     this.tarifaRepo = tarifaRepo;
     this.passwordEncoder = passwordEncoder;
+    this.pagoRegistroService = pagoRegistroService;
   }
 
   /**
-   * Autentica a un socio por correo y contraseña.
-   *
-   * Verifica que exista el socio, que la contraseña coincida con el hash BCrypt
-   * y que el estado sea ACTIVO. Si alguna comprobacion falla, lanza la excepcion
-   * correspondiente para que la capa API devuelva 401 o 403.
-   *
-   * @param correo correo electronico del socio (case-insensitive).
-   * @param passwordPlano contraseña en texto plano introducida por el usuario.
-   * @return Socio autenticado.
+   * Autentica a un socio por correo y contrasena.
    */
   @Transactional(readOnly = true)
   public Socio autenticar(String correo, String passwordPlano) {
@@ -60,35 +58,20 @@ public class SocioService {
     return socio;
   }
 
-/**
- * Registra un nuevo socio en el sistema.
- *
- * Realiza el registro completo de un socio con validación de datos y asignación de tarifa.
- * La contraseña se codifica de forma segura antes de almacenarse. El socio se crea
- * inicialmente en estado INACTIVO, pendiente de aceptación.
- *
- * @param nombre          El nombre completo del socio. No puede ser nulo.
- * @param correo          El correo electrónico del socio. Debe ser único en el sistema
- *                        y la búsqueda es insensible a mayúsculas/minúsculas.
- * @param passwordPlano   La contraseña en texto plano proporcionada por el usuario.
- *                        Se codificará antes de almacenarse en la base de datos.
- * @param telefono        El número de teléfono de contacto del socio.
- * @param idTarifa        El identificador de la tarifa a asignar al socio.
- *                        Debe existir en el sistema.
- * @param direccion       La dirección física de residencia del socio.
- * @param ciudad          La ciudad de residencia del socio.
- * @param codigoPostal    El código postal de la dirección del socio.
- *
- * @return El objeto {@link Socio} creado y almacenado en la base de datos.
- *
- * @throws BusinessException Si ya existe un socio con el correo electrónico proporcionado.
- * @throws BusinessException Si la tarifa con el identificador especificado no existe.
- *
- * @see Socio
- * @see Tarifa
- * @see SocioEstado#INACTIVO
- */
-@Transactional
+  /**
+   * Comprueba si ya existe un socio con el correo indicado.
+   */
+  @Transactional(readOnly = true)
+  public boolean emailExiste(String correo) {
+    return socioRepo.existsByCorreoElectronicoIgnoreCase(correo);
+  }
+
+  /**
+   * Registra un nuevo socio en el sistema.
+   *
+   * El backend valida que el pago TPVV este COMPLETED antes de persistir el socio.
+   */
+  @Transactional
   public Socio registrar(
       String nombre,
       String correo,
@@ -97,14 +80,18 @@ public class SocioService {
       Long idTarifa,
       String direccion,
       String ciudad,
-      String codigoPostal
+      String codigoPostal,
+      String paymentToken
   ) {
     if (socioRepo.existsByCorreoElectronicoIgnoreCase(correo)) {
-      throw new DuplicateEmailException("Ya existe un socio con ese correo electrónico.");
+      throw new DuplicateEmailException("Ya existe un socio con ese correo electronico.");
     }
 
     Tarifa tarifa = tarifaRepo.findById(idTarifa)
         .orElseThrow(() -> new TarifaNotFoundException("La tarifa indicada no existe."));
+
+    // El backend es la fuente de verdad: valida en TPVV antes de registrar.
+    pagoRegistroService.exigirPagoCompletado(paymentToken, tarifa.getCuota());
 
     Socio socio = new Socio();
     socio.setNombre(nombre);
@@ -113,8 +100,9 @@ public class SocioService {
     socio.setTelefono(telefono);
 
     socio.setTarifa(tarifa);
+    socio.setClasesGratis(tarifa.getClasesGratisMes());
 
-    // “Solicitud pendiente de aceptación”
+    // Solicitud pendiente de aceptacion.
     socio.setEstado(SocioEstado.INACTIVO);
 
     socio.setDireccion(direccion);
@@ -124,6 +112,3 @@ public class SocioService {
     return socioRepo.save(socio);
   }
 }
-
-
-

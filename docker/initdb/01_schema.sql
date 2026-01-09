@@ -14,6 +14,10 @@ BEGIN
     CREATE TYPE pago_resultado AS ENUM ('OK', 'FAIL');
   END IF;
 
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tpvv_pago_estado') THEN
+    CREATE TYPE tpvv_pago_estado AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
+  END IF;
+
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'socio_estado') THEN
     CREATE TYPE socio_estado AS ENUM ('ACTIVO', 'INACTIVO');
   END IF;
@@ -81,6 +85,7 @@ CREATE TABLE IF NOT EXISTS socio (
   direccion          VARCHAR(200),
   ciudad             VARCHAR(80),
   codigo_postal      VARCHAR(10),
+  clases_gratis      INTEGER NOT NULL DEFAULT 0 CHECK (clases_gratis >= 0),
 
   CONSTRAINT uq_socio_email UNIQUE (correo_electronico),
   CONSTRAINT fk_socio_tarifa
@@ -186,5 +191,27 @@ CREATE TABLE IF NOT EXISTS pago (
 );
 
 CREATE INDEX IF NOT EXISTS idx_pago_reserva ON pago(id_socio, id_actividad);
+
+-- =========================
+-- Pago Registro (TPVV)
+-- =========================
+
+CREATE TABLE IF NOT EXISTS pago_registro (
+  id                BIGSERIAL PRIMARY KEY,
+  token             VARCHAR(120) NOT NULL UNIQUE,
+  estado            tpvv_pago_estado NOT NULL DEFAULT 'PENDING',
+  importe           NUMERIC(10,2) NOT NULL CHECK (importe >= 0),
+  external_reference VARCHAR(120),
+  callback_url      TEXT NOT NULL,
+  payment_url       TEXT,
+  provider_status   VARCHAR(40),
+  failure_reason    TEXT,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  completed_at      TIMESTAMPTZ,
+  failed_at         TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_pago_registro_estado ON pago_registro(estado);
 
 COMMIT;

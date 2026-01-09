@@ -594,6 +594,32 @@ npm install
 npm run dev
 ````
 
+---
+
+## TPVV (Pago de registro)
+
+Integracion del flujo de pago real para el registro de socios:
+
+- El backend inicia el pago en TPVV y devuelve `paymentUrl` + `token`.
+- El frontend redirige al usuario a TPVV y vuelve a `TPVV_CALLBACK_URL`.
+- Al volver, el frontend pide al backend verificar el `token`.
+- El registro solo se permite cuando el estado es `COMPLETED`.
+
+### Variables de entorno (backend)
+
+- `TPVV_BASE_URL` (por defecto: `https://tpv-backend-cbbg.onrender.com`)
+- `TPVV_API_KEY` (obligatoria, no se sube al repo)
+- `TPVV_CALLBACK_URL` (por defecto: `http://localhost:5173/registro`)
+
+El backend carga automaticamente un archivo `.env` si existe en `backend/.env`.
+Ejemplo de contenido:
+````env
+TPVV_API_KEY=tu_clave
+TPVV_CALLBACK_URL=http://localhost:5173/registro
+````
+
+> Nota: El backend es la fuente de verdad del estado del pago. El frontend no debe
+> confiar en el `status` de la query sin verificarlo en backend.
 
 ## Convenciones del Frontend (Vue 3) — Estructura, organización y normas de equipo
 

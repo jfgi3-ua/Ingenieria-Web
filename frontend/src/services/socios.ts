@@ -7,8 +7,16 @@ import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse } from "@/t
  * Backend esperado: POST /api/socios
  */
 export function registrarSocio(payload: SocioRegistroRequest) {
-  console.log("Registrando socio con payload:", payload)
   return apiPost<SocioResponse, SocioRegistroRequest>("/api/socios/registro", payload)
+}
+
+/**
+ * Valida si un correo ya existe antes de avanzar en el registro.
+ */
+export async function emailExists(email: string) {
+  const encoded = encodeURIComponent(email)
+  const res = await apiGet<{ exists: boolean }>(`/api/socios/email-exists?email=${encoded}`)
+  return res.exists
 }
 
 /**

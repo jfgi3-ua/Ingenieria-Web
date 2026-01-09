@@ -10,7 +10,14 @@ describe("App logout", () => {
     const pinia = createPinia()
     setActivePinia(pinia)
     const store = useAuthStore()
-    store.isAuthenticated = true
+    store.socio = {
+      id: 1,
+      nombre: "Test",
+      correoElectronico: "test@fitgym.com",
+      estado: "ACTIVO",
+      idTarifa: 1,
+      tarifaNombre: "Basico",
+    }
 
     const router = createRouter({
       history: createMemoryHistory(),
@@ -29,7 +36,7 @@ describe("App logout", () => {
 
     await router.isReady()
 
-    const button = wrapper.get("button")
+    const button = wrapper.get(".logout-navbar-button")
     await button.trigger("click")
 
     expect(logoutSpy).toHaveBeenCalled()
