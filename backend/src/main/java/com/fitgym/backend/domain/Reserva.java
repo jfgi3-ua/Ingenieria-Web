@@ -19,7 +19,7 @@ public class Reserva {
     private LocalDate fecha;
 
     @Column(nullable = false)
-    private boolean estado;
+    private ReservaEstado estado;
 
     //Getters y Setters
     public Socio getSocio() { return socio; }
@@ -31,6 +31,6 @@ public class Reserva {
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
-    public boolean getEstado() { return estado; }
-    public void setEstado(boolean estado) { this.estado = estado; }
+    public ReservaEstado getEstado() { return estado; }
+    public void setEstado(ReservaEstado estado) { this.estado = estado; }
 }
