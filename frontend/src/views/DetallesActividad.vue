@@ -7,8 +7,13 @@
     import calendarioImg from "@/assets/icons/calendario.png"
     import relojImg from "@/assets/icons/reloj.png"
     import BarraDisponibles from '@/components/BarraDisponibles.vue'
+    import { useAuthStore } from '@/stores/auth.store'
+import { reservar } from '@/services/actividades'
+import router from '@/router'
+    
     let actividadState: Actividad | undefined;
     const actividad = ref<Actividad>();
+    const auth = useAuthStore();
 
     onMounted(async () => {
         actividadState = (history.state as any)?.actividad;
@@ -66,6 +71,16 @@
         return `${dia}/${mes}`;
     }
 
+    async function reserva() {
+        try {
+            await reservar({idActividad: actividad.value?.id!, idSocio: auth.socio?.id!});
+            router.push("/servicios");
+            alert("Reserva realizada");
+        } catch (e) {
+            alert("Error al reservar");
+        }
+    }
+
 </script>
 
 <template>
@@ -114,7 +129,7 @@
                     </div>
                 </div>
             </div>
-            <button class="reserva-btn-details-activity" :disabled="actividad?.disponibles === 0">Reservar actividad</button>
+            <button class="reserva-btn-details-activity" :disabled="actividad?.disponibles === 0" @click="reserva">Reservar actividad</button>
         </div>
     </div>
 </template>

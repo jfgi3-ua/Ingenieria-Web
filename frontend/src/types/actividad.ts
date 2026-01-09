@@ -9,3 +9,8 @@ export type Actividad = {
     disponibles: number
     monitor: string
 }
+
+export type Reserva = {
+    idActividad: number
+    idSocio: number
+}

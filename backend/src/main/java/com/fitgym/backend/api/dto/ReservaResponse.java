@@ -1,6 +1,7 @@
 package com.fitgym.backend.api.dto;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import com.fitgym.backend.domain.ReservaEstado;
 
@@ -24,6 +25,6 @@ import com.fitgym.backend.domain.ReservaEstado;
 public record ReservaResponse(
     Long idSocio,
     Long idActividad,
-    LocalDate fecha,
+    OffsetDateTime fecha,
     ReservaEstado estado
 ) {}
