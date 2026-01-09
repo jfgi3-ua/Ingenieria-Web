@@ -72,14 +72,24 @@ import router from '@/router'
     }
 
     async function reserva() {
-        try {
-            await reservar({idActividad: actividad.value?.id!, idSocio: auth.socio?.id!});
-            router.push("/servicios");
-            alert("Reserva realizada");
-        } catch (e) {
-            alert("Error al reservar");
+    // Si la actividad tiene precio extra se pregunta si está seguro
+    if (actividad.value?.precioExtra && actividad.value.precioExtra > 0) {
+        const confirmar = window.confirm(`Esta actividad tiene un precio extra de ${actividad.value.precioExtra}€. Se consumiran las clases gratuitas o se cobrará si no le quedan del monedero. ¿Quiere continuar con la reserva?`);
+
+        //Evitar reserva si cancela y para todo
+        if (!confirmar) {
+            return;
         }
     }
+    try {
+        await reservar({ idActividad: actividad.value?.id!, idSocio: auth.socio?.id! });
+        router.push("/servicios");
+        alert("Reserva realizada");
+    } catch (e) {
+        alert("Error al reservar");
+    }
+}
+
 
 </script>
 
@@ -125,7 +135,7 @@ import router from '@/router'
                 <div class="div-plazas" v-if="actividad">
                     <BarraDisponibles :key="actividad.id" :actividad="actividad"/>
                     <div v-if="actividad?.precioExtra! > 0" class="div-info-msg">
-                        <p>*Esta actividad requiere de un pago adicional</p>
+                        <p>*Esta actividad requiere de un pago adicional. Consulte sus clases gratuitas incluidas en la tarifa en su perfil</p>
                     </div>
                 </div>
             </div>
