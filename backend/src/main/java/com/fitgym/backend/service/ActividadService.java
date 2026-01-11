@@ -56,7 +56,7 @@ public class ActividadService {
 
         Integer totalDisponibles = actividad.getDisponibles();
     
-        if (totalDisponibles > 1) {
+        if (totalDisponibles >= 1) {
             actividad.setDisponibles(totalDisponibles - 1);
             return true;
         }

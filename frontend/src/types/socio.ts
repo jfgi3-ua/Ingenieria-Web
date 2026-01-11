@@ -24,4 +24,5 @@ export type SocioResponse = {
   estado: string
   idTarifa: number
   tarifaNombre: string
+  saldoMonedero: number
 }

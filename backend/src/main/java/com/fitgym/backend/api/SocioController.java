@@ -123,7 +123,8 @@ public class SocioController {
         socio.getCorreoElectronico(),
         socio.getEstado().name(),
         socio.getTarifa().getId(),
-        socio.getTarifa().getNombre()
+        socio.getTarifa().getNombre(),
+        socio.getSaldoMonedero()
     );
 
     HttpSession session = request.getSession(true);

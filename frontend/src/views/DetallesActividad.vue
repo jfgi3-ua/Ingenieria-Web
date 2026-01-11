@@ -8,8 +8,9 @@
     import relojImg from "@/assets/icons/reloj.png"
     import BarraDisponibles from '@/components/BarraDisponibles.vue'
     import { useAuthStore } from '@/stores/auth.store'
-import { reservar } from '@/services/actividades'
-import router from '@/router'
+    import { reservar } from '@/services/actividades'
+    import router from '@/router'
+    import { initPago, initPagoClase, verifyPago } from '@/services/pagos'
     
     let actividadState: Actividad | undefined;
     const actividad = ref<Actividad>();
@@ -18,7 +19,8 @@ import router from '@/router'
     onMounted(async () => {
         actividadState = (history.state as any)?.actividad;
         actividad.value = actividadState;
-        console.log(actividad.value?.disponibles)
+        console.log(actividad)
+        console.log(auth.socio)
     });
 
     const diaSemana = computed(() => {
@@ -72,23 +74,44 @@ import router from '@/router'
     }
 
     async function reserva() {
-    // Si la actividad tiene precio extra se pregunta si está seguro
-    if (actividad.value?.precioExtra && actividad.value.precioExtra > 0) {
-        const confirmar = window.confirm(`Esta actividad tiene un precio extra de ${actividad.value.precioExtra}€. Se consumiran las clases gratuitas o se cobrará si no le quedan del monedero. ¿Quiere continuar con la reserva?`);
+        // Si la actividad tiene precio extra se pregunta si está seguro
+        if (actividad.value?.precioExtra && actividad.value.precioExtra > 0) {
+            const confirmar = window.confirm(`Esta actividad tiene un precio extra de ${actividad.value.precioExtra}€. Se consumiran las clases gratuitas o se cobrará si no le quedan del monedero. ¿Quiere continuar con la reserva?`);
 
-        //Evitar reserva si cancela y para todo
-        if (!confirmar) {
-            return;
+            //Evitar reserva si cancela y para todo
+            if (!confirmar) {
+                return;
+            }
+        }
+        try {
+            if(actividad.value?.precioExtra == 0){
+                await reservar({ idActividad: actividad.value?.id!, idSocio: auth.socio?.id! });
+                router.push("/servicios");
+                alert("Reserva realizada");
+            }
+            if(actividad.value?.precioExtra! > 0 && auth.socio?.saldoMonedero! >= actividad.value?.precioExtra!){
+                //const precio = actividad.value?.precioExtra!;
+                const idSocio = auth.socio?.id!;
+                const idActividad = actividad.value?.id!;
+                
+                const res = await initPagoClase({idSocio, idActividad});
+                if(res){
+                    router.push("/servicios");
+                    alert("Reserva realizada");
+                }
+                else{
+                    alert("Ya habia una realizado esta reserva")
+                }
+            }
+        } catch (e) {
+            if(actividad.value?.precioExtra! > 0 && auth.socio?.saldoMonedero! <= 0){
+                alert("No tiene fondos en el monedero o ya ha reservado esta actividad")
+            }
+            else{
+                alert("Ya habia hecho una reserva de esta actividad");
+            }
         }
     }
-    try {
-        await reservar({ idActividad: actividad.value?.id!, idSocio: auth.socio?.id! });
-        router.push("/servicios");
-        alert("Reserva realizada");
-    } catch (e) {
-        alert("Error al reservar");
-    }
-}
 
 
 </script>

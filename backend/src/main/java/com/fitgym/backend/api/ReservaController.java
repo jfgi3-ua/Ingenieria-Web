@@ -20,10 +20,10 @@ public class ReservaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> crearReserva(@RequestBody ReservaResponse request) {
+    public ResponseEntity<Boolean> crearReserva(@RequestBody ReservaResponse request) {
 
-        reservaService.reservarClase(request.idActividad(), request.idSocio());
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        boolean res = reservaService.reservarClase(request.idActividad(), request.idSocio());
+        System.out.print(res);
+        return ResponseEntity.ok(res);
     }
 }
