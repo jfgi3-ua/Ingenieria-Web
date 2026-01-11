@@ -111,4 +111,19 @@ public class SocioService {
 
     return socioRepo.save(socio);
   }
+
+  // Metodo para disminuir las clases gratis de la tarifa
+  @Transactional
+  public boolean disminuirClasesGratisDeTarifa(Long id){
+    Socio socio = socioRepo.findById(id).orElse(null);
+
+    if(socio == null){
+      return false;
+    }
+
+    Integer total = socio.getClasesGratis();
+    socio.setClasesGratis(total-1);
+
+    return true;
+  }
 }

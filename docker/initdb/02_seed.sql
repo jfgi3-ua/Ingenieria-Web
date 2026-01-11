@@ -135,7 +135,7 @@ SELECT
   so.id,
   ac.id,
   now(),
-  'CONFIRMADA'::reserva_estado
+  'CONFIRMADA'
 FROM socio so
 JOIN actividad ac ON (
   (so.correo_electronico = 'juan.perez@example.com' AND ac.nombre = 'Spinning - Nivel Medio')

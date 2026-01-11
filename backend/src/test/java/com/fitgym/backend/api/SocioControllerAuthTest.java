@@ -23,6 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+
 /**
  * Tests de controller para el flujo de autenticacion de socios.
  *
@@ -120,7 +122,7 @@ class SocioControllerAuthTest {
   @Test
   void me_con_sesion_devuelve_datos() throws Exception {
     SocioSession sessionData = new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico");
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO);
 
     mockMvc.perform(get("/api/socios/me")
             .sessionAttr(SESSION_SOCIO_KEY, sessionData))
@@ -133,7 +135,7 @@ class SocioControllerAuthTest {
   void logout_devuelve_204() throws Exception {
     MockHttpSession session = new MockHttpSession();
     session.setAttribute(SESSION_SOCIO_KEY, new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico"));
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO));
 
     mockMvc.perform(post("/api/socios/logout").session(session))
         .andExpect(status().isNoContent());
@@ -166,7 +168,7 @@ class SocioControllerAuthTest {
   void logout_invalida_sesion_y_me_devuelve_401() throws Exception {
     MockHttpSession session = new MockHttpSession();
     session.setAttribute(SESSION_SOCIO_KEY, new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico"));
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO));
 
     mockMvc.perform(post("/api/socios/logout").session(session))
         .andExpect(status().isNoContent());

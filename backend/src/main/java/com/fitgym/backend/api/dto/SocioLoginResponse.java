@@ -1,4 +1,5 @@
 package com.fitgym.backend.api.dto;
+import java.math.BigDecimal;
 
 /**
  * DTO de salida para inicio de sesion.
@@ -14,7 +15,8 @@ public record SocioLoginResponse(
     String correoElectronico,
     String estado,
     Long idTarifa,
-    String tarifaNombre
+    String tarifaNombre,
+    BigDecimal saldoMonedero
 ) implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
 }
