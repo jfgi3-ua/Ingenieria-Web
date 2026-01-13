@@ -42,6 +42,10 @@ async function onSubmit() {
       correoElectronico: form.value.correoElectronico,
       contrasena: form.value.contrasena,
     })
+    if (auth.isAdmin) {
+      await router.replace("/admin/socios")
+      return
+    }
     const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/inicio"
     await router.replace(redirect)
   } catch (e) {

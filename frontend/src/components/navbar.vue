@@ -31,6 +31,7 @@
             <RouterLink class="nav-link" active-class="active-a" to="/servicios">Servicios</RouterLink>
             <RouterLink class="nav-link" to="#">Mis reservas</RouterLink>
             <RouterLink class="nav-link" to="#">Mi cuenta</RouterLink>
+            <RouterLink v-if="auth.isAdmin" class="nav-link" active-class="active-a" to="/admin/socios">Admin</RouterLink>
         </div>
         <div v-if="auth.socio" class="user-buttons-container">
             <span>{{ auth.socio.nombre }}</span>
