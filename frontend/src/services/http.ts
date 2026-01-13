@@ -64,3 +64,62 @@ export async function apiPost<T, B>(path: string, body: B): Promise<T> {
 
   return res.json() as Promise<T>
 }
+
+//////////////
+
+/**
+ * Realiza una petición PUT con JSON y parsea la respuesta como JSON.
+ */
+export async function apiPut<T, B>(path: string, body: B): Promise<T> {
+  const res = await fetch(path, {
+    method: "PUT",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const detail = await readErrorDetail(res)
+    throw new Error(`HTTP ${res.status}: ${detail}`)
+  }
+
+  if (res.status === 204) {
+    return undefined as T
+  }
+
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) {
+    return undefined as T
+  }
+
+  return res.json() as Promise<T>
+}
+
+/**
+ * Realiza una petición PATCH con JSON y parsea la respuesta como JSON.
+ */
+export async function apiPatch<T, B>(path: string, body: B): Promise<T> {
+  const res = await fetch(path, {
+    method: "PATCH",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const detail = await readErrorDetail(res)
+    throw new Error(`HTTP ${res.status}: ${detail}`)
+  }
+
+  if (res.status === 204) {
+    return undefined as T
+  }
+
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) {
+    return undefined as T
+  }
+
+  return res.json() as Promise<T>
+}
+
