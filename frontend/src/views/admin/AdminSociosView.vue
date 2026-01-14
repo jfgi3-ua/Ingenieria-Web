@@ -238,11 +238,19 @@ th { text-align: left; opacity: .7; font-weight: 600; }
 .pill.bad { background: rgba(185,28,28,.10); }
 
 .modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,.35); display:flex; align-items: center; justify-content: center; padding: 18px; }
-.modal { width: 760px; max-width: 95vw; background: white; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.20); padding: 16px; }
+.modal { width: min(980px, 96vw); background: white; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.20); padding: 20px; }
 .modalHeader { display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.grid { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid { display: grid;  grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
 label span { display:block; font-size: 12px; opacity: .75; margin-bottom: 6px; }
 input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,.15); }
 .switch { grid-column: 1 / -1; display:flex; gap: 10px; align-items: center; padding-top: 6px; }
 .modalActions { display:flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+input, select {
+  width: 100%;
+  box-sizing: border-box;
+}
+.modal {
+  max-height: 90vh;
+  overflow: auto;
+}
 </style>

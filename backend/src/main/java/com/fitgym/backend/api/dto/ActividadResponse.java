@@ -22,7 +22,9 @@ import java.time.LocalTime;
  * @param plazas: Plazas totales en la activida. Este valor es de tipo BigInteger
  * @param disponibles: Plazas disponibles en la activida. Este valor es de tipo BigInteger
  * @param monitor: Nombre del monitor que da la clase. Este valor es de tipo String.
- * 
+ * @param sala:
+ * @param salaFoto:
+ * @param tipoActividad:
  * Esta clase se utiliza para transferir datos entre las capas de la aplicación,
  * facilitando la comunicación y el manejo de la información relacionada con los socios.
  */
@@ -36,5 +38,12 @@ public record ActividadResponse(
     LocalDate fecha,
     Integer plazas,
     Integer disponibles,
-    String monitor
+    String monitor,
+    String sala,
+    String salaFoto,
+    String tipoActividad
 ) {}
+
+
+
+
