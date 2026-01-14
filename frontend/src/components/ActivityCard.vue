@@ -52,7 +52,7 @@
 </script>
 <template>
     <div class="general-card-container">
-        <img :src="yogaImg" alt="Imagen de actividad asociada">
+        <img :src="actividad.salaFoto || yogaImg" alt="Imagen de actividad asociada">
         <div class="card-info">
             <h4>{{ actividad.nombre }}</h4>
             <p>Sesión de yoga enfocada en el flujo de la respiración para todos los niveles</p>

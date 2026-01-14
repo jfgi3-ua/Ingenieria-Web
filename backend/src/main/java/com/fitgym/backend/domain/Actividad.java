@@ -38,14 +38,14 @@ public class Actividad {
     @JoinColumn(name = "id_monitor", nullable = false)
     private Monitor monitor;
     
-    /*
+    
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_sala", nullable = false)
     private Sala sala;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_actividad", nullable = false)
-    private TipoActividad tipoActividad;*/
+    private TipoActividad tipoActividad;
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -74,11 +74,11 @@ public class Actividad {
     public Monitor getMonitor() { return monitor; }
     public void setMonitor(Monitor monitor) { this.monitor = monitor; }
 
-    /*
+  
     public Sala getSala() { return sala; }
     public void setSala(Sala sala) { this.sala = sala; }
 
     public TipoActividad getTipoActividad() { return tipoActividad; }
     public void setTipoActividad(TipoActividad tipoActividad) { this.tipoActividad = tipoActividad; }
-    */
+    
 }

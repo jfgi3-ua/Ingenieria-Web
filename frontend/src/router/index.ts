@@ -6,7 +6,7 @@ import LoginView from "@/views/LoginView.vue"
 import ServiciosView from "@/views/ServiciosView.vue"
 import DetallesActividad from '@/views/DetallesActividad.vue'
 import AdminSociosView from "@/views/admin/AdminSociosView.vue"
-
+import AdminActividadesView from "@/views/admin/AdminActividadesView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +17,8 @@ const router = createRouter({
     { path: "/inicio", name: "inicio", component: InicioView },
     { path: "/actividad/:id", name: "detallesActividad", component: DetallesActividad, props: true, meta: { requiresAuth: true } },
     { path: "/servicios", name: "servicios", component: ServiciosView, meta: { requiresAuth: true } },
-    { path: "/admin/socios", name: "adminSocios", component: AdminSociosView, meta: { requiresAuth: true, requiresAdmin: true } }
+    { path: "/admin/socios", name: "adminSocios", component: AdminSociosView, meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: "/admin/actividades", name: "adminActividades", component: AdminActividadesView , meta: { requiresAuth: true, requiresAdmin: true } }
 
   ],
 })
