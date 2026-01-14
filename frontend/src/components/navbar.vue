@@ -3,7 +3,7 @@
     import { useAuthStore } from "@/stores/auth.store";
     import { ref, onMounted } from "vue"
     import { useRouter } from "vue-router";
-    
+
     //Para poder pillar el elemento y meterle la clase dinamicamente
     const inicioBtnNav = ref();
     const reservaBtnNav = ref();
@@ -30,7 +30,7 @@
             <RouterLink class="nav-link" active-class="active-a" to="/inicio">Inicio</RouterLink>
             <RouterLink class="nav-link" active-class="active-a" to="/servicios">Servicios</RouterLink>
             <RouterLink class="nav-link" to="#">Mis reservas</RouterLink>
-            <RouterLink class="nav-link" to="#">Mi cuenta</RouterLink>
+            <RouterLink v-if="auth.isAuthenticated" class="nav-link" active-class="active-a" to="/perfil">Mi cuenta</RouterLink>
         </div>
         <div v-if="auth.socio" class="user-buttons-container">
             <span>{{ auth.socio.nombre }}</span>
