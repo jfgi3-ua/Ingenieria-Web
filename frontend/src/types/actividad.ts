@@ -8,4 +8,13 @@ export type Actividad = {
     plazas: number
     disponibles: number
     monitor: string
+
+    sala?: string
+    salaFoto?: string | null
+    tipoActividad?: string
+}
+
+export type Reserva = {
+    idActividad: number
+    idSocio: number
 }

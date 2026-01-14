@@ -2,6 +2,8 @@
 import { RouterLink, RouterView, useRouter } from "vue-router"
 import { useAuthStore } from "@/stores/auth.store"
 import Navbar from "./components/navbar.vue"
+import AdminNavbar from "./components/AdminNavbar.vue"
+
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -14,15 +16,9 @@ async function onLogout() {
 
 <template>
   <header style="padding: 16px; border-bottom: 1px solid #ddd">
-    <!--<nav style="display: flex; gap: 12px">
-      <RouterLink to="/registro">Registro</RouterLink>
-      <RouterLink to="/inicio">Pagina de inicio</RouterLink>
-      <RouterLink v-if="!auth.isAuthenticated" to="/login">Login</RouterLink>
-      <button v-else type="button" @click="onLogout">Logout</button>
-    </nav>-->
-    <Navbar></Navbar>
+    <AdminNavbar v-if="auth.isAuthenticated && auth.isAdmin" />
+    <Navbar v-else />
   </header>
-
 
   <main >
     <RouterView />

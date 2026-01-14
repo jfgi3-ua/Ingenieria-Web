@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS reserva (
   id_socio     BIGINT NOT NULL,
   id_actividad BIGINT NOT NULL,
   fecha_alta   TIMESTAMPTZ NOT NULL DEFAULT now(),
-  estado       reserva_estado NOT NULL DEFAULT 'PENDIENTE',
+  estado       VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
 
   CONSTRAINT pk_reserva PRIMARY KEY (id_socio, id_actividad),
 

@@ -81,6 +81,39 @@ public class PagoRegistroService {
   }
 
   @Transactional
+  public PagoInitResult iniciarPagoClase(Long precio){
+    BigDecimal importe = new BigDecimal(precio);
+    String externalReference = "REG-" + UUID.randomUUID();
+    if (props.callbackUrl() == null || props.callbackUrl().isBlank()) {
+      throw new TpvvCommunicationException("TPVV callbackUrl no configurada.");
+    }
+
+    TpvvPaymentInitRequest payload = new TpvvPaymentInitRequest(
+        importe,
+        props.callbackUrl(),
+        externalReference
+    );
+
+    TpvvPaymentInitResponse response = tpvvClient.initPayment(payload);
+    if (response == null || response.token() == null || response.paymentUrl() == null) {
+      throw new TpvvCommunicationException("TPVV devolvio una respuesta incompleta al iniciar el pago.");
+    }
+
+    String paymentUrl = normalizePaymentUrl(response.paymentUrl());
+
+    PagoRegistro pago = new PagoRegistro();
+    pago.setToken(response.token());
+    pago.setEstado(PagoRegistroEstado.PENDING);
+    pago.setImporte(importe);
+    pago.setExternalReference(externalReference);
+    pago.setCallbackUrl(props.callbackUrl());
+    pago.setPaymentUrl(paymentUrl);
+    pagoRepo.save(pago);
+
+    return new PagoInitResult(paymentUrl, response.token());
+  }
+
+  @Transactional
   public PagoRegistro verificarPago(String token) {
     PagoRegistro pago = pagoRepo.findByToken(token)
         .orElseThrow(() -> new PagoRegistroNotFoundException("No existe un pago con ese token."));

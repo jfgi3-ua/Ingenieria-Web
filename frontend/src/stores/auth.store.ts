@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { login as loginService, logout as logoutService, me as meService } from "@/services/socios"
 import type { SocioLoginRequest, SocioResponse } from "@/types/socio"
+export const ADMIN_EMAIL = "admin@gmail.com"
 
 /**
  * Store de autenticacion.
@@ -15,6 +16,9 @@ export const useAuthStore = defineStore("auth", {
     // Bandera simple para proteger rutas y condicionar la UI.
     isAuthenticated: false,
   }),
+    getters: {
+    isAdmin: (state) => state.socio?.correoElectronico?.toLowerCase() === ADMIN_EMAIL,
+  },
   actions: {
     /**
      * Inicia sesion con email y contrasena.

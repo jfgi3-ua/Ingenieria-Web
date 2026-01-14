@@ -1,6 +1,7 @@
 package com.fitgym.backend.api.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * DTO interno para almacenar datos de sesion en HttpSession.
@@ -18,6 +19,7 @@ public class SocioSession implements Serializable {
   private final String estado;
   private final Long idTarifa;
   private final String tarifaNombre;
+  private final BigDecimal saldoMonedero;
 
   public SocioSession(
       Long id,
@@ -25,7 +27,8 @@ public class SocioSession implements Serializable {
       String correoElectronico,
       String estado,
       Long idTarifa,
-      String tarifaNombre
+      String tarifaNombre,
+      BigDecimal saldoMonedero
   ) {
     this.id = id;
     this.nombre = nombre;
@@ -33,6 +36,7 @@ public class SocioSession implements Serializable {
     this.estado = estado;
     this.idTarifa = idTarifa;
     this.tarifaNombre = tarifaNombre;
+    this.saldoMonedero = saldoMonedero;
   }
 
   public static SocioSession fromLoginResponse(SocioLoginResponse response) {
@@ -42,11 +46,12 @@ public class SocioSession implements Serializable {
         response.correoElectronico(),
         response.estado(),
         response.idTarifa(),
-        response.tarifaNombre()
+        response.tarifaNombre(),
+        response.saldoMonedero()
     );
   }
 
   public SocioLoginResponse toLoginResponse() {
-    return new SocioLoginResponse(id, nombre, correoElectronico, estado, idTarifa, tarifaNombre);
+    return new SocioLoginResponse(id, nombre, correoElectronico, estado, idTarifa, tarifaNombre, saldoMonedero);
   }
 }
