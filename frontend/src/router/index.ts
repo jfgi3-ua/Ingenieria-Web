@@ -18,7 +18,8 @@ const router = createRouter({
     { path: "/actividad/:id", name: "detallesActividad", component: DetallesActividad, props: true, meta: { requiresAuth: true } },
     { path: "/servicios", name: "servicios", component: ServiciosView, meta: { requiresAuth: true } },
     { path: "/admin/socios", name: "adminSocios", component: AdminSociosView, meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: "/admin/actividades", name: "adminActividades", component: AdminActividadesView , meta: { requiresAuth: true, requiresAdmin: true } }
+    { path: "/admin/actividades", name: "adminActividades", component: AdminActividadesView , meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: "/admin/monitores", name: "adminMonitores", component: () => import("@/views/admin/AdminMonitoresView.vue"), meta: { requiresAuth: true, requiresAdmin: true } }
 
   ],
 })

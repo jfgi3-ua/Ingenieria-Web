@@ -22,7 +22,7 @@ async function onLogout() {
     <div class="buttons-container-navbar">
       <RouterLink class="nav-link" active-class="active-a" to="/admin/socios">Socios</RouterLink>
       <RouterLink class="nav-link" active-class="active-a" to="/admin/actividades">Actividades</RouterLink>
-      <RouterLink class="nav-link disabled" to="#">Monitores</RouterLink>
+      <RouterLink class="nav-link" active-class="active-a" to="/admin/monitores">Monitores</RouterLink>
     </div>
 
     <div class="user-buttons-container">
