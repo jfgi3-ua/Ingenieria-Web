@@ -6,5 +6,5 @@ export function listarActividades() {
 }
 
 export function reservar(payload: Reserva) {
-    return apiPost<void, Reserva>("/api/reservas", payload);
+    return apiPost<boolean, Reserva>("/api/reservas", payload);
 }
