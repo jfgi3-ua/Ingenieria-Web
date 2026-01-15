@@ -98,28 +98,28 @@ SELECT
   v.nombre, v.h_ini, v.h_fin, v.precio, v.fecha, v.plazas, v.disponibles,
   m.id, s.id, ta.id
 FROM (VALUES
-  ('Spinning - Nivel Medio',     '18:00'::time, '19:00'::time, 0.00, (current_date + 1), 25, 25, 'Laura S?nchez',  'Sala Ciclo Indoor', 'Spinning'),
-  ('Yoga - Flow Suave',          '19:30'::time, '20:30'::time, 0.00, (current_date + 1), 20, 20, 'Sara L?pez',     'Sala Mind & Body',  'Yoga'),
-  ('Cross Training - HIIT',      '20:00'::time, '21:00'::time, 2.50, (current_date + 2), 18, 18, 'Miguel Torres',  'Box Funcional',     'Cross Training'),
-  ('Pilates - Core & Stability', '18:30'::time, '19:30'::time, 0.00, (current_date + 2), 20, 20, 'Sara L?pez',     'Sala Mind & Body',  'Pilates'),
+  ('Spinning - Nivel Medio',     '18:00'::time, '19:00'::time, 0.00, (current_date + 1), 25, 0, 'Laura Sanchez',  'Sala Ciclo Indoor', 'Spinning'),
+  ('Yoga - Flow Suave',          '19:30'::time, '20:30'::time, 0.00, (current_date + 1), 20, 20, 'Sara Lopez',     'Sala Mind & Body',  'Yoga'),
+  ('Cross Training - HIIT',      '20:00'::time, '21:00'::time, 2.50, (current_date + 2), 18, 5, 'Miguel Torres',  'Box Funcional',     'Cross Training'),
+  ('Pilates - Core & Stability', '18:30'::time, '19:30'::time, 0.00, (current_date + 2), 20, 18, 'Sara Lopez',     'Sala Mind & Body',  'Pilates'),
   ('Zumba - Ritmo Total',        '19:00'::time, '20:00'::time, 0.00, (current_date + 3), 30, 30, 'Paula Romero',   'Sala Cardio',       'Zumba'),
   ('HIIT Express - 30',          '18:00'::time, '18:30'::time, 1.50, (current_date + 3), 16, 16, 'Diego Castillo', 'Sala Funcional',    'HIIT Express'),
   ('Body Pump - Fuerza',         '20:00'::time, '21:00'::time, 1.00, (current_date + 3), 22, 22, 'Javier Molina',  'Sala Fuerza',       'Body Pump'),
-  ('Stretching - Recuperacion',  '21:00'::time, '21:30'::time, 0.00, (current_date + 3), 20, 20, 'Sara L?pez',     'Sala Mind & Body',  'Stretching'),
-  ('Spinning - Avanzado',        '07:30'::time, '08:30'::time, 0.00, (current_date + 4), 25, 25, 'Laura S?nchez',  'Sala Ciclo Indoor', 'Spinning'),
+  ('Stretching - Recuperacion',  '21:00'::time, '21:30'::time, 0.00, (current_date + 3), 20, 20, 'Sara Lopez',     'Sala Mind & Body',  'Stretching'),
+  ('Spinning - Avanzado',        '07:30'::time, '08:30'::time, 0.00, (current_date + 4), 25, 25, 'Laura Sanchez',  'Sala Ciclo Indoor', 'Spinning'),
   ('Yoga - Sunrise',             '08:00'::time, '09:00'::time, 0.00, (current_date + 4), 20, 20, 'Paula Romero',   'Sala Mind & Body',  'Yoga'),
   ('Cross Training - Power',     '19:00'::time, '20:00'::time, 2.50, (current_date + 4), 18, 18, 'Miguel Torres',  'Box Funcional',     'Cross Training'),
-  ('Pilates - Movilidad',        '09:30'::time, '10:30'::time, 0.00, (current_date + 5), 20, 20, 'Sara L?pez',     'Sala Mind & Body',  'Pilates'),
+  ('Pilates - Movilidad',        '09:30'::time, '10:30'::time, 0.00, (current_date + 5), 20, 20, 'Sara Lopez',     'Sala Mind & Body',  'Pilates'),
   ('Zumba - Tarde',              '18:30'::time, '19:30'::time, 0.00, (current_date + 5), 30, 30, 'Paula Romero',   'Sala Cardio',       'Zumba'),
   ('HIIT Express - Noon',        '12:30'::time, '13:00'::time, 1.50, (current_date + 5), 16, 16, 'Diego Castillo', 'Sala Funcional',    'HIIT Express'),
   ('Body Pump - Express',        '17:30'::time, '18:15'::time, 1.00, (current_date + 6), 22, 22, 'Javier Molina',  'Sala Fuerza',       'Body Pump'),
-  ('Stretching - Relax',         '20:30'::time, '21:00'::time, 0.00, (current_date + 6), 20, 20, 'Laura S?nchez',  'Sala Mind & Body',  'Stretching'),
+  ('Stretching - Relax',         '20:30'::time, '21:00'::time, 0.00, (current_date + 6), 20, 20, 'Laura Sanchez',  'Sala Mind & Body',  'Stretching'),
   ('Spinning - Lunch',           '13:30'::time, '14:30'::time, 0.00, (current_date + 6), 25, 25, 'Miguel Torres',  'Sala Ciclo Indoor', 'Spinning'),
   ('Yoga - Avanzado',            '19:30'::time, '20:30'::time, 0.00, (current_date + 7), 20, 20, 'Paula Romero',   'Sala Mind & Body',  'Yoga'),
   ('Cross Training - AMRAP',     '18:00'::time, '19:00'::time, 2.50, (current_date + 7), 18, 18, 'Diego Castillo', 'Box Funcional',     'Cross Training'),
-  ('Pilates - Postura',          '10:00'::time, '11:00'::time, 0.00, (current_date + 7), 20, 20, 'Sara López',     'Sala Mind & Body',  'Pilates'),
+  ('Pilates - Postura',          '10:00'::time, '11:00'::time, 0.00, (current_date + 7), 20, 20, 'Sara Lopez',     'Sala Mind & Body',  'Pilates'),
   ('Zumba - Weekend',            '11:00'::time, '12:00'::time, 0.00, (current_date + 8), 30, 30, 'Paula Romero',   'Sala Cardio',       'Zumba'),
-  ('Body Pump - Weekend',        '12:30'::time, '13:30'::time, 1.00, (current_date + 8), 22, 22, 'Javier Molina',  'Sala Fuerza',       'Body Pump')
+  ('Body Pump - Weekend',        '12:30'::time, '13:30'::time, 1.00, (current_date + 8), 22, 2, 'Javier Molina',  'Sala Fuerza',       'Body Pump')
 ) AS v(nombre, h_ini, h_fin, precio, fecha, plazas, disponibles, monitor_nombre, sala_desc, tipo_nombre)
 JOIN m  ON m.nombre = v.monitor_nombre
 JOIN s  ON s.descripcion = v.sala_desc
