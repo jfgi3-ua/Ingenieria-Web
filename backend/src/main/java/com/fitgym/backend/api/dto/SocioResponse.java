@@ -25,5 +25,9 @@ public record SocioResponse(
     String correoElectronico,
     String estado,
     Long idTarifa,
-    String tarifaNombre
+    String tarifaNombre,
+    String telefono,
+    String direccion,
+    String ciudad,
+    String codigoPostal
 ) {}

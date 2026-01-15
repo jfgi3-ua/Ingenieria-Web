@@ -122,7 +122,7 @@ class SocioControllerAuthTest {
   @Test
   void me_con_sesion_devuelve_datos() throws Exception {
     SocioSession sessionData = new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO);
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO, "123456789", "C/ Mayor 1", "Madrid", "28001");
 
     mockMvc.perform(get("/api/socios/me")
             .sessionAttr(SESSION_SOCIO_KEY, sessionData))
@@ -135,7 +135,7 @@ class SocioControllerAuthTest {
   void logout_devuelve_204() throws Exception {
     MockHttpSession session = new MockHttpSession();
     session.setAttribute(SESSION_SOCIO_KEY, new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO));
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO, "123456789", "C/ Mayor 1", "Madrid", "28001"));
 
     mockMvc.perform(post("/api/socios/logout").session(session))
         .andExpect(status().isNoContent());
@@ -168,7 +168,7 @@ class SocioControllerAuthTest {
   void logout_invalida_sesion_y_me_devuelve_401() throws Exception {
     MockHttpSession session = new MockHttpSession();
     session.setAttribute(SESSION_SOCIO_KEY, new SocioSession(
-        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO));
+        1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO, "123456789", "C/ Mayor 1", "Madrid", "28001"));
 
     mockMvc.perform(post("/api/socios/logout").session(session))
         .andExpect(status().isNoContent());

@@ -99,7 +99,11 @@ public class SocioController {
         socio.getCorreoElectronico(),
         socio.getEstado().name(),
         socio.getTarifa().getId(),
-        socio.getTarifa().getNombre()
+        socio.getTarifa().getNombre(),
+        socio.getTelefono(),
+        socio.getDireccion(),
+        socio.getCiudad(),
+        socio.getCodigoPostal()
     );
 
     return ResponseEntity
@@ -124,7 +128,11 @@ public class SocioController {
         socio.getEstado().name(),
         socio.getTarifa().getId(),
         socio.getTarifa().getNombre(),
-        socio.getSaldoMonedero()
+        socio.getSaldoMonedero(),
+        socio.getTelefono(),
+        socio.getDireccion(),
+        socio.getCiudad(),
+        socio.getCodigoPostal()
     );
 
     HttpSession session = request.getSession(true);

@@ -25,4 +25,8 @@ export type SocioResponse = {
   idTarifa: number
   tarifaNombre: string
   saldoMonedero: number
+  telefono?: string | null
+  direccion?: string | null
+  ciudad?: string | null
+  codigoPostal?: string | null
 }
