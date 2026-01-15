@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,16 @@ public class ReservaService {
             //Clase gratis
             BigDecimal zero = new BigDecimal("0");
             if(actividad.getPrecioExtra().compareTo(zero) <= 0){
-                //System.out.print("Caso clases gratis");
+                //System.out.print("Entra caso clases gratis");
+                boolean respuesta = false;
+                //Primero buscamos que no exista esta reserva
+                List<Reserva> reservas = reservaRepository.findAll();
+                for(Reserva reserva : reservas){
+                    if(reserva.getSocio().getId() == idSocio && reserva.getActividad().getId() == idClase){
+                        return respuesta = false;
+                    }
+                }
+
                 //Creamos reserva
                 Reserva reserva = new Reserva();
                 ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
@@ -68,7 +78,7 @@ public class ReservaService {
                 reserva.setEstado(ReservaEstado.CONFIRMADA);    
 
                 //Bajamos disponibles en la activida
-                boolean respuesta = actividadService.bajarDisponiblesEnClase(idClase);
+                respuesta = actividadService.bajarDisponiblesEnClase(idClase);
                 //System.out.print(respuesta);
                 
                 if(respuesta){
@@ -83,7 +93,7 @@ public class ReservaService {
             //Clase de pago incluida en tarifa
             else if(actividad.getPrecioExtra().compareTo(zero) > 0 && socio.getClasesGratis() > 0){
                 //System.out.print("Caso clases gratis por incluir en tarifa");
-                //Creamos reserva
+                //Creamos reserva y se hace el pago(aunque sea quitar la clase gratuita)
                 Reserva reserva = new Reserva();
                 ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
                 reserva.setId(reservaId);
@@ -91,6 +101,14 @@ public class ReservaService {
                 reserva.setActividad(actividad);
                 reserva.setFecha(OffsetDateTime.now());
                 reserva.setEstado(ReservaEstado.CONFIRMADA);
+
+                Pago pago = new Pago();
+                pago.setCantidad(actividad.getPrecioExtra());
+                pago.setFechaPago(Instant.now());
+                pago.setIdActividad(idClase);
+                pago.setIdSocio(idSocio);
+                pago.setNombre("Pago reserva actividad");
+                pago.setResultadoPago(PagoResultado.OK);
 
                 //Bajamos disponibles en la activida y en las clases gratis del socio
                 boolean respuestaDisponiblesClase = actividadService.bajarDisponiblesEnClase(idClase);
@@ -101,6 +119,7 @@ public class ReservaService {
                 if(respuestaClasesCliente && respuestaDisponiblesClase){
                     respuesta = true;
                     reservaRepository.save(reserva);
+                    pagoRepository.save(pago);
                 }
                 else{
                     throw new RuntimeException("No se ha podido terminar la reserva...");

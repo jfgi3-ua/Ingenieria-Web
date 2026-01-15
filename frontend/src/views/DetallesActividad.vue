@@ -85,22 +85,28 @@
         }
         try {
             if(actividad.value?.precioExtra == 0){
-                await reservar({ idActividad: actividad.value?.id!, idSocio: auth.socio?.id! });
-                router.push("/servicios");
-                alert("Reserva realizada");
+                const res = await reservar({ idActividad: actividad.value?.id!, idSocio: auth.socio?.id! });
+                if(res == true){
+                    router.push("/servicios");
+                    alert("Reserva realizada");
+                }
+                else{
+                    router.push("/servicios");
+                    alert("No se pudo reservar. Esta reserva ya existia");
+                }
+                
             }
-            if(actividad.value?.precioExtra! > 0 && auth.socio?.saldoMonedero! >= actividad.value?.precioExtra!){
+            if(actividad.value?.precioExtra! > 0){
                 //const precio = actividad.value?.precioExtra!;
                 const idSocio = auth.socio?.id!;
                 const idActividad = actividad.value?.id!;
-                
                 const res = await initPagoClase({idSocio, idActividad});
                 if(res){
                     router.push("/servicios");
                     alert("Reserva realizada");
                 }
                 else{
-                    alert("Ya habia una realizado esta reserva")
+                    alert("Ya habia una realizado esta reserva o no tiene fondos en el monedero")
                 }
             }
         } catch (e) {

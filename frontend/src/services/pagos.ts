@@ -33,7 +33,7 @@ export function initPago(payload: PagoInitRequest) {
  * Hace el pago. Baja el dinero de la cuenta del socio
  */
 export function initPagoClase(payload: ReservaPagada) {
-  console.log("Llega al pago correcto")
+  //console.log("Llega al pago correcto")
   return apiPost<boolean, ReservaPagada>("/api/reservas", payload)
 }
 
