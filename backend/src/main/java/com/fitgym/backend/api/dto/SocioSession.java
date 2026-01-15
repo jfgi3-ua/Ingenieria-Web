@@ -71,4 +71,8 @@ public class SocioSession implements Serializable {
     return new SocioLoginResponse(id, nombre, correoElectronico, estado, idTarifa, tarifaNombre, saldoMonedero,
             telefono, direccion, ciudad, codigoPostal);
   }
+
+    public Long getId() {
+        return id;
+    }
 }

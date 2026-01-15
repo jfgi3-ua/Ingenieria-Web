@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import java.math.BigDecimal;
 
@@ -176,6 +177,73 @@ class SocioControllerAuthTest {
     mockMvc.perform(get("/api/socios/me").session(session))
         .andExpect(status().isUnauthorized());
   }
+
+    @Test
+    void updateMe_sin_sesion_devuelve_401() throws Exception {
+        String payload = """
+      {"nombre":"Nuevo","telefono":"123","direccion":"Calle 1","ciudad":"Madrid","codigoPostal":"28001"}
+      """;
+
+        mockMvc.perform(put("/api/socios/me")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void updateMe_con_sesion_invalida_devuelve_401() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(SESSION_SOCIO_KEY, "valor-invalido");
+
+        String payload = """
+      {"nombre":"Nuevo","telefono":"123","direccion":"Calle 1","ciudad":"Madrid","codigoPostal":"28001"}
+      """;
+
+        mockMvc.perform(put("/api/socios/me")
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void updateMe_ok_actualiza_y_devuelve_datos() throws Exception {
+        SocioSession sessionData = new SocioSession(
+                1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO,
+                null, null, null, null
+        );
+
+        Socio socioUpdated = buildSocio("test@fitgym.com", SocioEstado.ACTIVO);
+        socioUpdated.setNombre("Juan Perez Diaz");
+        socioUpdated.setTelefono("123456789");
+        socioUpdated.setDireccion("Av. Sur 1");
+        socioUpdated.setCiudad("Madrid");
+        socioUpdated.setCodigoPostal("28001");
+
+        when(socioService.actualizarDatosPersonales(
+                1L,
+                "Juan Perez Diaz",
+                "123456789",
+                "Av. Sur 1",
+                "Madrid",
+                "28001"
+        )).thenReturn(socioUpdated);
+
+        String payload = """
+      {"nombre":"Juan Perez Diaz","telefono":"123456789","direccion":"Av. Sur 1","ciudad":"Madrid","codigoPostal":"28001"}
+      """;
+
+        mockMvc.perform(put("/api/socios/me")
+                        .sessionAttr(SESSION_SOCIO_KEY, sessionData)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombre").value("Juan Perez Diaz"))
+                .andExpect(jsonPath("$.telefono").value("123456789"))
+                .andExpect(jsonPath("$.direccion").value("Av. Sur 1"))
+                .andExpect(jsonPath("$.ciudad").value("Madrid"))
+                .andExpect(jsonPath("$.codigoPostal").value("28001"));
+    }
 
   private Socio buildSocio(String email, SocioEstado estado) {
     Tarifa tarifa = Mockito.mock(Tarifa.class);

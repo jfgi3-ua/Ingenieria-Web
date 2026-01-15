@@ -8,6 +8,7 @@ import com.fitgym.backend.repo.TarifaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * Servicio de gestion de socios del gimnasio.
@@ -194,4 +195,25 @@ public class SocioService {
     return socio;
   }
 
+  // editar datos de perfil
+  @Transactional
+  public Socio actualizarDatosPersonales(
+          Long socioId,
+          String nombre,
+          String telefono,
+          String direccion,
+          String ciudad,
+          String codigoPostal
+  ) {
+      Socio socio = socioRepo.findById(socioId)
+              .orElseThrow(() -> new EntityNotFoundException("Socio no encontrado."));
+
+      socio.setNombre(nombre);
+      socio.setTelefono(telefono);
+      socio.setDireccion(direccion);
+      socio.setCiudad(ciudad);
+      socio.setCodigoPostal(codigoPostal);
+
+      return socioRepo.save(socio);
+  }
 }

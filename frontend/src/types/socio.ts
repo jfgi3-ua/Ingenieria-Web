@@ -30,3 +30,11 @@ export type SocioResponse = {
   ciudad?: string | null
   codigoPostal?: string | null
 }
+
+export type SocioUpdateRequest = {
+  nombre: string
+  telefono?: string | null
+  direccion: string
+  ciudad: string
+  codigoPostal: string
+}
