@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRouter } from "vue-router"
+import { RouterView, useRouter } from "vue-router"
+import { onMounted } from "vue"
 import { useAuthStore } from "@/stores/auth.store"
 import Navbar from "./components/navbar.vue"
 import AdminNavbar from "./components/AdminNavbar.vue"
 
-
 const auth = useAuthStore()
 const router = useRouter()
+
+onMounted(async () => {
+  await auth.loadSession()
+})
 
 async function onLogout() {
   await auth.logout()
@@ -20,16 +24,7 @@ async function onLogout() {
     <Navbar v-else />
   </header>
 
-  <main >
+  <main>
     <RouterView />
   </main>
 </template>
-
-<style scoped>
-a {
-  text-decoration: none;
-}
-a.router-link-active {
-  font-weight: 600;
-}
-</style>

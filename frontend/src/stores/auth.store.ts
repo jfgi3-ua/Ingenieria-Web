@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import { login as loginService, logout as logoutService, me as meService } from "@/services/socios"
 import type { SocioLoginRequest, SocioResponse, SocioUpdateRequest } from '@/types/socio'
 import { updateMe as updateMeService } from "@/services/socios"
+import { recargarMonedero as recargarMonederoService, verifyRecarga as verifyRecargaMonederoService } from "@/services/monederos"
 export const ADMIN_EMAIL = "admin@gmail.com"
 
 /**
@@ -68,5 +69,16 @@ export const useAuthStore = defineStore("auth", {
       this.isAuthenticated = true
       return socio
     },
+
+    async recargarMonedero(importe: number) {
+      const res = await recargarMonederoService({ importe })
+      return res
+    },
+
+    async verificarRecargaMonedero(token: string) {
+      const res = await verifyRecargaMonederoService(token)
+      await this.loadSession()
+      return res
+    }
   },
 })

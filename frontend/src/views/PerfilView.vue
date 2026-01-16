@@ -17,9 +17,11 @@ function displayValue(v?: string | null) {
   return v && v.trim() ? v : "—"
 }
 
-function formatEUR(amount?: number | null) {
+function formatEUR(amount?: number | string | null) {
   if (amount == null) return "—"
-  return `€${Number(amount).toFixed(2)}`
+  const n = typeof amount === "string" ? Number(amount) : amount
+  if (Number.isNaN(n)) return "—"
+  return `€${n.toFixed(2)}`
 }
 
 function formatDate(iso?: string | null) {
@@ -52,8 +54,78 @@ async function cargarMembresia() {
   }
 }
 
+// ---- MONEDERO RECARGA ----
+const showRecarga = ref(false)
+const recargaImporte = ref<string>("") // user input
+const recargaLoading = ref(false)
+const recargaError = ref<string | null>(null)
+
+async function maybeVerifyFromUrl() {
+  const url = new URL(window.location.href)
+
+  let token = url.searchParams.get("token")
+  if (!token) token = sessionStorage.getItem("monedero_last_token")
+  if (!token) return
+
+  recargaLoading.value = true
+  recargaError.value = null
+
+  try {
+    const res = await auth.verificarRecargaMonedero(token) // <-- only once
+
+    sessionStorage.removeItem("monedero_last_token")
+    url.searchParams.delete("token")
+    window.history.replaceState({}, "", url.toString())
+
+    if (res.estado === "COMPLETED") {
+      showRecarga.value = false
+      recargaImporte.value = ""
+      return
+    }
+
+    if (res.estado === "FAILED") {
+      recargaError.value = res.failureReason ?? "Pago rechazado."
+      return
+    }
+
+    recargaError.value = "Pago aún pendiente. Espera unos segundos y vuelve a intentarlo."
+  } catch (e) {
+    recargaError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    recargaLoading.value = false
+  }
+}
+
+function parseImporteEUR(input: string): number | null {
+  const normalized = input.replace(",", ".").trim()
+  const n = Number(normalized)
+  if (!Number.isFinite(n)) return null
+  return n
+}
+
+async function iniciarRecarga() {
+  const amount = parseImporteEUR(recargaImporte.value)
+  if (amount == null || amount <= 0) {
+    recargaError.value = "Introduce un importe válido."
+    return
+  }
+
+  recargaLoading.value = true
+  recargaError.value = null
+  try {
+    const { paymentUrl, token } = await auth.recargarMonedero(amount)
+    sessionStorage.setItem("monedero_last_token", token) // ✅ before redirect
+    window.location.href = paymentUrl
+  } catch (e) {
+    recargaError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    recargaLoading.value = false
+  }
+}
+
 onMounted(async () => {
   await cargarMembresia()
+  await maybeVerifyFromUrl()
 })
 
 const perfil = computed(() => {
@@ -84,7 +156,7 @@ const perfil = computed(() => {
     proximaRenovacion,
     estadoPago,
     proximoCargo,
-    monedero: "—",
+    monedero: formatEUR(socio.saldoMonedero),
     preferencias: {
       notificaciones: true,
       recordatorios: true,
@@ -259,7 +331,13 @@ async function onSave() {
             </div>
 
             <div class="pill wallet-pill">
-              <strong>Monedero FitGym</strong> — Saldo disponible: {{ perfil.monedero }}
+              <strong>Monedero FitGym</strong> — Saldo disponible: {{ formatEUR(auth.socio?.saldoMonedero) }}
+            </div>
+
+            <div class="actions-row">
+              <button class="btn-outline" type="button" @click="showRecarga = true">
+                Añadir saldo
+              </button>
             </div>
 
             <div class="actions-row">
@@ -400,6 +478,42 @@ async function onSave() {
           </button>
           <button class="btn-primary" type="button" @click="onSave" :disabled="saving">
             {{ saving ? "Guardando..." : "Guardar cambios" }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL RECARGA MONEDERO -->
+    <div v-if="showRecarga" class="modal-backdrop" @click.self="showRecarga = false">
+      <div class="modal">
+        <h3>Añadir saldo al monedero</h3>
+
+        <p v-if="recargaError" class="modal-error">{{ recargaError }}</p>
+
+        <div class="modal-grid">
+          <label class="full">
+            <span>Importe (€)</span>
+            <input
+              v-model="recargaImporte"
+              type="text"
+              placeholder="Ej: 10,00"
+              :disabled="recargaLoading"
+            />
+          </label>
+
+          <div class="full" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-outline" type="button" @click="recargaImporte = '5'">+5€</button>
+            <button class="btn-outline" type="button" @click="recargaImporte = '10'">+10€</button>
+            <button class="btn-outline" type="button" @click="recargaImporte = '20'">+20€</button>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-outline" type="button" @click="showRecarga = false" :disabled="recargaLoading">
+            Cancelar
+          </button>
+          <button class="btn-primary" type="button" @click="iniciarRecarga" :disabled="recargaLoading">
+            {{ recargaLoading ? "Redirigiendo..." : "Pagar con TPVV" }}
           </button>
         </div>
       </div>

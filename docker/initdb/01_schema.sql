@@ -215,4 +215,30 @@ CREATE TABLE IF NOT EXISTS pago_registro (
 
 CREATE INDEX IF NOT EXISTS idx_pago_registro_estado ON pago_registro(estado);
 
+CREATE TABLE IF NOT EXISTS pago_monedero (
+                                             id                BIGSERIAL PRIMARY KEY,
+                                             token             VARCHAR(120) NOT NULL UNIQUE,
+    estado            tpvv_pago_estado NOT NULL DEFAULT 'PENDING',
+    importe           NUMERIC(10,2) NOT NULL CHECK (importe >= 0),
+    id_socio          BIGINT NOT NULL,
+
+    external_reference VARCHAR(120),
+    callback_url      TEXT NOT NULL,
+    payment_url       TEXT,
+    provider_status   VARCHAR(40),
+    failure_reason    TEXT,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    completed_at      TIMESTAMPTZ,
+    failed_at         TIMESTAMPTZ,
+
+    CONSTRAINT fk_pago_monedero_socio
+    FOREIGN KEY (id_socio) REFERENCES socio(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+    );
+
+CREATE INDEX IF NOT EXISTS idx_pago_monedero_id_socio ON pago_monedero(id_socio);
+CREATE INDEX IF NOT EXISTS idx_pago_monedero_estado ON pago_monedero(estado);
+
 COMMIT;

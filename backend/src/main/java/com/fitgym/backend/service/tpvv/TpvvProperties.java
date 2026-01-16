@@ -9,5 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record TpvvProperties(
     String baseUrl,
     String apiKey,
-    String callbackUrl
+    String callbackUrlRegistro,
+    String callbackUrlMonedero
 ) {}

@@ -51,13 +51,13 @@ public class PagoRegistroService {
 
     BigDecimal importe = tarifa.getCuota();
     String externalReference = "REG-" + UUID.randomUUID();
-    if (props.callbackUrl() == null || props.callbackUrl().isBlank()) {
+    if (props.callbackUrlRegistro() == null || props.callbackUrlRegistro().isBlank()) {
       throw new TpvvCommunicationException("TPVV callbackUrl no configurada.");
     }
 
     TpvvPaymentInitRequest payload = new TpvvPaymentInitRequest(
         importe,
-        props.callbackUrl(),
+        props.callbackUrlRegistro(),
         externalReference
     );
 
@@ -73,7 +73,7 @@ public class PagoRegistroService {
     pago.setEstado(PagoRegistroEstado.PENDING);
     pago.setImporte(importe);
     pago.setExternalReference(externalReference);
-    pago.setCallbackUrl(props.callbackUrl());
+    pago.setCallbackUrl(props.callbackUrlRegistro());
     pago.setPaymentUrl(paymentUrl);
     pagoRepo.save(pago);
 
@@ -84,13 +84,13 @@ public class PagoRegistroService {
   public PagoInitResult iniciarPagoClase(Long precio){
     BigDecimal importe = new BigDecimal(precio);
     String externalReference = "REG-" + UUID.randomUUID();
-    if (props.callbackUrl() == null || props.callbackUrl().isBlank()) {
+    if (props.callbackUrlRegistro() == null || props.callbackUrlRegistro().isBlank()) {
       throw new TpvvCommunicationException("TPVV callbackUrl no configurada.");
     }
 
     TpvvPaymentInitRequest payload = new TpvvPaymentInitRequest(
         importe,
-        props.callbackUrl(),
+        props.callbackUrlRegistro(),
         externalReference
     );
 
@@ -106,7 +106,7 @@ public class PagoRegistroService {
     pago.setEstado(PagoRegistroEstado.PENDING);
     pago.setImporte(importe);
     pago.setExternalReference(externalReference);
-    pago.setCallbackUrl(props.callbackUrl());
+    pago.setCallbackUrl(props.callbackUrlRegistro());
     pago.setPaymentUrl(paymentUrl);
     pagoRepo.save(pago);
 
