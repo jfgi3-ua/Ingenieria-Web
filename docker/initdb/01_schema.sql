@@ -82,11 +82,14 @@ CREATE TABLE IF NOT EXISTS socio (
   pago_domiciliado   BOOLEAN NOT NULL DEFAULT FALSE,
   saldo_monedero     NUMERIC(12,2) NOT NULL DEFAULT 0 CHECK (saldo_monedero >= 0),
 
-  direccion          VARCHAR(200),
-  ciudad             VARCHAR(80),
-  codigo_postal      VARCHAR(10),
-  clases_gratis      INTEGER NOT NULL DEFAULT 0 CHECK (clases_gratis >= 0),
-  token_registro     VARCHAR(120),
+  direccion           VARCHAR(200),
+  ciudad              VARCHAR(80),
+  codigo_postal       VARCHAR(10),
+  clases_gratis       INTEGER NOT NULL DEFAULT 0 CHECK (clases_gratis >= 0),
+  token_registro      VARCHAR(120),
+  pref_notificaciones BOOLEAN NOT NULL DEFAULT TRUE,
+  pref_recordatorios  BOOLEAN NOT NULL DEFAULT TRUE,
+  pref_comunicaciones BOOLEAN NOT NULL DEFAULT FALSE,
 
   CONSTRAINT uq_socio_email UNIQUE (correo_electronico),
   CONSTRAINT fk_socio_tarifa

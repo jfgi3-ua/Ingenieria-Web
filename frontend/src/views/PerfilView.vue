@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch, onMounted } from "vue"
 import { useAuthStore } from "@/stores/auth.store"
 import { getMembresiaMe } from "@/services/membresias"
 import type { MembresiaResponse } from "@/types/membresia"
+import type { PreferenciasUpdateRequest } from "@/types/preferencias"
 
 const auth = useAuthStore()
 
@@ -12,6 +13,16 @@ const saveError = ref<string | null>(null)
 
 const membresia = ref<MembresiaResponse | null>(null)
 const membresiaError = ref<string | null>(null)
+
+const prefsLoading = ref(false)
+const prefsSaving = ref(false)
+const prefsError = ref<string | null>(null)
+
+const prefsForm = reactive<PreferenciasUpdateRequest>({
+  notificaciones: true,
+  recordatorios: true,
+  comunicaciones: false,
+})
 
 function displayValue(v?: string | null) {
   return v && v.trim() ? v : "—"
@@ -52,9 +63,55 @@ async function cargarMembresia() {
   }
 }
 
+async function cargarPreferencias() {
+  if (!auth.isAuthenticated) return
+  prefsLoading.value = true
+  prefsError.value = null
+  try {
+    const prefs = await auth.loadPreferencias()
+    // sincroniza el formulario con el store
+    prefsForm.notificaciones = !!prefs.notificaciones
+    prefsForm.recordatorios = !!prefs.recordatorios
+    prefsForm.comunicaciones = !!prefs.comunicaciones
+  } catch (e) {
+    prefsError.value = e instanceof Error ? e.message : String(e)
+    console.warn("[perfil] No se pudieron cargar preferencias:", prefsError.value)
+  } finally {
+    prefsLoading.value = false
+  }
+}
+
+async function guardarPreferencias() {
+  prefsSaving.value = true
+  prefsError.value = null
+  try {
+    await auth.updatePreferencias({
+      notificaciones: !!prefsForm.notificaciones,
+      recordatorios: !!prefsForm.recordatorios,
+      comunicaciones: !!prefsForm.comunicaciones,
+    })
+  } catch (e) {
+    prefsError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    prefsSaving.value = false
+  }
+}
+
 onMounted(async () => {
   await cargarMembresia()
+  await cargarPreferencias()
 })
+
+watch(
+  () => auth.preferencias,
+  (prefs) => {
+    if (!prefs) return
+    prefsForm.notificaciones = !!prefs.notificaciones
+    prefsForm.recordatorios = !!prefs.recordatorios
+    prefsForm.comunicaciones = !!prefs.comunicaciones
+  },
+  { immediate: true }
+)
 
 const perfil = computed(() => {
   const socio = auth.socio
@@ -85,11 +142,6 @@ const perfil = computed(() => {
     estadoPago,
     proximoCargo,
     monedero: "—",
-    preferencias: {
-      notificaciones: true,
-      recordatorios: true,
-      comunicaciones: false,
-    },
     progreso: {
       clasesCompletadas: 0,
       horasEntrenamiento: 0,
@@ -224,7 +276,7 @@ async function onSave() {
             </div>
           </div>
 
-          <!-- el resto lo mantengo igual que tu versión -->
+          <!-- membresía -->
           <div class="card">
             <div class="card-header">
               <h3>Membresía y Facturación</h3>
@@ -268,6 +320,7 @@ async function onSave() {
             </div>
           </div>
 
+          <!-- actividades -->
           <div class="card">
             <div class="card-header">
               <h3>Actividades y Reservas</h3>
@@ -293,10 +346,16 @@ async function onSave() {
 
         <!-- columna derecha -->
         <div class="col-right">
+          <!-- preferencias -->
           <div class="card">
             <div class="card-header">
               <h3>Preferencias</h3>
+              <button class="link-btn" type="button" @click="cargarPreferencias" :disabled="prefsLoading || prefsSaving">
+                {{ prefsLoading ? "Cargando..." : "Recargar" }}
+              </button>
             </div>
+
+            <p v-if="prefsError" class="modal-error">⚠️ {{ prefsError }}</p>
 
             <div class="toggle-list">
               <label class="toggle-row">
@@ -304,7 +363,7 @@ async function onSave() {
                   <div class="toggle-title">Notificaciones</div>
                   <div class="toggle-sub">Avisos generales</div>
                 </span>
-                <input type="checkbox" :checked="perfil.preferencias.notificaciones" disabled />
+                <input type="checkbox" v-model="prefsForm.notificaciones" :disabled="prefsLoading || prefsSaving" />
               </label>
 
               <label class="toggle-row">
@@ -312,7 +371,7 @@ async function onSave() {
                   <div class="toggle-title">Recordatorios</div>
                   <div class="toggle-sub">Clases reservadas</div>
                 </span>
-                <input type="checkbox" :checked="perfil.preferencias.recordatorios" disabled />
+                <input type="checkbox" v-model="prefsForm.recordatorios" :disabled="prefsLoading || prefsSaving" />
               </label>
 
               <label class="toggle-row">
@@ -320,11 +379,18 @@ async function onSave() {
                   <div class="toggle-title">Comunicaciones</div>
                   <div class="toggle-sub">Noticias y ofertas</div>
                 </span>
-                <input type="checkbox" :checked="perfil.preferencias.comunicaciones" disabled />
+                <input type="checkbox" v-model="prefsForm.comunicaciones" :disabled="prefsLoading || prefsSaving" />
               </label>
+            </div>
+
+            <div class="actions-row" style="justify-content: flex-end">
+              <button class="btn-primary" type="button" @click="guardarPreferencias" :disabled="prefsLoading || prefsSaving">
+                {{ prefsSaving ? "Guardando..." : "Guardar" }}
+              </button>
             </div>
           </div>
 
+          <!-- accionies de cuenta -->
           <div class="card">
             <div class="card-header">
               <h3>Acciones de cuenta</h3>

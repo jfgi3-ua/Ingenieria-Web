@@ -1,6 +1,8 @@
 package com.fitgym.backend.api;
 
 import com.fitgym.backend.api.dto.SocioSession;
+import com.fitgym.backend.api.dto.PreferenciasResponse;
+import com.fitgym.backend.api.dto.PreferenciasUpdateRequest;
 import com.fitgym.backend.api.error.GlobalExceptionHandler;
 import com.fitgym.backend.domain.Socio;
 import com.fitgym.backend.domain.SocioEstado;
@@ -243,6 +245,54 @@ class SocioControllerAuthTest {
                 .andExpect(jsonPath("$.direccion").value("Av. Sur 1"))
                 .andExpect(jsonPath("$.ciudad").value("Madrid"))
                 .andExpect(jsonPath("$.codigoPostal").value("28001"));
+    }
+
+    @Test
+    void get_preferencias_con_sesion_devuelve_200_y_prefs() throws Exception {
+        when(socioService.obtenerPreferencias(1L))
+                .thenReturn(new PreferenciasResponse(true, false, true));
+
+        SocioSession sessionData = new SocioSession(
+                1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO,
+                "123456789", "C/ Mayor 1", "Madrid", "28001"
+        );
+
+        mockMvc.perform(get("/api/socios/me/preferencias")
+                        .sessionAttr(SESSION_SOCIO_KEY, sessionData))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.notificaciones").value(true))
+                .andExpect(jsonPath("$.recordatorios").value(false))
+                .andExpect(jsonPath("$.comunicaciones").value(true));
+    }
+
+    @Test
+    void put_preferencias_con_sesion_actualiza_y_devuelve_prefs() throws Exception {
+        when(socioService.actualizarPreferencias(Mockito.eq(1L), Mockito.any()))
+                .thenReturn(new PreferenciasResponse(false, true, false));
+
+        SocioSession sessionData = new SocioSession(
+                1L, "Test", "test@fitgym.com", "ACTIVO", 10L, "Basico", BigDecimal.ZERO,
+                "123456789", "C/ Mayor 1", "Madrid", "28001"
+        );
+
+        String payload = """
+    {"notificaciones":false,"recordatorios":true,"comunicaciones":false}
+  """;
+
+        mockMvc.perform(put("/api/socios/me/preferencias")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload)
+                        .sessionAttr(SESSION_SOCIO_KEY, sessionData))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.notificaciones").value(false))
+                .andExpect(jsonPath("$.recordatorios").value(true))
+                .andExpect(jsonPath("$.comunicaciones").value(false));
+    }
+
+    @Test
+    void get_preferencias_sin_sesion_devuelve_401() throws Exception {
+        mockMvc.perform(get("/api/socios/me/preferencias"))
+                .andExpect(status().isUnauthorized());
     }
 
   private Socio buildSocio(String email, SocioEstado estado) {

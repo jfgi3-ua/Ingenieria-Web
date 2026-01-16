@@ -6,6 +6,8 @@ import com.fitgym.backend.domain.Tarifa;
 import com.fitgym.backend.repo.SocioRepository;
 import com.fitgym.backend.repo.TarifaRepository;
 import com.fitgym.backend.api.dto.MembresiaResponse;
+import com.fitgym.backend.api.dto.PreferenciasResponse;
+import com.fitgym.backend.api.dto.PreferenciasUpdateRequest;
 import java.time.OffsetDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -292,6 +294,39 @@ public class SocioService {
                 fechaInicio,
                 proximaRenovacion,
                 ultimoPago
+        );
+    }
+
+    @Transactional
+    public PreferenciasResponse actualizarPreferencias(
+            Long socioId,
+            PreferenciasUpdateRequest req
+    ) {
+        Socio socio = socioRepo.findById(socioId)
+                .orElseThrow(() -> new EntityNotFoundException("Socio no encontrado"));
+
+        socio.setPrefNotificaciones(req.notificaciones());
+        socio.setPrefRecordatorios(req.recordatorios());
+        socio.setPrefComunicaciones(req.comunicaciones());
+
+        socioRepo.save(socio);
+
+        return new PreferenciasResponse(
+                socio.isPrefNotificaciones(),
+                socio.isPrefRecordatorios(),
+                socio.isPrefComunicaciones()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public PreferenciasResponse obtenerPreferencias(Long socioId) {
+        Socio socio = socioRepo.findById(socioId)
+                .orElseThrow(() -> new EntityNotFoundException("Socio no encontrado"));
+
+        return new PreferenciasResponse(
+                socio.isPrefNotificaciones(),
+                socio.isPrefRecordatorios(),
+                socio.isPrefComunicaciones()
         );
     }
 }

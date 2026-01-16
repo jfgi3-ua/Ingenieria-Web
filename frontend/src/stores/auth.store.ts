@@ -1,7 +1,8 @@
 import { defineStore } from "pinia"
-import { login as loginService, logout as logoutService, me as meService } from "@/services/socios"
-import type { SocioLoginRequest, SocioResponse, SocioUpdateRequest } from '@/types/socio'
-import { updateMe as updateMeService } from "@/services/socios"
+import { login as loginService, logout as logoutService, me as meService, updateMe as updateMeService,
+  getPreferencias as getPreferenciasService, updatePreferencias as updatePreferenciasService, } from "@/services/socios"
+import type { SocioLoginRequest, SocioResponse, SocioUpdateRequest } from "@/types/socio"
+import type { PreferenciasResponse, PreferenciasUpdateRequest } from "@/types/preferencias"
 export const ADMIN_EMAIL = "admin@gmail.com"
 
 /**
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore("auth", {
     socio: null as SocioResponse | null,
     // Bandera simple para proteger rutas y condicionar la UI.
     isAuthenticated: false,
+    preferencias: null as PreferenciasResponse | null,
   }),
     getters: {
     isAdmin: (state) => state.socio?.correoElectronico?.toLowerCase() === ADMIN_EMAIL,
@@ -67,6 +69,18 @@ export const useAuthStore = defineStore("auth", {
       this.socio = socio
       this.isAuthenticated = true
       return socio
+    },
+
+    async loadPreferencias() {
+      const prefs = await getPreferenciasService()
+      this.preferencias = prefs
+      return prefs
+    },
+
+    async updatePreferencias(payload: PreferenciasUpdateRequest) {
+      const prefs = await updatePreferenciasService(payload)
+      this.preferencias = prefs
+      return prefs
     },
   },
 })

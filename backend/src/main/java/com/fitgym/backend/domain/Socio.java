@@ -94,6 +94,15 @@ public class Socio {
   @Column(name="token_registro", length = 120)
   private String tokenRegistro;
 
+  @Column(name = "pref_notificaciones", nullable = false)
+  private boolean prefNotificaciones = true;
+
+  @Column(name = "pref_recordatorios", nullable = false)
+  private boolean prefRecordatorios = true;
+
+  @Column(name = "pref_comunicaciones", nullable = false)
+  private boolean prefComunicaciones = false;
+
   // Getters y Setters
   public Long getId() { return id; }
 
@@ -135,4 +144,13 @@ public class Socio {
 
   public String getTokenRegistro() { return tokenRegistro; }
   public void setTokenRegistro(String tokenRegistro) { this.tokenRegistro = tokenRegistro; }
+
+  public boolean isPrefNotificaciones() { return prefNotificaciones; }
+  public void setPrefNotificaciones(boolean v) { this.prefNotificaciones = v; }
+
+  public boolean isPrefRecordatorios() { return prefRecordatorios; }
+  public void setPrefRecordatorios(boolean v) { this.prefRecordatorios = v; }
+
+  public boolean isPrefComunicaciones() { return prefComunicaciones; }
+  public void setPrefComunicaciones(boolean v) { this.prefComunicaciones = v; }
 }
