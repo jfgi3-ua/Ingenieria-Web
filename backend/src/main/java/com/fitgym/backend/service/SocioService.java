@@ -259,7 +259,6 @@ public class SocioService {
         OffsetDateTime proximaRenovacion = null;
 
         if (pr != null && pr.getCompletedAt() != null) {
-            // Instant -> OffsetDateTime
             fechaInicio = pr.getCompletedAt().atOffset(ZoneOffset.UTC);
             ultimoPago = fechaInicio;
             proximaRenovacion = fechaInicio.plusMonths(1); // mensual
