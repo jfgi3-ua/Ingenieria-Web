@@ -5,10 +5,17 @@ import com.fitgym.backend.domain.SocioEstado;
 import com.fitgym.backend.domain.Tarifa;
 import com.fitgym.backend.repo.SocioRepository;
 import com.fitgym.backend.repo.TarifaRepository;
+import com.fitgym.backend.api.dto.MembresiaResponse;
+import java.time.OffsetDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
+
+import com.fitgym.backend.repo.PagoRegistroRepository;
+import com.fitgym.backend.domain.PagoRegistro;
+import com.fitgym.backend.domain.PagoRegistroEstado;
+import java.time.ZoneOffset;
 
 /**
  * Servicio de gestion de socios del gimnasio.
@@ -23,17 +30,20 @@ public class SocioService {
   private final TarifaRepository tarifaRepo;
   private final PasswordEncoder passwordEncoder;
   private final PagoRegistroService pagoRegistroService;
+  private final PagoRegistroRepository pagoRegistroRepo;
 
   public SocioService(
       SocioRepository socioRepo,
       TarifaRepository tarifaRepo,
       PasswordEncoder passwordEncoder,
-      PagoRegistroService pagoRegistroService
+      PagoRegistroService pagoRegistroService,
+      PagoRegistroRepository pagoRegistroRepo
   ) {
     this.socioRepo = socioRepo;
     this.tarifaRepo = tarifaRepo;
     this.passwordEncoder = passwordEncoder;
     this.pagoRegistroService = pagoRegistroService;
+      this.pagoRegistroRepo = pagoRegistroRepo;
   }
 
   /**
@@ -102,6 +112,8 @@ public class SocioService {
 
     socio.setTarifa(tarifa);
     socio.setClasesGratis(tarifa.getClasesGratisMes());
+
+    socio.setTokenRegistro(paymentToken);
 
     // Solicitud pendiente de aceptacion.
     socio.setEstado(SocioEstado.INACTIVO);
@@ -216,4 +228,71 @@ public class SocioService {
 
       return socioRepo.save(socio);
   }
+
+    @Transactional(readOnly = true)
+    public MembresiaResponse obtenerMembresia(Long socioId) {
+        Socio socio = socioRepo.findById(socioId)
+                .orElseThrow(() -> new IllegalArgumentException("Socio no encontrado."));
+
+        // Ensure tarifa loaded
+        socio.getTarifa().getId();
+        socio.getTarifa().getNombre();
+        socio.getTarifa().getCuota();
+
+        String token = socio.getTokenRegistro();
+        if (token == null || token.isBlank()) {
+            return new MembresiaResponse(
+                    socio.getTarifa().getId(),
+                    socio.getTarifa().getNombre(),
+                    socio.getTarifa().getCuota(),
+                    "SIN_DATOS",
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        PagoRegistro pr = pagoRegistroRepo.findByToken(token).orElse(null);
+
+        OffsetDateTime fechaInicio = null;
+        OffsetDateTime ultimoPago = null;
+        OffsetDateTime proximaRenovacion = null;
+
+        if (pr != null && pr.getCompletedAt() != null) {
+            // Instant -> OffsetDateTime
+            fechaInicio = pr.getCompletedAt().atOffset(ZoneOffset.UTC);
+            ultimoPago = fechaInicio;
+            proximaRenovacion = fechaInicio.plusMonths(1); // mensual
+        }
+
+        String estadoPago;
+        if (socio.getEstado() != SocioEstado.ACTIVO) {
+            estadoPago = "PENDIENTE";
+        } else if (pr == null) {
+            estadoPago = "SIN_DATOS";
+        } else if (pr.getEstado() == PagoRegistroEstado.FAILED) {
+            estadoPago = "IMPAGO";
+        } else if (pr.getEstado() == PagoRegistroEstado.PENDING) {
+            estadoPago = "PENDIENTE";
+        } else if (pr.getEstado() == PagoRegistroEstado.COMPLETED) {
+            // si quieres marcar IMPAGO cuando ya pasó la renovación y no hay pagos mensuales registrados:
+            if (proximaRenovacion != null && OffsetDateTime.now(ZoneOffset.UTC).isAfter(proximaRenovacion)) {
+                estadoPago = "IMPAGO";
+            } else {
+                estadoPago = "AL_DIA";
+            }
+        } else {
+            estadoPago = "SIN_DATOS";
+        }
+
+        return new MembresiaResponse(
+                socio.getTarifa().getId(),
+                socio.getTarifa().getNombre(),
+                socio.getTarifa().getCuota(),
+                estadoPago,
+                fechaInicio,
+                proximaRenovacion,
+                ultimoPago
+        );
+    }
 }

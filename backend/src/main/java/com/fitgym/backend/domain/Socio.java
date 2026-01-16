@@ -91,6 +91,9 @@ public class Socio {
   @Column(name = "clases_gratis", nullable = false)
   private Integer clasesGratis;
 
+  @Column(name="token_registro", length = 120)
+  private String tokenRegistro;
+
   // Getters y Setters
   public Long getId() { return id; }
 
@@ -129,4 +132,7 @@ public class Socio {
 
   public Integer getClasesGratis() { return clasesGratis; }
   public void setClasesGratis(Integer clasesGratis) { this.clasesGratis = clasesGratis; }
+
+  public String getTokenRegistro() { return tokenRegistro; }
+  public void setTokenRegistro(String tokenRegistro) { this.tokenRegistro = tokenRegistro; }
 }

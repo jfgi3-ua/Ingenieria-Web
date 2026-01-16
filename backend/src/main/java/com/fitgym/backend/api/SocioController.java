@@ -7,6 +7,7 @@ import com.fitgym.backend.api.dto.SocioRegistroRequest;
 import com.fitgym.backend.api.dto.SocioResponse;
 import com.fitgym.backend.api.dto.EmailExistsResponse;
 import com.fitgym.backend.api.dto.SocioUpdateRequest;
+import com.fitgym.backend.api.dto.MembresiaResponse;
 import com.fitgym.backend.domain.Socio;
 import com.fitgym.backend.service.InvalidCredentialsException;
 import com.fitgym.backend.service.SocioService;
@@ -218,4 +219,15 @@ public class SocioController {
 
       return ResponseEntity.ok(body);
   }
+
+    @GetMapping("/me/membresia")
+    public ResponseEntity<MembresiaResponse> membresia(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        Object value = session.getAttribute(SESSION_SOCIO_KEY);
+        if (!(value instanceof SocioSession socioSession)) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        return ResponseEntity.ok(socioService.obtenerMembresia(socioSession.getId()));
+    }
 }

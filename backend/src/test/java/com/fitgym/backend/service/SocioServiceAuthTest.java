@@ -5,6 +5,7 @@ import com.fitgym.backend.domain.SocioEstado;
 import com.fitgym.backend.domain.Tarifa;
 import com.fitgym.backend.repo.SocioRepository;
 import com.fitgym.backend.repo.TarifaRepository;
+import com.fitgym.backend.repo.PagoRegistroRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -32,6 +33,7 @@ class SocioServiceAuthTest {
   private PasswordEncoder passwordEncoder;
   private PagoRegistroService pagoRegistroService;
   private SocioService socioService;
+    private PagoRegistroRepository pagoRegistroRepo;
 
   @BeforeEach
   void setUp() {
@@ -39,7 +41,7 @@ class SocioServiceAuthTest {
     tarifaRepo = Mockito.mock(TarifaRepository.class);
     passwordEncoder = new BCryptPasswordEncoder();
     pagoRegistroService = Mockito.mock(PagoRegistroService.class);
-    socioService = new SocioService(socioRepo, tarifaRepo, passwordEncoder, pagoRegistroService);
+    socioService = new SocioService(socioRepo, tarifaRepo, passwordEncoder, pagoRegistroService, pagoRegistroRepo);
   }
 
   @Test
