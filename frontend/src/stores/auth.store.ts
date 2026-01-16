@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { login as loginService, logout as logoutService, me as meService } from "@/services/socios"
-import type { SocioLoginRequest, SocioResponse } from "@/types/socio"
+import type { SocioLoginRequest, SocioResponse, SocioUpdateRequest } from '@/types/socio'
+import { updateMe as updateMeService } from "@/services/socios"
 export const ADMIN_EMAIL = "admin@gmail.com"
 
 /**
@@ -59,6 +60,13 @@ export const useAuthStore = defineStore("auth", {
         this.isAuthenticated = false
         return null
       }
+    },
+
+    async updateMe(payload: SocioUpdateRequest) {
+      const socio = await updateMeService(payload)
+      this.socio = socio
+      this.isAuthenticated = true
+      return socio
     },
   },
 })

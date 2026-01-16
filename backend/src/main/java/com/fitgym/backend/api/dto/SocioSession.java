@@ -20,6 +20,10 @@ public class SocioSession implements Serializable {
   private final Long idTarifa;
   private final String tarifaNombre;
   private final BigDecimal saldoMonedero;
+  private final String telefono;
+  private final String direccion;
+  private final String ciudad;
+  private final String codigoPostal;
 
   public SocioSession(
       Long id,
@@ -28,7 +32,11 @@ public class SocioSession implements Serializable {
       String estado,
       Long idTarifa,
       String tarifaNombre,
-      BigDecimal saldoMonedero
+      BigDecimal saldoMonedero,
+      String telefono,
+      String direccion,
+      String ciudad,
+      String codigoPostal
   ) {
     this.id = id;
     this.nombre = nombre;
@@ -37,6 +45,10 @@ public class SocioSession implements Serializable {
     this.idTarifa = idTarifa;
     this.tarifaNombre = tarifaNombre;
     this.saldoMonedero = saldoMonedero;
+    this.telefono = telefono;
+    this.direccion = direccion;
+    this.ciudad = ciudad;
+    this.codigoPostal = codigoPostal;
   }
 
   public static SocioSession fromLoginResponse(SocioLoginResponse response) {
@@ -47,11 +59,20 @@ public class SocioSession implements Serializable {
         response.estado(),
         response.idTarifa(),
         response.tarifaNombre(),
-        response.saldoMonedero()
+        response.saldoMonedero(),
+        response.telefono(),
+        response.direccion(),
+        response.ciudad(),
+        response.codigoPostal()
     );
   }
 
   public SocioLoginResponse toLoginResponse() {
-    return new SocioLoginResponse(id, nombre, correoElectronico, estado, idTarifa, tarifaNombre, saldoMonedero);
+    return new SocioLoginResponse(id, nombre, correoElectronico, estado, idTarifa, tarifaNombre, saldoMonedero,
+            telefono, direccion, ciudad, codigoPostal);
   }
+
+    public Long getId() {
+        return id;
+    }
 }

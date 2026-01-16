@@ -1,5 +1,5 @@
-import { apiGet, apiPost } from "./http"
-import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse } from "@/types/socio"
+import { apiGet, apiPost, apiPut } from "./http"
+import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse, SocioUpdateRequest } from "@/types/socio"
 
 
 /**
@@ -47,4 +47,8 @@ export function me() {
  */
 export function logout() {
   return apiPost<void, Record<string, never>>("/api/socios/logout", {})
+}
+
+export function updateMe(payload: SocioUpdateRequest) {
+  return apiPut<SocioResponse, SocioUpdateRequest>("/api/socios/me", payload)
 }

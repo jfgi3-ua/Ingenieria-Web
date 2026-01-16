@@ -16,7 +16,11 @@ public record SocioLoginResponse(
     String estado,
     Long idTarifa,
     String tarifaNombre,
-    BigDecimal saldoMonedero
+    BigDecimal saldoMonedero,
+    String telefono,
+    String direccion,
+    String ciudad,
+    String codigoPostal
 ) implements java.io.Serializable {
   private static final long serialVersionUID = 1L;
 }

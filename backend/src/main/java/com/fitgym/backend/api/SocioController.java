@@ -6,6 +6,7 @@ import com.fitgym.backend.api.dto.SocioSession;
 import com.fitgym.backend.api.dto.SocioRegistroRequest;
 import com.fitgym.backend.api.dto.SocioResponse;
 import com.fitgym.backend.api.dto.EmailExistsResponse;
+import com.fitgym.backend.api.dto.SocioUpdateRequest;
 import com.fitgym.backend.domain.Socio;
 import com.fitgym.backend.service.InvalidCredentialsException;
 import com.fitgym.backend.service.SocioService;
@@ -99,7 +100,11 @@ public class SocioController {
         socio.getCorreoElectronico(),
         socio.getEstado().name(),
         socio.getTarifa().getId(),
-        socio.getTarifa().getNombre()
+        socio.getTarifa().getNombre(),
+        socio.getTelefono(),
+        socio.getDireccion(),
+        socio.getCiudad(),
+        socio.getCodigoPostal()
     );
 
     return ResponseEntity
@@ -124,7 +129,11 @@ public class SocioController {
         socio.getEstado().name(),
         socio.getTarifa().getId(),
         socio.getTarifa().getNombre(),
-        socio.getSaldoMonedero()
+        socio.getSaldoMonedero(),
+        socio.getTelefono(),
+        socio.getDireccion(),
+        socio.getCiudad(),
+        socio.getCodigoPostal()
     );
 
     HttpSession session = request.getSession(true);
@@ -163,5 +172,50 @@ public class SocioController {
       session.invalidate();
     }
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  // editar perfil
+  @PutMapping("/me")
+  public ResponseEntity<SocioLoginResponse> updateMe(
+          @Valid @RequestBody SocioUpdateRequest req,
+          HttpServletRequest request
+  ) {
+      HttpSession session = request.getSession(false);
+      if (session == null) {
+          throw new InvalidCredentialsException("No hay sesion activa.");
+      }
+
+      Object value = session.getAttribute(SESSION_SOCIO_KEY);
+      if (!(value instanceof SocioSession socioSession)) {
+          throw new InvalidCredentialsException("No hay sesion activa.");
+      }
+
+      // actualizar bd
+      Socio socio = socioService.actualizarDatosPersonales(
+              socioSession.getId(),
+              req.nombre(),
+              req.telefono(),
+              req.direccion(),
+              req.ciudad(),
+              req.codigoPostal()
+      );
+
+      SocioLoginResponse body = new SocioLoginResponse(
+              socio.getId(),
+              socio.getNombre(),
+              socio.getCorreoElectronico(),
+              socio.getEstado().name(),
+              socio.getTarifa().getId(),
+              socio.getTarifa().getNombre(),
+              socio.getSaldoMonedero(),
+              socio.getTelefono(),
+              socio.getDireccion(),
+              socio.getCiudad(),
+              socio.getCodigoPostal()
+      );
+
+      session.setAttribute(SESSION_SOCIO_KEY, SocioSession.fromLoginResponse(body));
+
+      return ResponseEntity.ok(body);
   }
 }
