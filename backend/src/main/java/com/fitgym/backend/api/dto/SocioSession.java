@@ -3,6 +3,10 @@ package com.fitgym.backend.api.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.fitgym.backend.api.dto.MembresiaResponse;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+
 /**
  * DTO interno para almacenar datos de sesion en HttpSession.
  *

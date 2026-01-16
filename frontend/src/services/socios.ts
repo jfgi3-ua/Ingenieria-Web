@@ -1,5 +1,6 @@
 import { apiGet, apiPost, apiPut } from "./http"
 import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse, SocioUpdateRequest } from "@/types/socio"
+import type { MembresiaResponse } from '@/types/membresia.ts'
 
 
 /**
@@ -51,4 +52,8 @@ export function logout() {
 
 export function updateMe(payload: SocioUpdateRequest) {
   return apiPut<SocioResponse, SocioUpdateRequest>("/api/socios/me", payload)
+}
+
+export function meMembresia() {
+  return apiGet<MembresiaResponse>("/api/socios/me/membresia")
 }
