@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { computed, reactive, ref, watch, onMounted } from "vue"
 import { useAuthStore } from "@/stores/auth.store"
 import { getMembresiaMe } from "@/services/membresias"
 import type { MembresiaResponse } from "@/types/membresia"
+import { getMisReservas, type ReservaItem } from "@/services/reservas"
 
+const router = useRouter()
 const auth = useAuthStore()
 
 const showEdit = ref(false)
@@ -12,6 +15,14 @@ const saveError = ref<string | null>(null)
 
 const membresia = ref<MembresiaResponse | null>(null)
 const membresiaError = ref<string | null>(null)
+
+function irAServicios() {
+  router.push('/servicios')
+}
+
+function irAMisReservas() {
+  router.push({ name: "misReservas" })
+}
 
 function displayValue(v?: string | null) {
   return v && v.trim() ? v : "—"
@@ -123,9 +134,23 @@ async function iniciarRecarga() {
   }
 }
 
+const reservas = ref<ReservaItem[]>([])
+const reservasError = ref<string | null>(null)
+
+async function cargarReservas() {
+  try {
+    reservasError.value = null
+    reservas.value = await getMisReservas(5)
+  } catch (e) {
+    reservas.value = []
+    reservasError.value = e instanceof Error ? e.message : String(e)
+  }
+}
+
 onMounted(async () => {
   await cargarMembresia()
   await maybeVerifyFromUrl()
+  await cargarReservas()
 })
 
 const perfil = computed(() => {
@@ -349,7 +374,9 @@ async function onSave() {
           <div class="card">
             <div class="card-header">
               <h3>Actividades y Reservas</h3>
-              <button class="link-btn" type="button">Ver todas</button>
+              <button class="link-btn" type="button" @click="irAMisReservas">
+                Ver todas
+              </button>
             </div>
 
             <div v-if="perfil.reservas.length" class="reserva-list">
@@ -363,9 +390,24 @@ async function onSave() {
               </div>
             </div>
 
-            <p v-else class="empty-text">Aún no tienes reservas para mostrar.</p>
+            <p v-if="reservasError" class="empty-text">{{ reservasError }}</p>
 
-            <button class="btn-primary full" type="button">Reservar nueva clase</button>
+            <div v-else-if="reservas.length" class="reserva-list">
+              <div v-for="r in reservas" :key="r.idActividad" class="reserva-item">
+                <div class="reserva-main">
+                  <div class="reserva-title">{{ r.actividadNombre }}</div>
+                  <div class="reserva-sub">{{ r.fecha }} · {{ r.horaIni }} - {{ r.horaFin }}</div>
+                  <div class="reserva-sub">Estado: {{ r.estado }}</div>
+                </div>
+                <span class="status ok">{{ r.estado }}</span>
+              </div>
+            </div>
+
+            <p v-else class="empty-text">Aún no tienes reservas.</p>
+
+            <button class="btn-primary" @click="irAServicios">
+              Reservar nueva clase
+            </button>
           </div>
         </div>
 

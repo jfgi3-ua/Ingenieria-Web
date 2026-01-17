@@ -29,7 +29,7 @@
         <div class="buttons-container-navbar">
             <RouterLink class="nav-link" active-class="active-a" to="/inicio">Inicio</RouterLink>
             <RouterLink class="nav-link" active-class="active-a" to="/servicios">Servicios</RouterLink>
-            <RouterLink class="nav-link" to="#">Mis reservas</RouterLink>
+            <RouterLink v-if="auth.isAuthenticated" class="nav-link" active-class="active-a" to="/mis-reservas">Mis reservas</RouterLink>
             <RouterLink v-if="auth.isAuthenticated" class="nav-link" active-class="active-a" to="/perfil">Mi cuenta</RouterLink>
         </div>
         <div v-if="auth.socio" class="user-buttons-container">

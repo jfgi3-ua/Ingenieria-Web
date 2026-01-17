@@ -20,6 +20,7 @@ import com.fitgym.backend.repo.ActividadRepository;
 import com.fitgym.backend.repo.PagoRepository;
 import com.fitgym.backend.repo.ReservaRepository;
 import com.fitgym.backend.repo.SocioRepository;
+import com.fitgym.backend.api.dto.ReservaItemResponse;
 
 @Service
 public class ReservaService {
@@ -174,5 +175,26 @@ public class ReservaService {
                 return false;
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservaItemResponse> listarReservasSocioDTO(Long socioId, int limit) {
+        var list = reservaRepository.findBySocioOrderByFechaDesc(socioId);
+
+        return list.stream()
+                .limit(Math.max(0, limit))
+                .map(r -> {
+                    var a = r.getActividad();
+                    return new ReservaItemResponse(
+                            a.getId(),
+                            a.getNombre(),
+                            a.getFecha(),
+                            a.getHoraIni(),
+                            a.getHoraFin(),
+                            r.getEstado().name(),
+                            BigDecimal.ZERO // keep it simple for now
+                    );
+                })
+                .toList();
     }
 }
