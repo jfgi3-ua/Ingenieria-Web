@@ -365,10 +365,10 @@ async function onSave() {
               </button>
             </div>
 
-            <div class="actions-row">
-              <button class="btn-outline" type="button">Cambiar tarifa</button>
-              <button class="btn-outline" type="button">Ver facturas</button>
-            </div>
+<!--            <div class="actions-row">-->
+<!--              <button class="btn-outline" type="button">Cambiar tarifa</button>-->
+<!--              <button class="btn-outline" type="button">Ver facturas</button>-->
+<!--            </div>-->
           </div>
 
           <div class="card">

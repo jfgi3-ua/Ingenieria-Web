@@ -21,6 +21,8 @@ import com.fitgym.backend.repo.PagoRepository;
 import com.fitgym.backend.repo.ReservaRepository;
 import com.fitgym.backend.repo.SocioRepository;
 import com.fitgym.backend.api.dto.ReservaItemResponse;
+import com.fitgym.backend.api.dto.ReservaCancelResponse;
+import java.util.Optional;
 
 @Service
 public class ReservaService {
@@ -104,7 +106,9 @@ public class ReservaService {
                 reserva.setEstado(ReservaEstado.CONFIRMADA);
 
                 Pago pago = new Pago();
-                pago.setCantidad(actividad.getPrecioExtra());
+//                pago.setCantidad(actividad.getPrecioExtra());
+                pago.setCantidad(BigDecimal.ZERO);
+                pago.setNombre("Reserva con clase gratis");
                 pago.setFechaPago(Instant.now());
                 pago.setIdActividad(idClase);
                 pago.setIdSocio(idSocio);
@@ -144,6 +148,7 @@ public class ReservaService {
                     //Bajamos el saldo
                     BigDecimal saldoRestante = socio.getSaldoMonedero().subtract(actividad.getPrecioExtra());
                     socio.setSaldoMonedero(saldoRestante);
+                    socioRepository.save(socio);
 
                     //Creamos reserva
                     Reserva reserva = new Reserva();
@@ -185,6 +190,12 @@ public class ReservaService {
                 .limit(Math.max(0, limit))
                 .map(r -> {
                     var a = r.getActividad();
+
+                    BigDecimal precioPagado = pagoRepository.findBySocioAndActividad(socioId, a.getId())
+                            .filter(p -> p.getResultadoPago() == PagoResultado.OK)
+                            .map(Pago::getCantidad)
+                            .orElse(BigDecimal.ZERO);
+
                     return new ReservaItemResponse(
                             a.getId(),
                             a.getNombre(),
@@ -192,9 +203,56 @@ public class ReservaService {
                             a.getHoraIni(),
                             a.getHoraFin(),
                             r.getEstado().name(),
-                            BigDecimal.ZERO // keep it simple for now
+                            precioPagado
                     );
                 })
                 .toList();
+    }
+
+    @Transactional
+    public ReservaCancelResponse cancelarReserva(Long socioId, Long idActividad) {
+
+        ReservaId rid = new ReservaId(socioId, idActividad);
+        Reserva reserva = reservaRepository.findById(rid)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        // si ya está cancelada, devolvemos saldo actual sin cambios
+        if (reserva.getEstado() == ReservaEstado.CANCELADA) {
+            Socio socio = socioRepository.findById(socioId)
+                    .orElseThrow(() -> new RuntimeException("Socio no encontrado"));
+            return new ReservaCancelResponse("CANCELADA", BigDecimal.ZERO, socio.getSaldoMonedero());
+        }
+
+        // marcar cancelada
+        reserva.setEstado(ReservaEstado.CANCELADA);
+        reservaRepository.save(reserva);
+
+        // liberar plaza en actividad
+        Actividad actividad = actividadRepository.findById(idActividad)
+                .orElseThrow(() -> new RuntimeException("Actividad no encontrada"));
+        actividad.setDisponibles(actividad.getDisponibles() + 1);
+        actividadRepository.save(actividad);
+
+        // calcular reembolso: SOLO si hubo pago real (>0)
+        BigDecimal reembolso = BigDecimal.ZERO;
+
+        Optional<Pago> pagoOpt = pagoRepository.findBySocioAndActividad(socioId, idActividad);
+        if (pagoOpt.isPresent()) {
+            Pago p = pagoOpt.get();
+            if (p.getResultadoPago() == PagoResultado.OK && p.getCantidad().compareTo(BigDecimal.ZERO) > 0) {
+                reembolso = p.getCantidad();
+            }
+        }
+
+        // aplicar reembolso al monedero si procede
+        Socio socio = socioRepository.findById(socioId)
+                .orElseThrow(() -> new RuntimeException("Socio no encontrado"));
+
+        if (reembolso.compareTo(BigDecimal.ZERO) > 0) {
+            socio.setSaldoMonedero(socio.getSaldoMonedero().add(reembolso));
+            socioRepository.save(socio);
+        }
+
+        return new ReservaCancelResponse("CANCELADA", reembolso, socio.getSaldoMonedero());
     }
 }

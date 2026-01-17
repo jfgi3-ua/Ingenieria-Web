@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.fitgym.backend.api.dto.ReservaCancelResponse;
 
 @RestController
 @RequestMapping("/api/reservas")
@@ -49,5 +50,14 @@ public class ReservaController {
     ) {
         SocioSession s = requireSession(request);
         return ResponseEntity.ok(reservaService.listarReservasSocioDTO(s.getId(), limit));
+    }
+
+    @PostMapping("/me/{idActividad}/cancel")
+    public ResponseEntity<ReservaCancelResponse> cancelarReserva(
+            @PathVariable Long idActividad,
+            HttpServletRequest request
+    ) {
+        SocioSession s = requireSession(request);
+        return ResponseEntity.ok(reservaService.cancelarReserva(s.getId(), idActividad));
     }
 }

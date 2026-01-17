@@ -1,4 +1,4 @@
-import { apiGet } from "./http"
+import { apiGet, apiPost } from "./http"
 
 export type ReservaItem = {
   idActividad: number
@@ -12,4 +12,17 @@ export type ReservaItem = {
 
 export function getMisReservas(limit = 5) {
   return apiGet<ReservaItem[]>(`/api/reservas/me?limit=${limit}`)
+}
+
+export function cancelarReserva(idActividad: number) {
+  return apiPost<ReservaCancelResponse, Record<string, never>>(
+    `/api/reservas/me/${idActividad}/cancel`,
+    {}
+  )
+}
+
+export type ReservaCancelResponse = {
+  estado: string
+  reembolso: number | string
+  saldoMonedero: number | string
 }
