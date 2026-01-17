@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router"
 import { computed, reactive, ref, watch, onMounted } from "vue"
 import { useAuthStore } from "@/stores/auth.store"
 import { getMembresiaMe } from "@/services/membresias"
@@ -17,13 +17,93 @@ const membresia = ref<MembresiaResponse | null>(null)
 const membresiaError = ref<string | null>(null)
 
 function irAServicios() {
-  router.push('/servicios')
+  router.push("/servicios")
 }
 
 function irAMisReservas() {
   router.push({ name: "misReservas" })
 }
 
+async function onLogout() {
+  await auth.logout()
+  await router.push("/login")
+}
+
+// cambiar contraseña
+const showPasswordModal = ref(false)
+const passwordSaving = ref(false)
+const passwordError = ref<string | null>(null)
+const passwordOk = ref<string | null>(null)
+
+const passwordForm = reactive({
+  currentPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+})
+
+function openPasswordModal() {
+  passwordError.value = null
+  passwordOk.value = null
+  passwordForm.currentPassword = ""
+  passwordForm.newPassword = ""
+  passwordForm.confirmNewPassword = ""
+  showPasswordModal.value = true
+}
+
+function validarContrasena(): string | null {
+  if (!passwordForm.currentPassword.trim()) return "Introduce tu contraseña actual."
+  if (!passwordForm.newPassword.trim()) return "Introduce la nueva contraseña."
+  if (passwordForm.newPassword.length < 8) return "La nueva contraseña debe tener al menos 8 caracteres."
+  if (passwordForm.newPassword !== passwordForm.confirmNewPassword) return "Las contraseñas nuevas no coinciden."
+  if (passwordForm.newPassword === passwordForm.currentPassword) return "La nueva contraseña no puede ser igual a la actual."
+  return null
+}
+
+async function onChangePassword() {
+  const err = validarContrasena()
+  if (err) {
+    passwordError.value = err
+    return
+  }
+
+  passwordSaving.value = true
+  passwordError.value = null
+  passwordOk.value = null
+
+  try {
+    // backend suele invalidar sesión tras cambio de contraseña
+    await auth.cambiarContrasena(passwordForm.currentPassword, passwordForm.newPassword)
+    passwordOk.value = "Contraseña actualizada. Vuelve a iniciar sesión."
+    showPasswordModal.value = false
+    await router.push("/login")
+  } catch (e) {
+    passwordError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    passwordSaving.value = false
+  }
+}
+
+// borrar/desactivar cuenta
+const bajaLoading = ref(false)
+const bajaError = ref<string | null>(null)
+
+async function onBaja() {
+  bajaError.value = null
+  const ok = window.confirm("¿Seguro que quieres darte de baja? Esta acción inactivará tu cuenta.")
+  if (!ok) return
+
+  bajaLoading.value = true
+  try {
+    await auth.deleteMe()
+    await router.push("/login")
+  } catch (e) {
+    bajaError.value = e instanceof Error ? e.message : String(e)
+  } finally {
+    bajaLoading.value = false
+  }
+}
+
+// "helper functions"
 function displayValue(v?: string | null) {
   return v && v.trim() ? v : "—"
 }
@@ -52,8 +132,8 @@ function estadoPagoLabel(v?: string | null) {
   return v
 }
 
+// membresía
 async function cargarMembresia() {
-  // Solo si hay sesión
   if (!auth.isAuthenticated) return
   try {
     membresiaError.value = null
@@ -65,9 +145,9 @@ async function cargarMembresia() {
   }
 }
 
-// ---- MONEDERO RECARGA ----
+// recarga del monedero
 const showRecarga = ref(false)
-const recargaImporte = ref<string>("") // user input
+const recargaImporte = ref<string>("")
 const recargaLoading = ref(false)
 const recargaError = ref<string | null>(null)
 
@@ -82,7 +162,7 @@ async function maybeVerifyFromUrl() {
   recargaError.value = null
 
   try {
-    const res = await auth.verificarRecargaMonedero(token) // <-- only once
+    const res = await auth.verificarRecargaMonedero(token)
 
     sessionStorage.removeItem("monedero_last_token")
     url.searchParams.delete("token")
@@ -125,7 +205,7 @@ async function iniciarRecarga() {
   recargaError.value = null
   try {
     const { paymentUrl, token } = await auth.recargarMonedero(amount)
-    sessionStorage.setItem("monedero_last_token", token) // ✅ before redirect
+    sessionStorage.setItem("monedero_last_token", token)
     window.location.href = paymentUrl
   } catch (e) {
     recargaError.value = e instanceof Error ? e.message : String(e)
@@ -134,6 +214,7 @@ async function iniciarRecarga() {
   }
 }
 
+// ver reservas
 const reservas = ref<ReservaItem[]>([])
 const reservasError = ref<string | null>(null)
 
@@ -157,7 +238,7 @@ const perfil = computed(() => {
   const socio = auth.socio
   if (!socio) return null
 
-  const idSocio = `FG-${String(socio.id).padStart(4, "0")}` // e.g. FG-0001
+  const idSocio = `FG-${String(socio.id).padStart(4, "0")}`
   const membresiaActiva = socio.estado?.toUpperCase() === "ACTIVO"
 
   const precioMensual = membresia.value ? formatEUR(membresia.value.precioMensual) : "—"
@@ -192,13 +273,6 @@ const perfil = computed(() => {
       horasEntrenamiento: 0,
       caloriasQuemadas: 0,
     },
-    reservas: [] as Array<{
-      nombre: string
-      instructor: string
-      fecha: string
-      hora: string
-      estado: "Confirmada" | "Completada" | "Cancelada"
-    }>,
   }
 })
 
@@ -214,7 +288,6 @@ watch(
   () => showEdit.value,
   (open) => {
     if (!open || !auth.socio) return
-    // precargar formulario con los datos actuales
     form.nombre = auth.socio.nombre ?? ""
     form.telefono = auth.socio.telefono ?? ""
     form.direccion = auth.socio.direccion ?? ""
@@ -259,7 +332,6 @@ async function onSave() {
 </script>
 
 <template>
-  <!-- con sesión iniciada -->
   <div v-if="perfil" class="perfil-page">
     <!-- Banner -->
     <section class="perfil-banner">
@@ -287,6 +359,7 @@ async function onSave() {
       <div class="grid">
         <!-- columna izquierda -->
         <div class="col-left">
+          <!-- info personal -->
           <div class="card">
             <div class="card-header">
               <h3>Información Personal</h3>
@@ -321,7 +394,7 @@ async function onSave() {
             </div>
           </div>
 
-          <!-- el resto lo mantengo igual que tu versión -->
+          <!-- membresia -->
           <div class="card">
             <div class="card-header">
               <h3>Membresía y Facturación</h3>
@@ -360,34 +433,15 @@ async function onSave() {
             </div>
 
             <div class="actions-row">
-              <button class="btn-outline" type="button" @click="showRecarga = true">
-                Añadir saldo
-              </button>
+              <button class="btn-outline" type="button" @click="showRecarga = true">Añadir saldo</button>
             </div>
-
-<!--            <div class="actions-row">-->
-<!--              <button class="btn-outline" type="button">Cambiar tarifa</button>-->
-<!--              <button class="btn-outline" type="button">Ver facturas</button>-->
-<!--            </div>-->
           </div>
 
+          <!-- reservas -->
           <div class="card">
             <div class="card-header">
               <h3>Actividades y Reservas</h3>
-              <button class="link-btn" type="button" @click="irAMisReservas">
-                Ver todas
-              </button>
-            </div>
-
-            <div v-if="perfil.reservas.length" class="reserva-list">
-              <div v-for="(r, idx) in perfil.reservas" :key="idx" class="reserva-item">
-                <div class="reserva-main">
-                  <div class="reserva-title">{{ r.nombre }}</div>
-                  <div class="reserva-sub">Instructor: {{ r.instructor }}</div>
-                  <div class="reserva-sub">{{ r.fecha }} · {{ r.hora }}</div>
-                </div>
-                <span class="status" :class="r.estado === 'Completada' ? 'done' : 'ok'">{{ r.estado }}</span>
-              </div>
+              <button class="link-btn" type="button" @click="irAMisReservas">Ver todas</button>
             </div>
 
             <p v-if="reservasError" class="empty-text">{{ reservasError }}</p>
@@ -405,14 +459,13 @@ async function onSave() {
 
             <p v-else class="empty-text">Aún no tienes reservas.</p>
 
-            <button class="btn-primary" @click="irAServicios">
-              Reservar nueva clase
-            </button>
+            <button class="btn-primary" @click="irAServicios">Reservar nueva clase</button>
           </div>
         </div>
 
         <!-- columna derecha -->
         <div class="col-right">
+          <!-- preferencias -->
           <div class="card">
             <div class="card-header">
               <h3>Preferencias</h3>
@@ -445,18 +498,28 @@ async function onSave() {
             </div>
           </div>
 
+          <!-- acciones cuenta -->
           <div class="card">
             <div class="card-header">
               <h3>Acciones de cuenta</h3>
             </div>
 
+            <p v-if="bajaError" class="empty-text" style="color:#b91c1c;">{{ bajaError }}</p>
+
             <div class="stack">
-              <button class="btn-outline full" type="button">Cambiar contraseña</button>
-              <button class="btn-outline full" type="button">Cerrar sesión</button>
-              <button class="btn-danger full" type="button">Darse de baja</button>
+              <button class="btn-outline full" type="button" @click="openPasswordModal">
+                Cambiar contraseña
+              </button>
+              <button class="btn-outline full" type="button" @click="onLogout">
+                Cerrar sesión
+              </button>
+              <button class="btn-danger full" type="button" @click="onBaja" :disabled="bajaLoading">
+                {{ bajaLoading ? "Procesando..." : "Darse de baja" }}
+              </button>
             </div>
           </div>
 
+          <!-- progreso -->
           <div class="card progress-card">
             <div class="card-header">
               <h3>Tu progreso este mes</h3>
@@ -479,6 +542,41 @@ async function onSave() {
         </div>
       </div>
     </section>
+
+    <!-- MODAL CAMBIAR CONTRASEÑA -->
+    <div v-if="showPasswordModal" class="modal-backdrop" @click.self="showPasswordModal = false">
+      <div class="modal">
+        <h3>Cambiar contraseña</h3>
+
+        <p v-if="passwordError" class="modal-error">{{ passwordError }}</p>
+
+        <div class="modal-grid">
+          <label class="full">
+            <span>Contraseña actual</span>
+            <input v-model="passwordForm.currentPassword" type="password" />
+          </label>
+
+          <label>
+            <span>Nueva contraseña</span>
+            <input v-model="passwordForm.newPassword" type="password" />
+          </label>
+
+          <label>
+            <span>Repetir nueva contraseña</span>
+            <input v-model="passwordForm.confirmNewPassword" type="password" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-outline" type="button" @click="showPasswordModal = false" :disabled="passwordSaving">
+            Cancelar
+          </button>
+          <button class="btn-primary" type="button" @click="onChangePassword" :disabled="passwordSaving">
+            {{ passwordSaving ? "Guardando..." : "Guardar" }}
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- MODAL EDITAR -->
     <div v-if="showEdit" class="modal-backdrop" @click.self="showEdit = false">
@@ -535,12 +633,7 @@ async function onSave() {
         <div class="modal-grid">
           <label class="full">
             <span>Importe (€)</span>
-            <input
-              v-model="recargaImporte"
-              type="text"
-              placeholder="Ej: 10,00"
-              :disabled="recargaLoading"
-            />
+            <input v-model="recargaImporte" type="text" placeholder="Ej: 10,00" :disabled="recargaLoading" />
           </label>
 
           <div class="full" style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -562,7 +655,6 @@ async function onSave() {
     </div>
   </div>
 
-  <!-- sin iniciar sesión -->
   <div v-else class="perfil-page">
     <section class="perfil-content">
       <div class="card">
@@ -574,349 +666,64 @@ async function onSave() {
 </template>
 
 <style scoped>
-.perfil-page {
-  background: #f4f5f6;
-  min-height: calc(100vh - 70px);
-}
-
-/* banner */
-.perfil-banner {
-  background: linear-gradient(90deg, #0b7ea0, #0092b8);
-  padding: 24px 0;
-}
-.perfil-banner-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 18px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.3);
-}
-.perfil-banner-info {
-  flex: 1;
-  color: white;
-}
-.name-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: baseline;
-}
-.name {
-  font-weight: 600;
-}
-.id {
-  opacity: 0.9;
-  font-size: 13px;
-}
-.badges {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-.badge {
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-}
-.badge.ok {
-  background: rgba(0, 0, 0, 0.15);
-}
-.badge.plan {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* contenido */
-.perfil-content {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 18px;
-}
-.grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 18px;
-}
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* secciones */
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
-  padding: 16px;
-  margin-bottom: 18px;
-}
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.card-header h3 {
-  margin: 0;
-  font-weight: 500;
-  font-size: 16px;
-}
-
-/* botones */
-.btn-primary {
-  background: #0092b8;
-  color: white;
-  border-radius: 10px;
-  height: 42px;
-  cursor: pointer;
-  border: 0;
-  padding: 0 14px;
-}
-.btn-outline {
-  background: transparent;
-  border: 1px solid #0092b8;
-  color: #0092b8;
-  border-radius: 10px;
-  height: 38px;
-  cursor: pointer;
-  padding: 0 12px;
-}
-.btn-danger {
-  background: transparent;
-  border: 1px solid #e24444;
-  color: #e24444;
-  border-radius: 10px;
-  height: 38px;
-  cursor: pointer;
-}
-.full {
-  width: 100%;
-}
-.link-btn {
-  all: unset;
-  cursor: pointer;
-  color: #0092b8;
-  font-size: 13px;
-}
-
-/* info */
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 18px;
-}
-@media (max-width: 650px) {
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.info-item {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-}
-.label {
-  color: grey;
-  font-size: 12px;
-  font-weight: 600;
-}
-.value {
-  font-size: 14px;
-}
-
-/* monedero/cobros */
-.billing-box {
-  background: #e9f7fb;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-.right {
-  text-align: right;
-}
-.pill {
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-size: 13px;
-  margin-top: 10px;
-}
-.ok-pill {
-  background: #e9f8ee;
-}
-.wallet-pill {
-  background: #f3efff;
-}
-.actions-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-/* reservaciones */
-.reserva-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.reserva-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-.reserva-title {
-  font-weight: 500;
-}
-.reserva-sub {
-  color: grey;
-  font-size: 12px;
-  margin-top: 2px;
-}
-.status {
-  align-self: start;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-.status.ok {
-  background: #e9f7fb;
-  color: #0b7ea0;
-}
-.status.done {
-  background: #eef4ff;
-  color: #2f5aa6;
-}
-.empty-text {
-  color: grey;
-  font-size: 13px;
-  margin: 8px 0 12px;
-}
-
-/* toggles */
-.toggle-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-.toggle-title {
-  font-weight: 500;
-  font-size: 14px;
-}
-.toggle-sub {
-  font-size: 12px;
-  color: grey;
-}
-
-/* acciones de cuenta */
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* progreso */
-.progress-card {
-  background: #0b7ea0;
-  color: white;
-}
-.progress-card .label {
-  color: rgba(255, 255, 255, 0.8);
-}
-.progress-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-.progress-item .value {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-/* MODAL */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 50;
-}
-
-.modal {
-  width: min(680px, 100%);
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-}
-
-.modal h3 {
-  margin: 0 0 10px;
-}
-
-.modal-error {
-  color: #b91c1c;
-  font-size: 13px;
-  margin: 6px 0 10px;
-}
-
-.modal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.modal-grid label span {
-  display: block;
-  font-size: 12px;
-  color: grey;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-.modal-grid input {
-  width: 100%;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 10px 12px;
-  box-sizing: border-box;
-}
-
-.modal-grid .full {
-  grid-column: 1 / -1;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 14px;
-}
+.perfil-page { background:#f4f5f6; min-height: calc(100vh - 70px); }
+.perfil-banner { background: linear-gradient(90deg,#0b7ea0,#0092b8); padding:24px 0; }
+.perfil-banner-inner { max-width:1100px; margin:0 auto; padding:0 18px; display:flex; align-items:center; gap:16px; }
+.avatar { width:64px; height:64px; border-radius:14px; background: rgba(255,255,255,.3); }
+.perfil-banner-info { flex:1; color:white; }
+.name-row { display:flex; flex-wrap:wrap; gap:10px; align-items:baseline; }
+.name { font-weight:600; }
+.id { opacity:.9; font-size:13px; }
+.badges { display:flex; gap:10px; margin-top:8px; }
+.badge { font-size:12px; padding:6px 10px; border-radius:999px; background: rgba(255,255,255,.2); }
+.badge.ok { background: rgba(0,0,0,.15); }
+.badge.plan { background: rgba(255,255,255,.2); }
+.perfil-content { max-width:1100px; margin:0 auto; padding:18px; }
+.grid { display:grid; grid-template-columns: 2fr 1fr; gap:18px; }
+@media (max-width:900px){ .grid{ grid-template-columns:1fr; } }
+.card { background:white; border-radius:12px; box-shadow:0 8px 12px rgba(0,0,0,.08); padding:16px; margin-bottom:18px; }
+.card-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.card-header h3{ margin:0; font-weight:500; font-size:16px; }
+.btn-primary { background:#0092b8; color:white; border-radius:10px; height:42px; cursor:pointer; border:0; padding:0 14px; }
+.btn-outline { background:transparent; border:1px solid #0092b8; color:#0092b8; border-radius:10px; height:38px; cursor:pointer; padding:0 12px; }
+.btn-danger { background:transparent; border:1px solid #e24444; color:#e24444; border-radius:10px; height:38px; cursor:pointer; }
+.full{ width:100%; }
+.link-btn { all:unset; cursor:pointer; color:#0092b8; font-size:13px; }
+.info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 18px; }
+@media (max-width:650px){ .info-grid{ grid-template-columns:1fr; } }
+.info-item{ display:flex; gap:6px; align-items:baseline; }
+.label{ color:grey; font-size:12px; font-weight:600; }
+.value{ font-size:14px; }
+.billing-box{ background:#e9f7fb; border-radius:12px; padding:12px; margin-bottom:10px; }
+.row{ display:flex; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.right{ text-align:right; }
+.pill{ border-radius:12px; padding:10px 12px; font-size:13px; margin-top:10px; }
+.ok-pill{ background:#e9f8ee; }
+.wallet-pill{ background:#f3efff; }
+.actions-row{ display:flex; gap:10px; margin-top:12px; }
+.reserva-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+.reserva-item{ display:flex; justify-content:space-between; gap:10px; padding:10px; border:1px solid #eee; border-radius:10px; }
+.reserva-title{ font-weight:500; }
+.reserva-sub{ color:grey; font-size:12px; margin-top:2px; }
+.status{ align-self:start; font-size:12px; padding:6px 10px; border-radius:999px; }
+.status.ok{ background:#e9f7fb; color:#0b7ea0; }
+.empty-text{ color:grey; font-size:13px; margin:8px 0 12px; }
+.toggle-list{ display:flex; flex-direction:column; gap:12px; }
+.toggle-row{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px; border:1px solid #eee; border-radius:10px; }
+.toggle-title{ font-weight:500; font-size:14px; }
+.toggle-sub{ font-size:12px; color:grey; }
+.stack{ display:flex; flex-direction:column; gap:10px; }
+.progress-card{ background:#0b7ea0; color:white; }
+.progress-card .label{ color: rgba(255,255,255,.8); }
+.progress-grid{ display:grid; grid-template-columns:1fr; gap:10px; }
+.progress-item .value{ font-size:18px; font-weight:600; }
+.modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:grid; place-items:center; padding:16px; z-index:50; }
+.modal{ width:min(680px,100%); background:white; border-radius:14px; padding:16px; box-shadow:0 20px 40px rgba(0,0,0,.25); }
+.modal h3{ margin:0 0 10px; }
+.modal-error{ color:#b91c1c; font-size:13px; margin:6px 0 10px; }
+.modal-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-grid label span{ display:block; font-size:12px; color:grey; margin-bottom:6px; font-weight:600; }
+.modal-grid input{ width:100%; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; box-sizing:border-box; }
+.modal-grid .full{ grid-column: 1 / -1; }
+.modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:14px; }
 </style>

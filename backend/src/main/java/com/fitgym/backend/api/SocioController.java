@@ -8,6 +8,8 @@ import com.fitgym.backend.api.dto.SocioResponse;
 import com.fitgym.backend.api.dto.EmailExistsResponse;
 import com.fitgym.backend.api.dto.SocioUpdateRequest;
 import com.fitgym.backend.api.dto.MembresiaResponse;
+import com.fitgym.backend.api.dto.SocioCambiarContrasenaRequest;
+import jakarta.validation.Valid;
 import com.fitgym.backend.domain.Socio;
 import com.fitgym.backend.service.InvalidCredentialsException;
 import com.fitgym.backend.service.SocioService;
@@ -229,5 +231,41 @@ public class SocioController {
         if (!(value instanceof SocioSession socioSession)) throw new InvalidCredentialsException("No hay sesion activa.");
 
         return ResponseEntity.ok(socioService.obtenerMembresia(socioSession.getId()));
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changePassword(
+            @Valid @RequestBody SocioCambiarContrasenaRequest req,
+            HttpServletRequest request
+    ) {
+        HttpSession session = request.getSession(false);
+        if (session == null) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        Object value = session.getAttribute(SESSION_SOCIO_KEY);
+        if (!(value instanceof SocioSession socioSession)) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        socioService.cambiarContrasena(
+                socioSession.getId(),
+                req.contrasenaActual(),
+                req.nuevaContrasena()
+        );
+
+        // Forzar re-login por seguridad
+        session.invalidate();
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMe(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        Object value = session.getAttribute(SESSION_SOCIO_KEY);
+        if (!(value instanceof SocioSession socioSession)) throw new InvalidCredentialsException("No hay sesion activa.");
+
+        socioService.darseDeBaja(socioSession.getId());
+
+        session.invalidate();
+        return ResponseEntity.noContent().build();
     }
 }
