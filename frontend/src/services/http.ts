@@ -123,3 +123,23 @@ export async function apiPatch<T, B>(path: string, body: B): Promise<T> {
   return res.json() as Promise<T>
 }
 
+export async function apiDelete<T>(path: string): Promise<T> {
+  const res = await fetch(path, {
+    method: "DELETE",
+    headers: { Accept: "application/json" },
+    credentials: "include",
+  })
+
+  if (!res.ok) {
+    const detail = await readErrorDetail(res)
+    throw new Error(`HTTP ${res.status}: ${detail}`)
+  }
+
+  if (res.status === 204) return undefined as T
+
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) return undefined as T
+
+  return res.json() as Promise<T>
+}
+

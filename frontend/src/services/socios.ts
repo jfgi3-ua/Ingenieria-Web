@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiPut } from "./http"
+import { apiDelete } from "./http"
 import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse, SocioUpdateRequest } from "@/types/socio"
 import type { MembresiaResponse } from '@/types/membresia'
 import type { MonederoRecargaRequest, MonederoRecargaResponse, MonederoVerifyResponse } from "@/types/monedero"
@@ -65,4 +66,17 @@ export function recargarMonedero(payload: MonederoRecargaRequest) {
 
 export function verifyRecargaMonedero(token: string) {
   return apiPost<MonederoVerifyResponse, Record<string, never>>(`/api/socios/me/monedero/verify/${encodeURIComponent(token)}`, {})
+}
+
+export type SocioCambiarContrasenaRequest = {
+  contrasenaActual: string
+  nuevaContrasena: string
+}
+
+export async function cambiarContrasena(payload: SocioCambiarContrasenaRequest) {
+  return apiPut<void, SocioCambiarContrasenaRequest>('/api/socios/me/password', payload)
+}
+
+export function deleteMe() {
+  return apiDelete<void>("/api/socios/me")
 }

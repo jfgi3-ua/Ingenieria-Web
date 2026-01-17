@@ -294,4 +294,28 @@ public class SocioService {
                 ultimoPago
         );
     }
+
+    @Transactional
+    public void cambiarContrasena(Long socioId, String currentPassword, String newPassword) {
+        Socio socio = socioRepo.findById(socioId)
+                .orElseThrow(() -> new RuntimeException("Socio no encontrado"));
+
+        // validar currentPassword contra el hash guardado
+        if (!passwordEncoder.matches(currentPassword, socio.getContrasenaHash())) {
+            throw new InvalidCredentialsException("Contraseña actual incorrecta.");
+        }
+
+        // guardar nuevo hash
+        socio.setContrasenaHash(passwordEncoder.encode(newPassword));
+        socioRepo.save(socio);
+    }
+
+    @Transactional
+    public void darseDeBaja(Long socioId) {
+        Socio socio = socioRepo.findById(socioId)
+                .orElseThrow(() -> new RuntimeException("Socio no encontrado"));
+
+        socio.setEstado(SocioEstado.INACTIVO);
+        socioRepo.save(socio);
+    }
 }
