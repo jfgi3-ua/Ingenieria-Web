@@ -15,6 +15,15 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
     ORDER BY p.fechaPago DESC
   """)
     Optional<Pago> findUltimoPagoMembresia(@Param("idSocio") Long idSocio, @Param("keyword") String keyword);
+
+    @Query("""
+      select p
+      from Pago p
+      where p.idSocio = :idSocio and p.idActividad = :idActividad
+      order by p.fechaPago desc
+    """)
+    Optional<Pago> findBySocioAndActividad(@Param("idSocio") Long idSocio,
+                                           @Param("idActividad") Long idActividad);
 }
 
 
