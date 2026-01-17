@@ -24,7 +24,7 @@ export type SocioResponse = {
   estado: string
   idTarifa: number
   tarifaNombre: string
-  saldoMonedero: number
+  saldoMonedero: number | string
   telefono?: string | null
   direccion?: string | null
   ciudad?: string | null

@@ -1,6 +1,7 @@
 import { apiGet, apiPost, apiPut } from "./http"
 import type { SocioLoginRequest, SocioRegistroRequest, SocioResponse, SocioUpdateRequest } from "@/types/socio"
-import type { MembresiaResponse } from '@/types/membresia.ts'
+import type { MembresiaResponse } from '@/types/membresia'
+import type { MonederoRecargaRequest, MonederoRecargaResponse, MonederoVerifyResponse } from "@/types/monedero"
 
 
 /**
@@ -56,4 +57,12 @@ export function updateMe(payload: SocioUpdateRequest) {
 
 export function meMembresia() {
   return apiGet<MembresiaResponse>("/api/socios/me/membresia")
+}
+
+export function recargarMonedero(payload: MonederoRecargaRequest) {
+  return apiPost<MonederoRecargaResponse, MonederoRecargaRequest>("/api/socios/me/monedero/recarga", payload)
+}
+
+export function verifyRecargaMonedero(token: string) {
+  return apiPost<MonederoVerifyResponse, Record<string, never>>(`/api/socios/me/monedero/verify/${encodeURIComponent(token)}`, {})
 }

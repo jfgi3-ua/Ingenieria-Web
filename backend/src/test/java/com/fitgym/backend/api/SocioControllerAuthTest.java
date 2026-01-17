@@ -251,9 +251,11 @@ class SocioControllerAuthTest {
     when(tarifa.getNombre()).thenReturn("Basico");
 
     Socio socio = new Socio();
+    socio.setNombre("Test");
     socio.setCorreoElectronico(email);
     socio.setEstado(estado);
     socio.setTarifa(tarifa);
+    socio.setSaldoMonedero(BigDecimal.ZERO);
     return socio;
   }
 }

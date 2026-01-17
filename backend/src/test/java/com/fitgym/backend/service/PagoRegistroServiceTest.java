@@ -40,7 +40,8 @@ class PagoRegistroServiceTest {
     TpvvProperties props = new TpvvProperties(
         "https://tpv.example",
         "sk_test",
-        "http://localhost:5173/registro"
+        "http://localhost:5173/registro",
+        "http://localhost:5173/perfil"
     );
 
     service = new PagoRegistroService(pagoRepo, tarifaRepo, tpvvClient, props);
