@@ -81,6 +81,33 @@ FROM (VALUES
 ) AS v(nombre, correo, pass, tel, tarifa_nombre, estado, domiciliado, saldo, dir, ciudad, cp)
 JOIN tarifa t ON t.nombre = v.tarifa_nombre
 ON CONFLICT (correo_electronico) DO NOTHING;
+-- =========================
+-- Admin (para pruebas)
+-- =========================
+-- Email: admin@gmail.com
+-- Password: admin1234
+-- (hash BCrypt generado en el proyecto)
+INSERT INTO socio (
+  nombre, correo_electronico, contrasena, telefono,
+  id_tarifa, estado, pago_domiciliado, saldo_monedero,
+  direccion, ciudad, codigo_postal, clases_gratis
+)
+SELECT
+  'Admin',
+  'admin@gmail.com',
+  '$2a$10$D6Dwk9SGGPW.vPj1tDHOdeZ/lNH8EZMFAjBvYf.YDLMkKulRX4WzW',
+  '600000000',
+  t.id,
+  'ACTIVO'::socio_estado,
+  FALSE,
+  0.00,
+  '-',
+  'Alicante',
+  '00000',
+  t.clases_gratis_mes
+FROM tarifa t
+WHERE t.nombre = 'Básico'
+ON CONFLICT (correo_electronico) DO NOTHING;
 
 -- =========================
 -- Actividades
