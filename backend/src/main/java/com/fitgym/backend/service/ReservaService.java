@@ -60,35 +60,44 @@ public class ReservaService {
             }
             //Clase gratis
             BigDecimal zero = new BigDecimal("0");
-            if(actividad.getPrecioExtra().compareTo(zero) <= 0){
-                //System.out.print("Entra caso clases gratis");
-                boolean respuesta = false;
-                //Primero buscamos que no exista esta reserva
-                List<Reserva> reservas = reservaRepository.findAll();
-                for(Reserva reserva : reservas){
-                    if(reserva.getSocio().getId() == idSocio && reserva.getActividad().getId() == idClase){
-                        return respuesta = false;
-                    }
+            boolean respuesta = false;
+            
+            List<Reserva> reservas = reservaRepository.findAll();
+            Reserva reservaCancelada = new Reserva();
+            for(Reserva reserva : reservas){
+                if(reserva.getSocio().getId() == idSocio && reserva.getActividad().getId() == idClase && reserva.getEstado() == ReservaEstado.CONFIRMADA){
+                    return respuesta = false;
                 }
+                else if(reserva.getSocio().getId() == idSocio && reserva.getActividad().getId() == idClase && reserva.getEstado() == ReservaEstado.CANCELADA){
+                    reservaCancelada = reserva;
+                }
+            }
 
-                //Creamos reserva
-                Reserva reserva = new Reserva();
-                ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
-                reserva.setId(reservaId);
-                reserva.setSocio(socio);
-                reserva.setActividad(actividad);
-                reserva.setFecha(OffsetDateTime.now());
-                reserva.setEstado(ReservaEstado.CONFIRMADA);    
+            if(actividad.getPrecioExtra().compareTo(zero) <= 0){
+                if(reservaCancelada.getEstado() == ReservaEstado.CANCELADA){
+                    reservaCancelada.setEstado(ReservaEstado.CONFIRMADA);
 
-                //Bajamos disponibles en la activida
-                respuesta = actividadService.bajarDisponiblesEnClase(idClase);
-                //System.out.print(respuesta);
-                
-                if(respuesta){
-                    reservaRepository.save(reserva);
+                    respuesta = actividadService.bajarDisponiblesEnClase(idClase);
                 }
                 else{
-                    throw new RuntimeException("No se ha podido terminar la reserva...");
+                    //Creamos reserva
+                    Reserva reserva = new Reserva();
+                    ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
+                    reserva.setId(reservaId);
+                    reserva.setSocio(socio);
+                    reserva.setActividad(actividad);
+                    reserva.setFecha(OffsetDateTime.now());
+                    reserva.setEstado(ReservaEstado.CONFIRMADA); 
+
+                    //Bajamos disponibles en la activida
+                    respuesta = actividadService.bajarDisponiblesEnClase(idClase);
+                    
+                    if(respuesta){
+                        reservaRepository.save(reserva);
+                    }
+                    else{
+                        throw new RuntimeException("No se ha podido terminar la reserva...");
+                    }
                 }
 
                 return respuesta;
@@ -106,7 +115,7 @@ public class ReservaService {
                 reserva.setEstado(ReservaEstado.CONFIRMADA);
 
                 Pago pago = new Pago();
-//                pago.setCantidad(actividad.getPrecioExtra());
+                //pago.setCantidad(actividad.getPrecioExtra());
                 pago.setCantidad(BigDecimal.ZERO);
                 pago.setNombre("Reserva con clase gratis");
                 pago.setFechaPago(Instant.now());
@@ -118,7 +127,7 @@ public class ReservaService {
                 //Bajamos disponibles en la activida y en las clases gratis del socio
                 boolean respuestaDisponiblesClase = actividadService.bajarDisponiblesEnClase(idClase);
                 boolean respuestaClasesCliente = socioService.disminuirClasesGratisDeTarifa(idSocio);
-                boolean respuesta = false;
+                //boolean respuesta = false;
                 //System.out.print(respuestaClasesCliente);
                 //System.out.print(respuestaDisponiblesClase);
                 if(respuestaClasesCliente && respuestaDisponiblesClase){
