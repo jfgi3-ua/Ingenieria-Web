@@ -106,15 +106,15 @@
                     alert("Reserva realizada");
                 }
                 else{
-                    alert("Ya habia una realizado esta reserva o no tiene fondos en el monedero")
+                    alert("Ya habia una realizado esta reserva o no tiene fondos en el monedero") //quiza quitar segunda parte de la frase
                 }
             }
         } catch (e) {
-            if(actividad.value?.precioExtra! > 0 && auth.socio?.saldoMonedero! <= 0){
-                alert("No tiene fondos en el monedero o ya ha reservado esta actividad")
+            if(actividad.value?.precioExtra! > 0 && Number(auth.socio?.saldoMonedero!) <= actividad.value?.precioExtra!){
+                alert("No tiene fondos en el monedero. Añada dinero al monedero y consulte sus resevas para no intentar tener reservas duplicadas.")
             }
             else{
-                alert("Ya habia hecho una reserva de esta actividad");
+                alert("Ya habia hecho una reserva de esta actividad o no tiene fondos");
             }
         }
     }
