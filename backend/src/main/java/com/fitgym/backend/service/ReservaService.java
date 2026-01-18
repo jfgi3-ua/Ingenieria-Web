@@ -143,7 +143,7 @@ public class ReservaService {
             }
             //Clase de pago no incluida en tarifa
             else if(actividad.getPrecioExtra().compareTo(zero) > 0 && socio.getClasesGratis() <= 0){
-                //System.out.print("Caso clases pagada");
+                System.out.print("Caso clases pagada");
                 //Caso de sin dinero -> alerta en front de que no tiene fondos
                 //Caso de con dinero -> Bajar monedero del usuario y confirmar reserva
                 if (socio.getSaldoMonedero().compareTo(actividad.getPrecioExtra()) >= 0) {
@@ -160,25 +160,39 @@ public class ReservaService {
                     socioRepository.save(socio);
 
                     //Creamos reserva
-                    Reserva reserva = new Reserva();
-                    ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
-                    reserva.setId(reservaId);
-                    reserva.setSocio(socio);
-                    reserva.setActividad(actividad);
-                    reserva.setFecha(OffsetDateTime.now());
-                    reserva.setEstado(ReservaEstado.CONFIRMADA);
-                    reservaRepository.save(reserva);
+                    if(reservaCancelada.getEstado() == ReservaEstado.CANCELADA){
+                        System.out.print("Clase cancelada");
+                        reservaCancelada.setEstado(ReservaEstado.CONFIRMADA);
 
-                    //Guardamos el pago
-                    Pago pago = new Pago();
-                    pago.setCantidad(actividad.getPrecioExtra());
-                    pago.setFechaPago(Instant.now());
-                    pago.setIdActividad(idClase);
-                    pago.setIdSocio(idSocio);
-                    pago.setNombre("Pago reserva actividad");
-                    pago.setResultadoPago(PagoResultado.OK);
-                    pagoRepository.save(pago);
+                        List<Pago> pagos = pagoRepository.findAll();
+                        for(Pago pago : pagos){
+                            if(pago.getIdSocio() == idSocio && pago.getIdActividad() == idClase){
+                                pago.setResultadoPago(PagoResultado.OK);
+                            }
+                        }
+                    }
+                    else{
+                        System.out.print("Clase nueva");
+                        Reserva reserva = new Reserva();
+                        ReservaId reservaId = new ReservaId(socio.getId(), actividad.getId());
+                        reserva.setId(reservaId);
+                        reserva.setSocio(socio);
+                        reserva.setActividad(actividad);
+                        reserva.setFecha(OffsetDateTime.now());
+                        reserva.setEstado(ReservaEstado.CONFIRMADA);
+                        reservaRepository.save(reserva);
 
+                        //Guardamos el pago
+                        Pago pago = new Pago();
+                        pago.setCantidad(actividad.getPrecioExtra());
+                        pago.setFechaPago(Instant.now());
+                        pago.setIdActividad(idClase);
+                        pago.setIdSocio(idSocio);
+                        pago.setNombre("Pago reserva actividad");
+                        pago.setResultadoPago(PagoResultado.OK);
+                        pagoRepository.save(pago);
+                    }
+                    
                     return true;
                 }
                 else{
@@ -250,6 +264,7 @@ public class ReservaService {
             Pago p = pagoOpt.get();
             if (p.getResultadoPago() == PagoResultado.OK && p.getCantidad().compareTo(BigDecimal.ZERO) > 0) {
                 reembolso = p.getCantidad();
+                p.setResultadoPago(PagoResultado.FAIL);
             }
         }
 
